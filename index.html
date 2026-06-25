@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ADUANA - Dashboard Gerencial 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --bg:#F5F6FF;--sidebar:#131D4F;--card:#FFFFFF;--card2:#ECEEFF;
+  --lavanda:#E0E3FF;--lavanda2:#C8CCFA;
+  --border:rgba(30,45,107,0.10);--border-acc:rgba(30,45,107,0.20);
+  --text:#1E2D6B;--muted:#5B6CA8;--muted2:#9AA5D4;
+  --acc:#1E2D6B;--acc-dim:#E0E3FF;
+  --verde:#059669;--verde-dim:rgba(5,150,105,0.10);
+  --rojo:#DC2626;--rojo-dim:rgba(220,38,38,0.10);
+  --amber:#D97706;--amber-dim:rgba(217,119,6,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:230px;background:var(--sidebar);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;}
+.sidebar-brand{padding:28px 22px 22px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sidebar-brand h2{font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#A5B4FC;margin-bottom:4px;}
+.sidebar-brand .brand-sub{font-size:11px;color:#7C8EC4;line-height:1.5;}
+.sidebar-brand .brand-name{font-size:10px;color:#5A6EA0;margin-top:6px;font-weight:600;letter-spacing:.5px;}
+.sidebar-nav{flex:1;padding:14px 0;}
+.nav-section{font-size:9.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#4A5E94;padding:10px 22px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;cursor:pointer;font-size:13px;font-weight:500;color:#8898CC;transition:all .15s;border-left:3px solid transparent;margin:1px 0;}
+.nav-item:hover{background:rgba(165,180,252,0.10);color:#C7D2FE;}
+.nav-item.active{background:rgba(165,180,252,0.15);color:#A5B4FC;border-left-color:#A5B4FC;}
+.nav-item .icon{font-size:15px;width:18px;text-align:center;opacity:.8;}
+.sidebar-footer{padding:14px 22px;font-size:10px;color:#4A5E94;border-top:1px solid rgba(255,255,255,0.06);}
+.main{margin-left:230px;flex:1;display:flex;flex-direction:column;}
+.topbar{background:#FFFFFF;border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(30,45,107,0.07);}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-dot{width:9px;height:9px;border-radius:50%;background:var(--acc);}
+.topbar-title{font-size:16px;font-weight:700;color:var(--text);}
+.badge{font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;}
+.badge-acc{background:var(--lavanda);color:var(--acc);border:1px solid var(--lavanda2);}
+.badge-verde{background:var(--verde-dim);color:var(--verde);border:1px solid rgba(5,150,105,0.2);}
+.filter-bar{background:#FFFFFF;border-bottom:1px solid var(--border);padding:9px 32px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:53px;z-index:49;box-shadow:0 1px 3px rgba(30,45,107,0.05);}
+.filter-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;white-space:nowrap;margin-right:2px;}
+.month-toggle{padding:4px 14px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-size:11.5px;font-weight:600;color:var(--muted);background:transparent;transition:all .15s;font-family:'Poppins',sans-serif;}
+.month-toggle:hover{border-color:var(--acc);color:var(--acc);}
+.month-toggle.active{background:var(--acc);color:#fff;border-color:var(--acc);}
+.filter-sep{height:18px;width:1px;background:var(--border);margin:0 4px;}
+.ytd-btn{padding:4px 14px;border-radius:20px;border:1px solid var(--acc);cursor:pointer;font-size:11.5px;font-weight:700;color:var(--acc);background:transparent;transition:all .15s;font-family:'Poppins',sans-serif;}
+.ytd-btn:hover{background:var(--lavanda);}
+.ytd-btn.active{background:var(--acc);color:#fff;}
+.content{padding:28px 32px;}
+
+/* Analisis card */
+.analisis-card{background:#FFFFFF;border-radius:16px;padding:32px 36px;margin-bottom:22px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(30,45,107,0.07);}
+.analisis-label{display:inline-flex;align-items:center;gap:6px;background:var(--lavanda);color:var(--acc);border-radius:20px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:4px 14px;margin-bottom:16px;}
+.analisis-txt p{font-size:14.5px;line-height:1.9;color:#2E3F80;text-align:justify;margin-bottom:12px;}
+.analisis-txt p:last-child{margin-bottom:0;}
+.analisis-txt b{color:var(--text);font-weight:700;}
+
+/* KPI cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+.kpi-card{background:#FFFFFF;border-radius:16px;padding:24px 22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);}
+.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:10px;}
+.kpi-value{font-size:32px;font-weight:800;color:var(--text);line-height:1.1;margin-bottom:8px;}
+.kpi-sub{font-size:12.5px;font-weight:600;}
+.kpi-pos{color:var(--verde);}.kpi-neg{color:var(--rojo);}.kpi-neu{color:var(--muted);}
+
+/* Versus cards */
+.versus-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px;}
+.versus-card{background:#FFFFFF;border-radius:16px;padding:24px 26px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);}
+.vs-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px;}
+.vs-inner{display:flex;align-items:center;gap:10px;}
+.vs-side{flex:1;text-align:center;padding:16px 10px;border-radius:12px;}
+.vs-prev{background:var(--bg);border:1px solid var(--border);}
+.vs-curr{background:var(--lavanda);border:1px solid var(--lavanda2);}
+.vs-month{font-size:10px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.vs-num{font-size:26px;font-weight:800;color:var(--text);}
+.vs-pct-inline{font-size:12px;font-weight:700;margin-top:8px;padding:3px 10px;border-radius:12px;display:inline-block;}
+.vs-pct-inline.pos{color:var(--verde);background:var(--verde-dim);border:1px solid rgba(5,150,105,0.2);}
+.vs-pct-inline.neg{color:var(--rojo);background:var(--rojo-dim);border:1px solid rgba(220,38,38,0.2);}
+.vs-sep{display:flex;align-items:center;flex:0 0 30px;color:var(--muted2);font-size:18px;}
+
+/* Section / chart containers */
+.section{background:#FFFFFF;border-radius:16px;padding:24px 26px;margin-bottom:22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.section-chip{background:var(--lavanda);color:var(--acc);border-radius:20px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:3px 12px;white-space:nowrap;}
+.section-title{font-size:14px;font-weight:700;color:var(--text);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px;}
+.chart-wrap{position:relative;height:260px;}
+.chart-wrap-tall{position:relative;height:320px;}
+.chart-wrap-sm{position:relative;height:190px;}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{background:var(--lavanda);color:var(--acc);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-bottom:2px solid var(--lavanda2);}
+thead th.right{text-align:right;}thead th.center{text-align:center;}
+tbody tr{border-bottom:1px solid rgba(30,45,107,0.07);transition:background .1s;}
+tbody tr:hover{background:var(--bg);}
+tbody td{padding:10px 14px;color:#2E3F80;}
+td.right{text-align:right;}td.center{text-align:center;}td.bold{font-weight:700;color:var(--text);}
+td.pos{color:var(--verde);font-weight:700;text-align:center;}
+td.neg{color:var(--rojo);font-weight:700;text-align:center;}
+tfoot td{background:var(--lavanda);color:var(--acc);padding:10px 14px;font-weight:700;border-top:2px solid var(--lavanda2);}
+tfoot td.right{text-align:right;}
+
+/* Tab buttons */
+.tab-btn{padding:5px 16px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);background:#fff;transition:all .15s;font-family:'Poppins',sans-serif;}
+.tab-btn:hover{border-color:var(--acc);color:var(--acc);}
+.tab-btn.active{background:var(--acc);color:#fff;border-color:var(--acc);}
+
+/* PE grid */
+.pe-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px;}
+.pe-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;}
+.pe-card.selected{border-color:var(--acc);background:var(--lavanda);}
+.pe-mes{font-size:10px;color:var(--muted);margin-bottom:4px;font-weight:700;text-transform:uppercase;}
+.pe-val{font-size:26px;font-weight:800;color:var(--acc);}
+.pe-label{font-size:10.5px;color:var(--muted2);}
+.insight{background:var(--lavanda);border:1px solid var(--lavanda2);border-radius:12px;padding:14px 18px;font-size:13px;color:#2E3F80;line-height:1.7;margin-top:14px;}
+.insight strong{color:var(--text);}
+.no-data{text-align:center;padding:32px;color:var(--muted);font-size:13px;}
+.view{display:none;}.view.active{display:block;}
+
+/* Novedades */
+.nov-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px;}
+.nov-card{background:#FFFFFF;border-radius:16px;padding:20px 22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);}
+.nov-card-title{font-size:10px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.nov-item{background:var(--lavanda);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.nov-item:last-child{margin-bottom:0;}
+.nov-item-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.nov-item-desc{font-size:12.5px;color:#2E3F80;line-height:1.65;}
+.nov-item-imp{font-size:10.5px;font-weight:700;margin-top:7px;padding:3px 10px;border-radius:6px;display:inline-block;}
+.imp-neg{color:var(--rojo);background:var(--rojo-dim);}
+.imp-warn{color:var(--amber);background:var(--amber-dim);}
+.imp-ok{color:var(--verde);background:var(--verde-dim);}
+
+/* Movimientos personal */
+.mov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:4px;}
+.mov-month{background:var(--bg);border-radius:12px;padding:16px 14px;border:1px solid var(--border);}
+.mov-month.selected{border-color:var(--acc);background:var(--lavanda);}
+.mov-month-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;text-align:center;}
+.mov-stat{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.mov-count{font-size:22px;font-weight:800;width:30px;text-align:right;line-height:1;}
+.mov-count.ing{color:var(--verde);}
+.mov-count.desv{color:var(--rojo);}
+.mov-count.ren{color:var(--acc);}
+.mov-type{font-size:12px;color:var(--muted);font-weight:600;}
+.mov-names{font-size:11px;color:#2E3F80;padding-left:0;margin-top:5px;line-height:1.7;}
+.mov-others{font-size:10.5px;color:var(--amber);margin-top:8px;line-height:1.6;font-style:italic;}
+.nov-mes-label{font-size:12px;font-weight:700;color:var(--acc);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.nov-mes-label span{background:var(--lavanda);border:1px solid var(--lavanda2);border-radius:20px;padding:3px 14px;}
+
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.versus-grid,.two-col{grid-template-columns:1fr;}}
+
+</style>
+</head>
+<body>
+
+<style>
+#pw-overlay{position:fixed;inset:0;background:#0F1929;display:flex;align-items:center;justify-content:center;z-index:9999;}
+#pw-box{background:#1A2A4A;border-radius:16px;padding:40px 48px;text-align:center;width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+#pw-logo{font-family:'Poppins',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#60A5FA;margin-bottom:4px;}
+#pw-sub{font-family:'Poppins',sans-serif;font-size:12px;color:#5A6EA0;margin-bottom:32px;}
+#pw-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:#E2EAF4;margin-bottom:24px;}
+#pw-input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(96,165,250,0.3);background:rgba(255,255,255,0.06);color:#E2EAF4;font-size:15px;font-family:'Poppins',sans-serif;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px;}
+#pw-input:focus{border-color:#60A5FA;}
+#pw-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#1D4ED8;color:#fff;font-size:14px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:background .15s;margin-bottom:8px;}
+#pw-btn:hover{background:#2563EB;}
+#pw-err{font-family:'Poppins',sans-serif;font-size:12px;color:#F87171;min-height:18px;}
+</style>
+<div id="pw-overlay">
+  <div id="pw-box">
+    <div id="pw-logo">ADUANA</div>
+    <div id="pw-sub">Free Customs &middot; Dashboard Gerencial</div>
+    <div id="pw-title">Acceso restringido</div>
+    <input id="pw-input" type="password" placeholder="Contrase&ntilde;a" onkeydown="if(event.key==='Enter')checkPw()">
+    <button id="pw-btn" onclick="checkPw()">Ingresar</button>
+    <div id="pw-err"></div>
+  </div>
+</div>
+<script>
+async function checkPw(){
+  const val=document.getElementById('pw-input').value;
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(val));
+  const hash=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(hash==='00b9c262c76070df43e434a7c7f2d3414600dffaab8a4fa185d704e6b2843a1f'){
+    document.getElementById('pw-overlay').style.display='none';
+    localStorage.setItem('auth',hash);
+  }else{
+    document.getElementById('pw-err').textContent='Contraseña incorrecta';
+    document.getElementById('pw-input').value='';
+  }
+}
+(async()=>{
+  const stored=localStorage.getItem('auth');
+  if(stored==='00b9c262c76070df43e434a7c7f2d3414600dffaab8a4fa185d704e6b2843a1f')document.getElementById('pw-overlay').style.display='none';
+})();
+</script>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h2>ADUANA</h2>
+    <div class="brand-sub">Dashboard Gerencial 2026</div>
+    <div class="brand-name">&#9679; Tomas Britos</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Reportes</div>
+    <div class="nav-item active" onclick="showView('resumen')" id="nav-resumen"><span class="icon">&#9632;</span> Resumen</div>
+    <div class="nav-item" onclick="showView('evolucion')" id="nav-evolucion"><span class="icon">&#128200;</span> Evolucion Mensual</div>
+    <div class="nav-item" onclick="showView('interanual')" id="nav-interanual"><span class="icon">&#128257;</span> Comparativa 25/26</div>
+    <div class="nav-item" onclick="showView('kpis')" id="nav-kpis"><span class="icon">&#127919;</span> KPIs Operativos</div>
+    <div class="nav-item" onclick="showView('novedades')" id="nav-novedades"><span class="icon">&#128466;</span> Novedades</div>
+    <div class="nav-section">Clientes</div>
+    <div class="nav-item" onclick="showView('operaciones')" id="nav-operaciones"><span class="icon">&#127942;</span> Top Operaciones</div>
+    <div class="nav-item" onclick="showView('facturacion')" id="nav-facturacion"><span class="icon">&#128181;</span> Facturacion USD</div>
+    <div class="nav-section">Finanzas</div>
+    <div class="nav-item" onclick="showView('rentabilidad')" id="nav-rentabilidad"><span class="icon">&#128176;</span> Rentabilidad</div>
+  </nav>
+  <div class="sidebar-footer">Fuente: Ganancias 2026 &bull; Facturacion 2526</div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-dot"></div>
+      <div class="topbar-title" id="page-title">Resumen General</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge badge-verde">&#9679; Live</span>
+      <span class="badge badge-acc" id="badge-mes">Mayo 2026</span>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-label">Periodo:</span>
+    <div id="month-toggles" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    <div class="filter-sep"></div>
+    <button class="ytd-btn" id="ytd-btn" onclick="toggleYTD()">&#9733; Año en Curso</button>
+  </div>
+  <div class="content">
+    <div class="view active" id="view-resumen">
+      <div id="analisis-wrap">
+        <div class="analisis-card">
+          <div class="analisis-label">&#9679; Analisis Gerencial</div>
+          <div id="analisis-mes-label" style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:14px;"></div>
+          <div class="analisis-txt" id="analisis-txt"></div>
+        </div>
+      </div>
+      <div id="kpi-grid" class="kpi-grid"></div>
+      <div id="versus-grid" class="versus-grid"></div>
+      <div id="multi-compare" style="display:none;"></div>
+    </div>
+    <div class="view" id="view-evolucion">
+      <div class="two-col">
+        <div class="section"><div class="section-header"><span class="section-chip">Operativo</span><div class="section-title">Operaciones mensuales</div></div><div class="chart-wrap"><canvas id="chart-ev-ops"></canvas></div></div>
+        <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Rentabilidad por Operacion y por Empleado</div></div><div class="chart-wrap"><canvas id="chart-ev-rent"></canvas></div></div>
+      </div>
+    </div>
+    <div class="view" id="view-novedades">
+      <div class="nov-mes-label">&#9679; <span id="nov-mes-label-txt">Mayo 2026</span></div>
+      <div class="nov-grid">
+        <div class="nov-card"><div class="nov-card-title">&#9881; Acciones en Curso</div><div id="nov-acciones"></div></div>
+        <div class="nov-card"><div class="nov-card-title">&#128161; Oportunidades de Mejora</div><div id="nov-oportunidades"></div></div>
+      </div>
+      <div class="nov-grid">
+        <div class="nov-card"><div class="nov-card-title">&#127942; Hitos Estrategicos</div><div id="nov-hitos"></div></div>
+        <div class="nov-card"><div class="nov-card-title">&#9888; Desvios del Mes</div><div id="nov-desvios"></div></div>
+      </div>
+      <div class="section"><div class="section-header"><span class="section-chip">Personal</span><div class="section-title">Movimientos de Personal 2026</div></div><div class="mov-grid" id="nov-personal"></div></div>
+    </div>
+    <div class="view" id="view-kpis">
+      <div class="two-col">
+        <div class="section"><div class="section-header"><span class="section-chip">Selectividad</span><div class="section-title">Canales de Selectividad por Año — IMPO + EXPO (%)</div></div><div class="chart-wrap-tall"><canvas id="chart-sel"></canvas></div><div class="insight" style="margin-top:14px">Distribucion de canales R / N / V sobre el total de operaciones IMPO+EXPO oficializadas por año. 2026 corresponde al acumulado enero&ndash;mayo.</div></div>
+        <div class="section"><div class="section-header"><span class="section-chip">Liberacion</span><div class="section-title">Tiempos de Liberacion — IMPO (%)</div></div><div class="chart-wrap-tall"><canvas id="chart-lib"></canvas></div><div class="insight" style="margin-top:14px">Distribucion porcentual de dias transcurridos desde arribo hasta liberacion total. 2024 y 2025 son promedios anuales; 2026 se muestra mensualmente.</div></div>
+      </div>
+    </div>
+    <div class="view" id="view-interanual">
+      <div class="section"><div class="section-header"><span class="section-chip">Interanual</span><div class="section-title" id="inter-title">Operaciones 2025 vs 2026</div></div><div class="chart-wrap-tall"><canvas id="chart-inter-ops"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Variacion</span><div class="section-title">Variacion % interanual</div></div><div class="chart-wrap"><canvas id="chart-inter-var"></canvas></div></div>
+    </div>
+    <div class="view" id="view-operaciones">
+      <div class="two-col">
+        <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="ops-table-title">Clientes por Operaciones</div></div><table id="ops-table"></table></div>
+        <div class="section"><div class="section-header"><span class="section-chip">Comparativa</span><div class="section-title" id="ops-chart-title">Mes vs Promedio 2025</div></div><div class="chart-wrap-tall"><canvas id="chart-ops"></canvas></div></div>
+      </div>
+      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Ene a May 2026 vs Promedio 2025</div></div><div style="overflow-x:auto"><table id="ops-ev-table"></table></div></div>
+    </div>
+    <div class="view" id="view-facturacion">
+      <div class="two-col">
+        <div class="section"><div class="section-header"><span class="section-chip">Facturacion</span><div class="section-title" id="fact-title">Top 10 &mdash; USD</div></div><table id="fact-table"></table></div>
+        <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Evolucion mensual 2026 por cliente</div></div><div class="chart-wrap"><canvas id="chart-fact-ev"></canvas></div></div>
+      </div>
+      <div class="section"><div class="section-header"><span class="section-chip">Detalle</span><div class="section-title" id="fact-detail-title">Por cliente 2026 vs Promedio 2025</div></div><table id="fact-ev-table"></table></div>
+    </div>
+    <div class="view" id="view-rentabilidad">
+      <div id="rent-kpi-grid" class="kpi-grid"></div>
+      <div class="two-col">
+        <div class="section"><div class="section-header"><span class="section-chip">EBITDA/Op</span><div class="section-title">Rentabilidad/Op (USD) vs Promedios de referencia</div></div><div class="chart-wrap"><canvas id="chart-rent-mes"></canvas></div><div class="insight" id="rent-insight"></div></div>
+        <div class="section"><div class="section-header"><span class="section-chip">PE</span><div class="section-title">Punto de Equilibrio</div></div><div id="pe-grid" class="pe-grid"></div><div class="chart-wrap-sm"><canvas id="chart-pe"></canvas></div></div>
+      </div>
+      <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado (todos los meses)</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
+    </div>
+  </div>
+</main>
+</div>
+<script>
+const ANALISIS_DATA={
+  "2026-01": '<p>Durante enero de 2026, el area de Aduana inicio el ejercicio con <b>228 operaciones</b> oficializadas, en linea con el desempeño estacional historico del mes. La ganancia bruta (EBITDA) alcanzo <b>USD 58.741</b> (ARS ~86,1M al TC 1.465), con una rentabilidad por operacion de <b>USD 258/op</b> y de <b>USD 1.728 por empleado</b> sobre una dotacion de 34 personas. El tipo de cambio operativo fue ARS 1.465.</p><p>El principal condicionante del mes fue el ratio MOD/Ingresos, que se ubico en <b>37,9%</b>, el mas elevado del año, limitando la conversion de facturacion en resultado operativo. Este comportamiento es propio del inicio de año, donde la estructura de costos de personal opera a plena capacidad frente a un volumen operativo en proceso de aceleracion.</p><p>Los cuatro grupos estrategicos —Corral, Larocca, GSB y Calzetta— concentraron <b>143 de las 228 operaciones (62,7%)</b>, sosteniendo el nucleo de actividad del mes. En terminos interanuales, el area opero con 228 operaciones frente a las 232 registradas en enero 2025, una variacion de <b>-1,7%</b> que confirma la estabilidad del volumen base.</p><p>El punto de equilibrio mensual se ubico en <b>110 operaciones</b>, operandose <b>2,1 veces por encima</b> del minimo requerido para cubrir la estructura de costos fijos del area, con cobertura holgada desde el arranque del ejercicio.</p>',
+  "2026-02": '<p>Febrero 2026 presento una recuperacion operativa y financiera sostenida, con <b>238 operaciones</b> (+4,4% vs. enero) y un EBITDA de <b>USD 71.051</b> (ARS ~101,3M al TC 1.426), el segundo resultado mas alto del año a esa fecha. La rentabilidad por operacion escalo a <b>USD 298/op</b> (+15,5%) y la ganancia por empleado se ubico en <b>USD 1.920</b>.</p><p>El mes registro la dotacion mas alta del ejercicio con <b>37 empleados</b>. A pesar de ello, la mejora en volumen y la selectividad operativa permitieron absorber el incremento de MOD —que represento el 45,8% de los ingresos— y mejorar los indicadores unitarios. La facturacion supero los ARS 224M.</p><p>Los grupos estrategicos Corral, Larocca, GSB y Calzetta sumaron <b>133 operaciones (55,9%)</b> del total, con distribucion mas equilibrada respecto a enero. Larocca lidero el ranking con 38 operaciones. Frente a febrero 2025 (221 ops.), el area mostro un avance interanual de <b>+7,7%</b>, confirmando la tendencia de crecimiento.</p><p>El punto de equilibrio se establecio en <b>120 operaciones</b>, con una cobertura de <b>1,98x</b>, sosteniendo el margen operativo en niveles positivos y consolidando la tendencia ascendente del ejercicio.</p>',
+  "2026-03": '<p>Marzo 2026 marco el mayor salto operativo del año, con <b>283 operaciones</b> (+18,9% vs. febrero), superando ampliamente la marca de marzo 2025 (238 ops., <b>+18,9% interanual</b>). Sin embargo, el EBITDA evidencio una leve contraccion a <b>USD 68.675</b> (ARS ~96,8M al TC 1.410), reflejo del impacto que el crecimiento de volumen genero sobre la estructura de costos directos.</p><p>La rentabilidad por operacion descendi&oacute; de USD 298 a <b>USD 243/op</b> (-18,5%), dinamica esperable en meses de alto volumen donde el MOD se distribuye sobre mas despachos pero sin incrementarse proporcionalmente. La dotacion se ubico en 35 empleados, con una ganancia por empleado de <b>USD 1.962</b>.</p><p>El dinamismo del mes fue liderado por Grupo GSB (58 ops.) y Grupo Larocca (54 ops.), que junto a Corral y Calzetta concentraron <b>157 de las 283 operaciones (55,5%)</b>. La aceleracion de GSB y Larocca refleja el inicio de temporada alta en sus segmentos de actividad.</p><p>Con un punto de equilibrio de <b>143 operaciones</b>, el area opero <b>1,98x por encima del minimo</b>, sosteniendo la cobertura a pesar del efecto dilutivo del volumen sobre el margen unitario. El acumulado enero&ndash;marzo totalizo <b>749 operaciones</b> y un EBITDA de <b>USD 198.467</b>.</p>',
+  "2026-04": '<p>Abril 2026 represento un <b>hito historico</b> para el area, con <b>323 operaciones</b> oficializadas (+14,1% vs. marzo y +18,3% vs. abril 2025), el mayor volumen mensual registrado. El EBITDA alcanzo <b>USD 79.244</b> (ARS ~112,2M al TC 1.416), tambien un maximo historico, con <b>USD 245/op</b> y <b>USD 2.331 por empleado</b>.</p><p>El resultado confirma que el area logro escalar su volumen sin deteriorar la estructura de rentabilidad. El crecimiento de ingresos a ARS 280,3M absorbio el incremento en MOD (ARS 126,6M, el mas elevado del año), manteniendo margenes consistentes y mejorando el EBITDA respecto al mes anterior en <b>+15,4%</b>.</p><p>Grupo GSB se consolido como lider operativo con <b>75 operaciones</b>, seguido por Grupo Larocca (44), Grupo Corral (33) y Cia. Argentina de Aceites (32). Los cuatro grupos estrategicos principales concentraron <b>175 de las 323 operaciones (54,2%)</b>, con GSB como traccionador clave del record mensual.</p><p>El punto de equilibrio fue el mas exigente del año: <b>171 operaciones</b>. Aun asi, el area lo supero en <b>1,89x</b>, confirmando que la expansion operativa se realizo sobre una base financiera solida. El acumulado enero&ndash;abril totalizo <b>1.072 operaciones</b> y un EBITDA de <b>USD 277.711</b>.</p>',
+  "2026-05": '<p>Mayo 2026 consolido una estabilizacion saludable tras el record historico de abril, con <b>262 operaciones</b> (-18,9%) y un EBITDA de <b>USD 74.149</b> (ARS ~106,2M al TC 1.432). La reduccion de volumen no implico deterioro estructural: la rentabilidad por operacion mejoro a <b>USD 283/op</b> (+15,5% vs. abril), el mejor ratio del año.</p><p>La contraccion de la dotacion a <b>26 empleados</b> &mdash;frente a los 34 de abril&mdash; fue el principal factor en la mejora de los ratios unitarios, elevando la ganancia por empleado a <b>USD 2.852</b> (+22,4%), tambien el maximo del año. El area demostro capacidad de mantener rentabilidad con una estructura mas liviana, reflejando una gestion eficiente de los costos directos.</p><p>Grupo GSB lider&oacute; por segundo mes consecutivo con <b>76 operaciones</b>, seguido por Grupo Corral (45) &mdash;su mejor mes del ejercicio&mdash; y Grupo Calzetta (22). Los cuatro grupos estrategicos sumaron <b>164 de las 262 operaciones (62,6%)</b>. En terminos interanuales, el area registro 262 ops. frente a las 300 de mayo 2025 (<b>-12,7% interanual</b>).</p><p>Con un punto de equilibrio de <b>119 operaciones</b> y una cobertura de <b>2,2x</b>, la mayor del año, el area opero con amplio margen sobre el minimo requerido. El acumulado enero&ndash;mayo 2026 totaliza <b>1.334 operaciones</b> y un EBITDA de <b>USD 351.860</b>, con una tendencia de rentabilidad unitaria al alza que consolida el desempeño positivo del ejercicio.</p>'
+};
+
+Chart.defaults.color='#5B6CA8';
+Chart.defaults.borderColor='rgba(30,45,107,0.10)';
+
+const MESES={
+  "2026-01":{label:"Ene 2026",lc:"Ene",ing:211454370,cos:45271094,mod:80127130,ops:228,dot:34,tc:1465.0,resUSD:58741,pe:110},
+  "2026-02":{label:"Feb 2026",lc:"Feb",ing:224810628,cos:20397190,mod:103063215,ops:238,dot:37,tc:1425.8,resUSD:71051,pe:120},
+  "2026-03":{label:"Mar 2026",lc:"Mar",ing:243352209,cos:47601092,mod:98955256,ops:283,dot:35,tc:1409.5,resUSD:68675,pe:143},
+  "2026-04":{label:"Abr 2026",lc:"Abr",ing:280299356,cos:41545575,mod:126560046,ops:323,dot:34,tc:1415.8,resUSD:79244,pe:171},
+  "2026-05":{label:"May 2026",lc:"May",ing:237673973,cos:43840348,mod:87683702,ops:262,dot:26,tc:1431.6,resUSD:74149,pe:119},
+};
+const MK=Object.keys(MESES);
+const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:273,May:300};
+const RENT_2025_OP_AVG=354;
+const TOP10={
+  "2026-03":[{n:"Grupo GSB",p:24,m:58},{n:"Grupo Larocca",p:28,m:54},{n:"Cia. Arg. Aceites",p:19,m:22},{n:"Grupo Corral",p:33,m:31},{n:"Bedson S.A.",p:15,m:20},{n:"Barack Argentina",p:6,m:7},{n:"Ultralight SRL",p:5,m:7},{n:"Hogar y Tec.",p:29,m:14},{n:"Grupo Calzetta",p:16,m:14},{n:"Seis Erre Alim.",p:7,m:4}],
+  "2026-04":[{n:"Grupo GSB",p:24,m:73},{n:"Grupo Larocca",p:28,m:44},{n:"Grupo Corral",p:33,m:33},{n:"Cia. Arg. Aceites",p:19,m:32},{n:"Hogar y Tec.",p:29,m:24},{n:"Grupo Calzetta",p:16,m:23},{n:"Bedson S.A.",p:15,m:20},{n:"Ultralight SRL",p:5,m:7},{n:"Barack Argentina",p:6,m:5},{n:"Seis Erre Alim.",p:7,m:3}],
+  "2026-05":[{n:"Grupo GSB",p:24,m:76},{n:"Grupo Corral",p:33,m:45},{n:"Cia. Arg. Aceites",p:19,m:21},{n:"Grupo Calzetta",p:16,m:22},{n:"Grupo Larocca",p:28,m:21},{n:"Seis Erre Alim.",p:7,m:10},{n:"Hogar y Tec.",p:29,m:11},{n:"Ultralight SRL",p:5,m:8},{n:"Bedson S.A.",p:15,m:13},{n:"Barack Argentina",p:6,m:3}],
+};
+const OPS_CLI={
+  "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45},
+  "Grupo Larocca":    {p25:39.4,"2026-01":67,"2026-02":38,"2026-03":54,"2026-04":44,"2026-05":21},
+  "Grupo GSB":        {p25:26.2,"2026-01":34,"2026-02":42,"2026-03":58,"2026-04":75,"2026-05":76},
+  "Grupo Calzetta":   {p25:16.2,"2026-01":16,"2026-02":27,"2026-03":14,"2026-04":23,"2026-05":22},
+  "Hogar y Tec.":     {p25:29.0,"2026-01":11,"2026-02":16,"2026-03":14,"2026-04":24,"2026-05":11},
+  "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13},
+  "Ultralight SRL":   {p25: 5.2,"2026-01": 5,"2026-02": 5,"2026-03": 7,"2026-04": 7,"2026-05": 8},
+  "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21},
+  "Seis Erre Alim.":  {p25: 6.8,"2026-01": 1,"2026-02": 1,"2026-03": 4,"2026-04": 3,"2026-05":10},
+  "Barack Argentina": {p25: 3.9,"2026-01": 2,"2026-02":10,"2026-03": 7,"2026-04": 5,"2026-05": 3},
+};
+const OPS_CLI_KEYS=Object.keys(OPS_CLI);
+const FACT={
+  "2026-01":[{n:"Grupo Larocca",u:28267},{n:"Grupo Corral",u:18159},{n:"Ultralight SRL",u:17921},{n:"Grupo GSB",u:12264},{n:"Hogar y Tec.",u:11715},{n:"Grupo Calzetta",u:11658},{n:"Bedson S.A.",u:7145},{n:"Maxtervision",u:5227},{n:"Ferreiros y Vilela",u:4913},{n:"Servicios AMG",u:3102}],
+  "2026-02":[{n:"Grupo Calzetta",u:26286},{n:"Grupo Corral",u:25070},{n:"Grupo Larocca",u:21128},{n:"Grupo GSB",u:17141},{n:"Hogar y Tec.",u:14359},{n:"Bedson S.A.",u:11523},{n:"Ultralight SRL",u:9378},{n:"Barack Argentina",u:6455},{n:"Cia. Arg. Aceites",u:3697},{n:"Servicios AMG",u:2839}],
+  "2026-03":[{n:"Grupo GSB",u:25231},{n:"Grupo Larocca",u:22546},{n:"Grupo Corral",u:22230},{n:"Bedson S.A.",u:14621},{n:"Grupo Calzetta",u:14618},{n:"Hogar y Tec.",u:11713},{n:"Cia. Arg. Aceites",u:8759},{n:"Ultralight SRL",u:8520},{n:"Barack Argentina",u:7513},{n:"Liguen Ilum.",u:5393}],
+  "2026-04":[{n:"Grupo GSB",u:24740},{n:"Grupo Larocca",u:23427},{n:"Grupo Calzetta",u:23168},{n:"Grupo Corral",u:22489},{n:"Hogar y Tec.",u:21124},{n:"Bedson S.A.",u:14913},{n:"Ultralight SRL",u:11258},{n:"Cia. Arg. Aceites",u:7160},{n:"Defiba Servicios",u:6773},{n:"Ferreiros y Vilela",u:6657}],
+  "2026-05":[{n:"Grupo Corral",u:36053},{n:"Grupo GSB",u:26566},{n:"Grupo Larocca",u:18058},{n:"Grupo Calzetta",u:16838},{n:"Bedson S.A.",u:13057},{n:"Hogar y Tec.",u:12168},{n:"Ultralight SRL",u:9949},{n:"Seis Erre Alim.",u:4877},{n:"Cia. Arg. Aceites",u:4752},{n:"New Material SAS",u:3381}],
+};
+const FACT_EV={
+  "Grupo Corral":   {"2026-01":18159,"2026-02":25070,"2026-03":22230,"2026-04":22489,"2026-05":36053},
+  "Grupo GSB":      {"2026-01":12264,"2026-02":17141,"2026-03":25231,"2026-04":24740,"2026-05":26566},
+  "Grupo Larocca":  {"2026-01":28267,"2026-02":21128,"2026-03":22546,"2026-04":23427,"2026-05":18058},
+  "Grupo Calzetta": {"2026-01":11658,"2026-02":26286,"2026-03":14618,"2026-04":23168,"2026-05":16838},
+  "Hogar y Tec.":   {"2026-01":11715,"2026-02":14359,"2026-03":11713,"2026-04":21124,"2026-05":12168},
+  "Bedson S.A.":    {"2026-01":7145,"2026-02":11523,"2026-03":14621,"2026-04":14913,"2026-05":13057},
+  "Ultralight SRL": {"2026-01":17921,"2026-02":9378,"2026-03":8520,"2026-04":11258,"2026-05":9949},
+};
+const AVG_FACT_2025={"Grupo Corral":34683,"Grupo Larocca":21157,"Hogar y Tec.":26445,"Grupo Calzetta":16450,"Bedson S.A.":11651,"Grupo GSB":9582,"Ultralight SRL":7841,"Seis Erre Alim.":4757,"Cia. Arg. Aceites":4558};
+
+const NOVEDADES={
+  "2026-01":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}},
+  "2026-02":{
+    acciones:[
+      {t:"Reestructuración Clasificación Arancelaria",d:"Se mantiene activo el proceso de reestructuración. Ya existe un potencial candidato para ingresar al área."},
+      {t:"Búsquedas Activas",d:"Operador de Clasificación Arancelaria."},
+      {t:"Revisión de Perfiles",d:"Se determinó el perfil de Gloria Albornoz como Analista de Comex. Se está revisando el perfil de Lorenzo Sansone como Supervisor."},
+      {t:"Evaluación de Permanencia",d:"Revisión de continuidad de Darío Franco, Lucas Mingelgrün y Rocío González."}
+    ],
+    oportunidades:[
+      {t:"Carga en DUX por Clasificación",d:"Implementación de carga de ítems por parte de Clasificación para minimizar errores en la declaración de las PA. Trabajando con Mymtec."},
+      {t:"Corrección de despachos/permisos",d:"Unificación del área en el uso de herramientas para optimizar las correcciones de despachos."},
+      {t:"Capacitaciones al personal",d:"Se implementarán reuniones quincenales a partir del 10 de marzo para unificar el criterio técnico operativo."}
+    ],
+    hitos:[
+      {t:"Clasificación Arancelaria del Equipo de Neumáticos",d:"Se comenzó a trabajar en la clasificación de todos los ítems de Neumáticos y a revalidar los clasificados previamente, unificando el procedimiento para todo el sector."}
+    ],
+    desvios:[
+      {t:"Hogar y Tecnología — Error en Clasificación Arancelaria",d:"Airfryer declarada con PA de freidora en lugar de horno eléctrico. Generó extra costos por almacenaje en Terminal.",imp:"USD 4.500",sev:"neg"},
+      {t:"Flama SRL — Falta de seguimiento de arribo de carga",d:"Falta de seguimiento del arribo de carga. Sin impacto económico, pero con riesgo latente de extra costos por almacenaje y demora de contenedores.",imp:"Sin impacto (riesgo latente)",sev:"warn"}
+    ],
+    personal:{
+      ing:["Lautaro Parks — Operador SIM, Equipo Varios","Tomás Arias — Operador SIM, Equipo Maquinaria"],
+      desv:["Milagros Albornoz"],
+      ren:[],
+      otros:["Promoción: Andreina Lobo — Operadora SIM, Equipo Neumáticos"]
+    }
+  },
+  "2026-03":{
+    acciones:[
+      {t:"Reestructuración Clasificación Arancelaria",d:"Se mantiene activo el proceso. Ya existe un potencial candidato para ingresar al área."},
+      {t:"Revisión de Perfiles",d:"Se está revisando el perfil de Lorenzo Sansone como Supervisor."},
+      {t:"Evaluación de Permanencia",d:"Revisión de continuidad de Lucas Mingelgrün y Rocío González."}
+    ],
+    oportunidades:[
+      {t:"Carga en DUX por Clasificación",d:"Implementación de carga de ítems por parte de Clasificación. Trabajando con Mymtec para su implementación."},
+      {t:"Corrección de despachos/permisos",d:"Unificación del área en el uso de herramientas para optimizar las correcciones de despachos."},
+      {t:"Capacitaciones al personal",d:"Se comenzará a trabajar en el Plan de Capacitación 2026 con reuniones quincenales."}
+    ],
+    hitos:[
+      {t:"Cambio en el Comisionista en Aduana Campana",d:"El cambio de Federico Camerota en reemplazo de Rosana brindó más visibilidad en las operaciones. El próximo paso es atacar los problemas identificados."},
+      {t:"Inicio de Plan de Capacitación",d:"Se dio inicio al Plan de Capacitación con reuniones quincenales para unificar el criterio técnico operativo en el área."}
+    ],
+    desvios:[
+      {t:"Sin desvíos con impacto económico",d:"Durante marzo de 2026 no se registraron desvíos con impacto económico en el área.",imp:"",sev:"ok"}
+    ],
+    personal:{
+      ing:[],
+      desv:["Juan Cruz Amendola"],
+      ren:["Darío Franco"],
+      otros:[]
+    }
+  },
+  "2026-04":{
+    acciones:[
+      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se inició la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago Antuña."},
+      {t:"Capacitaciones Semanales",d:"Se están llevando a cabo capacitaciones semanales con el equipo de Aduana."}
+    ],
+    oportunidades:[
+      {t:"Carga en DUX — Clasificación",d:"Implementación de carga de ítems por Clasificación para minimizar errores en la declaración de las PA. Proyecto en pausa."},
+      {t:"Corrección de despachos/permisos",d:"Implementación de nuevas herramientas para la corrección de despachos: IA, herramientas de MiSIM, etc."}
+    ],
+    hitos:[
+      {t:"Optimización de la Estructura de Aduana",d:"Se profundizaron los cambios en la estructura de Aduana, dejando al sector optimizado de cara al escenario actual."},
+      {t:"Nueva Etapa en Clasificación Arancelaria",d:"Inicio de nueva etapa buscando mayor efectividad en las clasificaciones, optimización de procesos y mejor comunicación con el Área Operativa."}
+    ],
+    desvios:[
+      {t:"Incorrecta liquidación de tributos — Grupo Dateng",d:"Liquidación incorrecta de tributos en una operación del cliente Grupo Dateng.",imp:"Por determinar",sev:"neg"},
+      {t:"Extravío de OM en Ezeiza",d:"Se registró el extravío de una OM en la Aduana de Ezeiza.",imp:"USD 750",sev:"neg"}
+    ],
+    personal:{
+      ing:["Damián Spirollari — Resp. de Clasificación Arancelaria"],
+      desv:["Rocío González","Nilda Villafañe","Lucas Mingelgrün","Mariana Faletto","Martina Carballa","Lautaro Vargas"],
+      ren:["Lautaro Astorga"],
+      otros:["Pase de Gloria Albornoz al Sector Comercial"]
+    }
+  },
+  "2026-05":{
+    acciones:[
+      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se continúa con la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago Antuña."},
+      {t:"Capacitaciones Semanales",d:"Se continúan llevando a cabo capacitaciones semanales con el equipo de Aduana."},
+      {t:"Clasificación Arancelaria — Reclasificación del Catálogo",d:"Se inició el proceso de reclasificación del catálogo actual de posiciones arancelarias."},
+      {t:"Revisión de la Matriz de Puestos",d:"Se está llevando a cabo la revisión de la matriz de puestos del área."}
+    ],
+    oportunidades:[
+      {t:"Comisionista Ezeiza",d:"Analizar el cambio del comisionista de Ezeiza por uno propio de Free Customs (Guido)."},
+      {t:"Estrategia Comercial",d:"Comenzar a trabajar de manera directa en orientar la matriz comercial hacia la industria minera, oil & gas y energía."}
+    ],
+    hitos:[],
+    desvios:[],
+    personal:{ing:[],desv:[],ren:[],otros:[]}
+  }
+};
+const FACT_MESES=["2026-01","2026-02","2026-03","2026-04","2026-05"];
+const SEL={
+  labels:["2024","2025","2026 (acum.)"],
+  verde: [48.1, 78.0, 85.5],
+  naranja:[21.1, 14.6,  7.9],
+  rojo:  [30.8,  7.4,  6.6],
+};
+const LIB={
+  labels:["2024","2025","2026 (acum.)"],
+  b0:  [39.3,38.9,56.3],
+  b7:  [18.5,20.4,15.4],
+  b12: [7.3,6.7,2.4],
+  b16: [34.9,33.9,25.8],
+};
+const FACT_COLORS=["#1E2D6B","#3B4FA8","#059669","#6366F1","#7C3AED","#0891B2","#D97706","#DC2626"];
+
+/* === ESTADO === */
+let selMonths=new Set(MK);
+let ytdMode=true;
+let currentView="resumen";
+
+function getSelKeys(){return MK.filter(k=>selMonths.has(k));}
+
+function getAgg(keys){
+  const ms=keys.map(k=>MESES[k]),n=ms.length;
+  const ops=ms.reduce((s,m)=>s+m.ops,0);
+  const res=ms.reduce((s,m)=>s+m.resUSD,0);
+  const dot=Math.round(ms.reduce((s,m)=>s+m.dot,0)/n);
+  return{label:ytdMode?"Año en Curso 2026":keys.map(k=>MESES[k].lc).join(" + "),
+    ops,resUSD:res,ing:ms.reduce((s,m)=>s+m.ing,0),
+    cos:ms.reduce((s,m)=>s+m.cos,0),mod:ms.reduce((s,m)=>s+m.mod,0),
+    dot,tc:+(ms.reduce((s,m)=>s+m.tc,0)/n).toFixed(1),
+    pe:ms.reduce((s,m)=>s+m.pe,0),_n:n};
+}
+
+/* === FILTER BAR === */
+function initFilterBar(){
+  document.getElementById("month-toggles").innerHTML=MK.map(k=>
+    '<button class="month-toggle" data-k="'+k+'" onclick="toggleMonth(this.dataset.k)">'+MESES[k].label+'</button>').join("");
+  updateFilterBar();
+}
+function updateFilterBar(){
+  document.querySelectorAll(".month-toggle").forEach(b=>b.classList.toggle("active",selMonths.has(b.dataset.k)&&!ytdMode));
+  document.getElementById("ytd-btn").classList.toggle("active",ytdMode);
+  const keys=getSelKeys();
+  document.getElementById("badge-mes").textContent=ytdMode?"Año en Curso":keys.length===1?MESES[keys[0]].label:keys.length+" meses";
+}
+function toggleMonth(k){
+  if(ytdMode){ytdMode=false;selMonths=new Set([k]);}
+  else if(selMonths.has(k)){if(selMonths.size>1)selMonths.delete(k);}
+  else selMonths.add(k);
+  updateFilterBar();renderCurrentView();
+}
+function toggleYTD(){
+  ytdMode=!ytdMode;
+  if(ytdMode)selMonths=new Set(MK);
+  else{ytdMode=false;selMonths=new Set(["2026-05"]);}
+  updateFilterBar();renderCurrentView();
+}
+
+/* === NAV === */
+const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 — Operaciones",facturacion:"Top 10 — Facturacion USD",rentabilidad:"Analisis de Rentabilidad"};
+function showView(n){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
+  document.getElementById("view-"+n).classList.add("active");
+  document.getElementById("nav-"+n).classList.add("active");
+  document.getElementById("page-title").textContent=VTITLES[n];
+  currentView=n;renderView(n);
+}
+function renderCurrentView(){renderView(currentView);}
+function renderView(n){
+  ({novedades:renderNovedades,resumen:renderResumen,evolucion:renderEvolucion,interanual:renderInteranual,kpis:renderKpis,
+    operaciones:renderOperaciones,facturacion:renderFacturacion,rentabilidad:renderRentabilidad}[n]||function(){})();
+}
+
+/* === HELPERS === */
+const fU=n=>"USD "+Math.round(n).toLocaleString("es-AR");
+const pct=(a,b)=>b?((a-b)/b*100).toFixed(1):null;
+const vStr=(a,b)=>{let v=pct(a,b);return v===null?"--":(+v>=0?"+"+v+"%":v+"%");};
+const vCls=(a,b)=>b==null?"":a>=b?"pos":"neg";
+const resOp=m=>Math.round(m.resUSD/m.ops);
+const resEmp=m=>Math.round(m.resUSD/m.dot);
+const _ch={};
+function dc(id){if(_ch[id]){_ch[id].destroy();delete _ch[id];}}
+
+const DS={plugins:{legend:{labels:{color:"#5B6CA8",boxWidth:12,padding:16}}},
+  scales:{x:{ticks:{color:"#5B6CA8"},grid:{color:"rgba(30,45,107,0.07)"}},
+          y:{ticks:{color:"#5B6CA8"},grid:{color:"rgba(30,45,107,0.07)"}}}};
+
+Chart.register({id:"lbl",afterDatasetsDraw(chart){
+  const ctx=chart.ctx;
+  chart.data.datasets.forEach((ds,di)=>{
+    if(ds.showLabel===false)return;
+    const meta=chart.getDatasetMeta(di);if(meta.hidden)return;
+    meta.data.forEach((bar,i)=>{
+      const v=ds.data[i];if(v==null||v===0)return;
+      const isH=chart.config.options&&chart.config.options.indexAxis==="y";
+      ctx.save();ctx.font="bold 10px Segoe UI";
+      if(isH){
+        const bl=Math.abs(bar.x-bar.base);
+        if(bl<32){ctx.fillStyle="#5B6CA8";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(v,bar.x+3,bar.y);}
+        else{ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(v,bar.base+(bar.x-bar.base)/2,bar.y);}
+      }else{
+        const bh=Math.abs(bar.y-bar.base);
+        if(bh>16){ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(typeof v==="number"?v.toLocaleString("es-AR"):v,bar.x,bar.base+(bar.y-bar.base)/2);}
+      }
+      ctx.restore();
+    });
+  });
+}});
+
+/* === RESUMEN === */
+function renderResumen(){
+  const keys=getSelKeys();
+  const single=keys.length===1&&!ytdMode;
+  document.getElementById("analisis-wrap").style.display=single?"block":"none";
+  if(single){
+    const m=MESES[keys[0]],idx=MK.indexOf(keys[0]),ant=idx>0?MESES[MK[idx-1]]:null;
+    document.getElementById("analisis-mes-label").textContent=m.label;
+    document.getElementById("analisis-txt").innerHTML=ANALISIS_DATA[keys[0]]||"";
+    document.getElementById("kpi-grid").innerHTML=[
+      {l:"Operaciones",v:m.ops,s:ant?vStr(m.ops,ant.ops)+" vs "+ant.lc:"Inicio de periodo",c:ant?vCls(m.ops,ant.ops):"neu"},
+      {l:"Rentabilidad EBITDA",v:fU(m.resUSD),s:ant?vStr(m.resUSD,ant.resUSD)+" vs "+ant.lc:"",c:ant?vCls(m.resUSD,ant.resUSD):"neu"},
+      {l:"Rent. / Operacion",v:"USD "+resOp(m),s:ant?"USD "+resOp(ant)+" en "+ant.lc:"",c:ant?vCls(resOp(m),resOp(ant)):"neu"},
+      {l:"Rent. / Empleado",v:"USD "+resEmp(m),s:"Dotacion: "+m.dot+" personas",c:"neu"},
+    ].map(k=>'<div class="kpi-card"><div class="kpi-label">'+k.l+'</div><div class="kpi-value">'+k.v+'</div><div class="kpi-sub kpi-'+k.c+'">'+k.s+'</div></div>').join("");
+    document.getElementById("versus-grid").style.display="grid";
+    document.getElementById("multi-compare").style.display="none";
+    if(ant){
+      const oV=pct(m.ops,ant.ops),rV=pct(m.resUSD,ant.resUSD);
+      const oC=+oV>=0?"pos":"neg",rC=+rV>=0?"pos":"neg";
+      const oD=+oV>=0?"&#9650;":"&#9660;",rD=+rV>=0?"&#9650;":"&#9660;";
+      document.getElementById("versus-grid").innerHTML=
+        '<div class="versus-card"><div class="vs-title">&#8227; Operaciones</div><div class="vs-inner">'+
+          '<div class="vs-side vs-prev"><div class="vs-month">'+ant.label+'</div><div class="vs-num">'+ant.ops+'</div></div>'+
+          '<div class="vs-sep">&#8594;</div>'+
+          '<div class="vs-side vs-curr"><div class="vs-month">'+m.label+'</div><div class="vs-num">'+m.ops+'</div>'+
+            '<div class="vs-pct-inline '+oC+'">'+oD+' '+Math.abs(+oV)+'%</div></div>'+
+        '</div></div>'+
+        '<div class="versus-card"><div class="vs-title">&#8227; Rentabilidad EBITDA</div><div class="vs-inner">'+
+          '<div class="vs-side vs-prev"><div class="vs-month">'+ant.label+'</div><div class="vs-num">'+fU(ant.resUSD)+'</div></div>'+
+          '<div class="vs-sep">&#8594;</div>'+
+          '<div class="vs-side vs-curr"><div class="vs-month">'+m.label+'</div><div class="vs-num">'+fU(m.resUSD)+'</div>'+
+            '<div class="vs-pct-inline '+rC+'">'+rD+' '+Math.abs(+rV)+'%</div></div>'+
+        '</div></div>';
+    }else{
+      document.getElementById("versus-grid").innerHTML='<div class="versus-card" style="grid-column:1/-1"><div class="vs-title">Sin mes anterior comparable</div></div>';
+    }
+  }else{
+    const agg=getAgg(keys),n=keys.length;
+    const totResOp=Math.round(agg.resUSD/agg.ops);
+    const totResEmp=Math.round(agg.resUSD/(agg.dot*n));
+    const avgOps=Math.round(agg.ops/n),avgRes=Math.round(agg.resUSD/n);
+    const dispOps=ytdMode?avgOps:agg.ops;
+    const dispRes=ytdMode?avgRes:agg.resUSD;
+    const dispOpsLbl=ytdMode?"Ops. Prom./Mes (prom.)":"Operaciones Seleccion";
+    const dispResLbl=ytdMode?"EBITDA Prom./Mes (prom.)":"EBITDA Seleccion";
+    const dispOpsSub=ytdMode?"Promedio de "+n+" meses":n+" meses: "+keys.map(k=>MESES[k].lc).join(", ");
+    const dispResSub=ytdMode?"Promedio mensual 2026":"Total periodo";
+    document.getElementById("kpi-grid").innerHTML=[
+      {l:dispOpsLbl,v:dispOps,s:dispOpsSub},
+      {l:dispResLbl,v:fU(dispRes),s:dispResSub},
+      {l:"Rent./Op (prom. ponderado)",v:"USD "+totResOp,s:"Sobre "+agg.ops+" ops totales"},
+      {l:"Rent./Emp Prom./Mes",v:"USD "+totResEmp,s:"Dotacion prom: "+agg.dot+" personas"},
+    ].map(k=>'<div class="kpi-card" style="border-top-color:var(--acc)"><div class="kpi-label">'+k.l+'</div><div class="kpi-value">'+k.v+'</div><div class="kpi-sub kpi-neu">'+k.s+'</div></div>').join("");
+    document.getElementById("versus-grid").style.display="none";
+    const avgPE=Math.round(agg.pe/n),avgOpsN=avgOps;
+    const mets=ytdMode?[
+      {l:"Ops. Prom./Mes (prom.)",   fn:m=>m.ops,    agg:avgOps},
+      {l:"EBITDA Prom./Mes (prom.)", fn:m=>fU(m.resUSD), agg:fU(avgRes)},
+      {l:"Rent./Op (USD)",           fn:m=>"USD "+resOp(m), agg:"USD "+totResOp},
+      {l:"Rent./Emp Prom./Mes",      fn:m=>"USD "+resEmp(m),agg:"USD "+totResEmp},
+      {l:"Dotacion (prom.)",         fn:m=>m.dot+" pers.",  agg:agg.dot+" pers."},
+      {l:"P. Equilibrio (prom.)",    fn:m=>m.pe+" ops",     agg:avgPE+" ops"},
+      {l:"Cobertura PE (prom.)",     fn:m=>(m.ops/m.pe).toFixed(1)+"x", agg:(avgOps/avgPE).toFixed(1)+"x"},
+      {l:"TC (prom.)",               fn:m=>m.tc.toFixed(0)+" ARS", agg:agg.tc.toFixed(0)+" ARS"},
+    ]:[
+      {l:"Operaciones",      fn:m=>m.ops,    agg:agg.ops},
+      {l:"EBITDA (USD)",     fn:m=>fU(m.resUSD), agg:fU(agg.resUSD)},
+      {l:"Rent./Op (USD)",   fn:m=>"USD "+resOp(m), agg:"USD "+totResOp},
+      {l:"Rent./Emp (USD)",  fn:m=>"USD "+resEmp(m),agg:"USD "+totResEmp},
+      {l:"Dotacion",         fn:m=>m.dot+" pers.",  agg:agg.dot+" pers. (prom)"},
+      {l:"P. Equilibrio",    fn:m=>m.pe+" ops",     agg:agg.pe+" ops (suma)"},
+      {l:"Cobertura PE",     fn:m=>(m.ops/m.pe).toFixed(1)+"x", agg:(agg.ops/agg.pe).toFixed(1)+"x"},
+      {l:"TC (ARS)",         fn:m=>m.tc.toFixed(0), agg:agg.tc.toFixed(0)+" (prom)"},
+    ];
+    const aggLbl=ytdMode?"Promedio mensual":"Acumulado";
+    const aggNote=ytdMode?' <span style="font-size:10px;color:var(--muted)">(promedio)</span>':"";
+    document.getElementById("multi-compare").style.display="block";
+    document.getElementById("multi-compare").innerHTML=
+      '<div class="section"><div class="section-header">'+
+      '<span class="section-chip">Comparativa</span>'+
+      '<div class="section-title">Comparacion de meses seleccionados'+(ytdMode?' &mdash; <span style="color:var(--acc);font-size:11px">Año en Curso: todos los valores son promedios mensuales</span>':"")+'</div></div>'+
+      '<div style="overflow-x:auto"><table><thead><tr><th>Metrica</th>'+
+      keys.map(k=>'<th class="center">'+MESES[k].label+'</th>').join("")+
+      '<th class="center" style="color:var(--acc)">'+aggLbl+'</th></tr></thead><tbody>'+
+      mets.map(mt=>'<tr><td class="bold">'+mt.l+'</td>'+
+        keys.map(k=>'<td class="center">'+mt.fn(MESES[k])+'</td>').join("")+
+        '<td class="center bold" style="color:var(--acc)">'+mt.agg+'</td></tr>').join("")+
+      '</tbody></table></div></div>';
+  }
+}
+
+/* === EVOLUCION (siempre todos los meses, destaca seleccionados) === */
+function renderEvolucion(){
+  const T=MK.map(k=>MESES[k]),L=T.map(m=>m.lc),sel=new Set(getSelKeys());
+  const hi=k=>sel.has(k),dhi=k=>sel.has(k)?1:0.28;
+  dc("ev-ops");
+  _ch["ev-ops"]=new Chart(document.getElementById("chart-ev-ops").getContext("2d"),{type:"line",
+    data:{labels:L,datasets:[{label:"Operaciones",data:T.map(m=>m.ops),borderColor:"#1E2D6B",backgroundColor:"rgba(30,45,107,0.12)",fill:true,tension:0.3,
+      pointRadius:MK.map(k=>hi(k)?6:3),pointBackgroundColor:MK.map(k=>hi(k)?"#1E2D6B":"#0A1233"),showLabel:false}]},
+    options:{responsive:true,maintainAspectRatio:false,...DS}
+  });
+  dc("ev-rent");
+  _ch["ev-rent"]=new Chart(document.getElementById("chart-ev-rent").getContext("2d"),{type:"line",
+    data:{labels:L,datasets:[
+      {label:"Rent./Op (USD)",data:T.map(m=>resOp(m)),borderColor:"#D97706",backgroundColor:"rgba(217,119,6,0.10)",fill:true,tension:0.3,
+        pointRadius:MK.map(k=>hi(k)?6:3),pointBackgroundColor:MK.map(k=>hi(k)?"#D97706":"#5a3a00"),showLabel:false},
+      {label:"Rent./Emp (USD)",data:T.map(m=>resEmp(m)),borderColor:"#059669",tension:0.3,
+        pointRadius:MK.map(k=>hi(k)?6:3),pointBackgroundColor:MK.map(k=>hi(k)?"#059669":"#1a4a2a"),yAxisID:"yE",showLabel:false},
+    ]},options:{responsive:true,maintainAspectRatio:false,...DS,
+      scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
+  });
+}
+
+
+/* === NOVEDADES === */
+function renderNovedades(){
+  const keys=getSelKeys(),sel=new Set(keys);
+  const lastKey=keys[keys.length-1];
+  const nd=NOVEDADES[lastKey]||{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}};
+  const lbl=ytdMode?"Ano en Curso 2026":keys.length===1?MESES[lastKey].label:MESES[lastKey].label+" (ultimo mes sel.)";
+  document.getElementById("nov-mes-label-txt").textContent=lbl;
+
+  const mkCards=(items,emptyMsg)=>items.length===0?
+    '<div class="nov-item"><div class="nov-item-desc" style="color:var(--muted)">'+emptyMsg+'</div></div>':
+    items.map(it=>'<div class="nov-item"><div class="nov-item-title">'+it.t+'</div><div class="nov-item-desc">'+it.d+'</div>'+
+      (it.imp?'<div class="nov-item-imp imp-'+it.sev+'">Impacto: '+it.imp+'</div>':'')+
+    '</div>').join('');
+
+  document.getElementById('nov-acciones').innerHTML=mkCards(nd.acciones,'Sin acciones registradas este mes.');
+  document.getElementById('nov-oportunidades').innerHTML=mkCards(nd.oportunidades,'Sin oportunidades registradas este mes.');
+  document.getElementById('nov-hitos').innerHTML=mkCards(nd.hitos,'Sin hitos estrategicos este mes.');
+  document.getElementById('nov-desvios').innerHTML=mkCards(nd.desvios,'Sin desvios registrados este mes.');
+
+  // Movimientos de personal — siempre muestra todos los meses disponibles
+  const movMonths=["2026-02","2026-03","2026-04","2026-05"];
+  document.getElementById('nov-personal').innerHTML=movMonths.map(k=>{
+    const mn=(NOVEDADES[k]&&NOVEDADES[k].personal)||{ing:[],desv:[],ren:[],otros:[]};
+    const isSel=sel.has(k);
+    const mkN=(arr)=>arr.length?'<div class="mov-names">'+arr.map(n=>'&#8226; '+n).join('<br>')+'</div>':'';
+    return '<div class="mov-month'+(isSel?' selected':'')+'">'+
+      '<div class="mov-month-label">'+MESES[k].label+'</div>'+
+      '<div class="mov-stat"><span class="mov-count ing">'+mn.ing.length+'</span><span class="mov-type">Ingresos</span></div>'+mkN(mn.ing)+
+      '<div class="mov-stat"><span class="mov-count desv">'+mn.desv.length+'</span><span class="mov-type">Desvinculaciones</span></div>'+mkN(mn.desv)+
+      '<div class="mov-stat"><span class="mov-count ren">'+mn.ren.length+'</span><span class="mov-type">Renuncias</span></div>'+mkN(mn.ren)+
+      (mn.otros.length?'<div class="mov-others">'+mn.otros.join('<br>')+'</div>':'')+
+    '</div>';
+  }).join('');
+}
+
+/* === KPIs OPERATIVOS === */
+function renderKpis(){
+  const selK=new Set(getSelKeys());
+  // Selectividad — stacked bar, colores R abajo, N medio, V arriba
+  dc("sel");
+  _ch["sel"]=new Chart(document.getElementById("chart-sel").getContext("2d"),{type:"bar",
+    data:{labels:SEL.labels,datasets:[
+      {label:"ROJO",   data:SEL.rojo,   backgroundColor:"rgba(220,38,38,0.85)",   borderRadius:0,stack:"s",showLabel:true},
+      {label:"NARANJA",data:SEL.naranja,backgroundColor:"rgba(217,119,6,0.85)",  borderRadius:0,stack:"s",showLabel:true},
+      {label:"VERDE",  data:SEL.verde,  backgroundColor:"rgba(5,150,105,0.85)",  borderRadius:4,stack:"s",showLabel:true},
+    ]},options:{responsive:true,maintainAspectRatio:false,...DS,
+      plugins:{...DS.plugins,legend:{labels:{color:"#5B6CA8",boxWidth:12,padding:16}}},
+      scales:{...DS.scales,
+        x:{...DS.scales.x,stacked:true},
+        y:{...DS.scales.y,stacked:true,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
+  });
+  // Tiempos de liberacion — stacked bar, destaca meses seleccionados 2026
+  const libSelAlpha=LIB.labels.map((l,i)=>{
+    if(i<2) return 1; // 2024, 2025 siempre visible
+    const k="2026-0"+(i-1); // 2026-01..05
+    return selK.has(k)?1:0.4;
+  });
+  const mkAlpha=(base,a)=>LIB.labels.map((_,i)=>{
+    const r=parseInt(base.slice(0,2),16),g=parseInt(base.slice(2,4),16),b=parseInt(base.slice(4,6),16);
+    return "rgba("+r+","+g+","+b+","+libSelAlpha[i]*a+")";
+  });
+  dc("lib");
+  _ch["lib"]=new Chart(document.getElementById("chart-lib").getContext("2d"),{type:"bar",
+    data:{labels:LIB.labels,datasets:[
+      {label:"0-6 dias",  data:LIB.b0, backgroundColor:mkAlpha("1E2D6B",0.95),stack:"l",borderRadius:0,showLabel:true},
+      {label:"7-11 dias", data:LIB.b7, backgroundColor:mkAlpha("3B5CB8",0.85),stack:"l",borderRadius:0,showLabel:true},
+      {label:"12-16 dias",data:LIB.b12,backgroundColor:mkAlpha("7B96D4",0.80),stack:"l",borderRadius:0,showLabel:true},
+      {label:"+16 dias",  data:LIB.b16,backgroundColor:mkAlpha("B8C9EE",0.90),stack:"l",borderRadius:4,showLabel:true},
+    ]},options:{responsive:true,maintainAspectRatio:false,...DS,
+      plugins:{...DS.plugins,legend:{labels:{color:"#5B6CA8",boxWidth:12,padding:16}}},
+      scales:{...DS.scales,
+        x:{...DS.scales.x,stacked:true},
+        y:{...DS.scales.y,stacked:true,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
+  });
+}
+
+/* === INTERANUAL === */
+function renderInteranual(){
+  const keys=getSelKeys(),L=keys.map(k=>MESES[k].lc);
+  const ops25=keys.map(k=>OPS_2025[MESES[k].lc]),ops26=keys.map(k=>MESES[k].ops);
+  document.getElementById("inter-title").textContent="Operaciones 2025 vs 2026 — "+L.join(", ");
+  dc("inter-ops");
+  _ch["inter-ops"]=new Chart(document.getElementById("chart-inter-ops").getContext("2d"),{type:"bar",
+    data:{labels:L,datasets:[
+      {label:"2025",data:ops25,backgroundColor:"rgba(30,45,107,0.20)",borderColor:"rgba(30,45,107,0.5)",borderWidth:1,borderRadius:4,showLabel:true},
+      {label:"2026",data:ops26,backgroundColor:"#1E2D6B",borderRadius:4,showLabel:true},
+    ]},options:{responsive:true,maintainAspectRatio:false,...DS}
+  });
+  const varD=keys.map((k,i)=>+pct(ops26[i],ops25[i]));
+  dc("inter-var");
+  _ch["inter-var"]=new Chart(document.getElementById("chart-inter-var").getContext("2d"),{type:"bar",
+    data:{labels:L,datasets:[{label:"Var. % vs 2025",data:varD,
+      backgroundColor:varD.map(v=>v>=0?"rgba(5,150,105,0.8)":"rgba(220,38,38,0.8)"),borderRadius:4,showLabel:true}]},
+    options:{responsive:true,maintainAspectRatio:false,...DS,
+      scales:{...DS.scales,y:{...DS.scales.y,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
+  });
+}
+
+/* === OPERACIONES === */
+function renderOperaciones(){
+  const keys=getSelKeys(),n=keys.length,sel=new Set(keys);
+  const single=keys.length===1&&!ytdMode;
+  let data,periodLabel;
+  if(single){
+    const k=keys[0];
+    data=OPS_CLI_KEYS.map(c=>({n:c,p:OPS_CLI[c].p25,m:OPS_CLI[c][k]||0})).sort((a,b)=>b.m-a.m);
+    periodLabel=MESES[k].label;
+  }else{
+    data=OPS_CLI_KEYS.map(c=>{
+      const total=keys.reduce((s,k)=>s+(OPS_CLI[c][k]||0),0);
+      const m=ytdMode?+(total/n).toFixed(1):total;
+      return{n:c,p:OPS_CLI[c].p25,m};
+    }).sort((a,b)=>b.m-a.m);
+    periodLabel=ytdMode?"Prom. mensual":keys.map(k=>MESES[k].lc).join(" + ");
+  }
+  const dataCol=ytdMode?"Prom./Mes":single?periodLabel:"Acum.";
+  document.getElementById("ops-table-title").textContent=ytdMode?"Ranking Prom. mensual — Año en Curso":single?"Ranking — "+periodLabel:"Ranking — "+periodLabel;
+  document.getElementById("ops-chart-title").textContent=ytdMode?"Prom. mensual vs Prom. 2025":periodLabel+" vs Promedio 2025";
+  document.getElementById("ops-table").innerHTML=
+    '<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Prom. 2025</th>'+
+    '<th class="center">'+dataCol+(ytdMode?' <span style="font-size:9px;opacity:.6">(prom.)</span>':"")+'</th><th class="center">Var.</th></tr></thead><tbody>'+
+    data.map((c,i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+
+      '</td><td><strong style="color:var(--text)">'+c.n+'</strong></td><td class="center">'+c.p+
+      '</td><td class="center bold">'+c.m+'</td><td class="'+vCls(c.m,c.p)+'">'+vStr(c.m,c.p)+'</td></tr>').join("")+'</tbody>';
+  const labels=data.map(c=>c.n.replace("Grupo ","").replace(" S.A.","").replace(" SRL","").replace("Cia. Arg. ","").substring(0,12));
+  dc("ops");
+  _ch["ops"]=new Chart(document.getElementById("chart-ops").getContext("2d"),{type:"bar",
+    data:{labels,datasets:[
+      {label:"Prom. 2025",data:data.map(c=>c.p),backgroundColor:"rgba(30,45,107,0.18)",borderRadius:3,showLabel:true},
+      {label:dataCol,data:data.map(c=>c.m),backgroundColor:"#1E2D6B",borderRadius:3,showLabel:true},
+    ]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,...DS}
+  });
+  // Tabla evolucion completa
+  document.getElementById("ops-ev-table").innerHTML=
+    '<thead><tr><th>Cliente</th>'+MK.map(k=>'<th class="center"'+(sel.has(k)?' style="color:var(--acc)"':'')+'>'+MESES[k].lc+'</th>').join("")+
+    '<th class="center" style="color:var(--acc)">'+(ytdMode?"Prom./Mes":"Sel.")+'</th><th class="center">Prom. 2025</th><th class="center">Var.</th></tr></thead><tbody>'+
+    OPS_CLI_KEYS.map(c=>{
+      const vals=MK.map(k=>OPS_CLI[c][k]||0);
+      const selTotal=keys.reduce((s,k)=>s+(OPS_CLI[c][k]||0),0);
+      const aggVal=ytdMode?+(selTotal/n).toFixed(1):selTotal;
+      const p25=OPS_CLI[c].p25;
+      return '<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
+        vals.map((v,i)=>'<td class="center"'+(sel.has(MK[i])?' style="font-weight:700;color:var(--text)"':'')+'>'+v+'</td>').join("")+
+        '<td class="center bold" style="color:var(--acc)">'+aggVal+'</td>'+
+        '<td class="center" style="color:var(--muted)">'+p25+'</td>'+
+        '<td class="'+vCls(aggVal,p25)+'">'+vStr(aggVal,p25)+'</td></tr>';
+    }).join("")+'</tbody>';
+}
+
+/* === FACTURACION === */
+function renderFacturacion(){
+  const keys=getSelKeys(),sel=new Set(keys);
+  const aggMap={};
+  keys.forEach(k=>(FACT[k]||[]).forEach(c=>{aggMap[c.n]=(aggMap[c.n]||0)+c.u;}));
+  // En ytdMode dividir por n para promedios
+  const factN=keys.length;
+  if(ytdMode)Object.keys(aggMap).forEach(k=>{aggMap[k]=Math.round(aggMap[k]/factN);});
+  const sorted=Object.entries(aggMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const total=sorted.reduce((s,[,v])=>s+v,0);
+  const pLbl=ytdMode?"Prom. mensual (Año en Curso)":keys.map(k=>MESES[k].lc).join(" + ");
+  const usdColHdr=ytdMode?'USD/mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"USD";
+  const footLbl=ytdMode?"TOTAL PROM. TOP 10":"TOTAL TOP 10";
+  document.getElementById("fact-title").textContent="Top 10 — "+pLbl;
+  document.getElementById("fact-detail-title").textContent=ytdMode?"Por cliente — Promedio mensual 2026 vs Prom. 2025":"Por cliente 2026 vs Prom. 2025 — "+pLbl;
+  document.getElementById("fact-table").innerHTML=
+    '<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">'+usdColHdr+'</th><th class="center">%</th></tr></thead><tbody>'+
+    sorted.map(([n,u],i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+'</td><td><strong style="color:var(--text)">'+n+'</strong></td><td class="right bold">'+u.toLocaleString("es-AR")+'</td><td class="center" style="color:var(--muted)">'+(u/total*100).toFixed(1)+'%</td></tr>').join("")+
+    '</tbody><tfoot><tr><td colspan="2">'+footLbl+'</td><td class="right">'+total.toLocaleString("es-AR")+'</td><td></td></tr></tfoot>';
+  dc("fact-ev");
+  const cl=Object.keys(FACT_EV),mL=FACT_MESES.map(k=>MESES[k].lc);
+  _ch["fact-ev"]=new Chart(document.getElementById("chart-fact-ev").getContext("2d"),{type:"line",
+    data:{labels:mL,datasets:cl.map((c,i)=>({label:c,data:FACT_MESES.map(k=>FACT_EV[c][k]||null),
+      borderColor:FACT_COLORS[i],backgroundColor:"transparent",
+      pointRadius:FACT_MESES.map(k=>sel.has(k)?5:2),
+      pointBackgroundColor:FACT_MESES.map(k=>sel.has(k)?FACT_COLORS[i]:"#1a2a3a"),
+      tension:0.2,borderWidth:2,showLabel:false,spanGaps:false}))},
+    options:{responsive:true,maintainAspectRatio:false,...DS}
+  });
+  const rows=cl.map(c=>{
+    const vals=FACT_MESES.map(k=>FACT_EV[c][k]);
+    const selVals=keys.map(k=>FACT_EV[c][k]).filter(v=>v!=null);
+    const aggVal=selVals.length?selVals.reduce((a,v)=>a+v,0):null;
+    const avg25=AVG_FACT_2025[c]||null;
+    return{c,vals,aggVal,avg25};
+  });
+  const aggCL=ytdMode?'Prom./Mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"Total Sel.";
+  document.getElementById("fact-ev-table").innerHTML=
+    '<thead><tr><th>Cliente</th>'+FACT_MESES.map(k=>'<th class="right"'+(sel.has(k)?' style="color:var(--acc)"':'')+'>'+MESES[k].lc+'</th>').join("")+
+    '<th class="right" style="color:var(--acc)">'+aggCL+'</th><th class="right">Prom. 2025</th><th class="center">Var.</th></tr></thead><tbody>'+
+    rows.map(r=>{
+      const dispAgg=ytdMode&&r.aggVal!=null?Math.round(r.aggVal/keys.length):r.aggVal;
+      return '<tr><td><strong style="color:var(--text)">'+r.c+'</strong></td>'+
+        r.vals.map((v,i)=>'<td class="right"'+(sel.has(FACT_MESES[i])?' style="font-weight:700;color:var(--text)"':'')+'>'+
+          (v!=null?v.toLocaleString("es-AR"):'<span style="color:var(--muted2)">--</span>')+'</td>').join("")+
+        '<td class="right bold" style="color:var(--acc)">'+(dispAgg!=null?dispAgg.toLocaleString("es-AR"):"--")+'</td>'+
+        '<td class="right" style="color:var(--muted)">'+(r.avg25!=null?r.avg25.toLocaleString("es-AR"):"--")+'</td>'+
+        '<td class="'+(dispAgg&&r.avg25?vCls(dispAgg,r.avg25):"")+'">'+
+          (dispAgg&&r.avg25?vStr(dispAgg,r.avg25):"--")+'</td></tr>';
+    }).join("")+
+    '</tbody>';
+}
+
+/* === RENTABILIDAD === */
+function renderRentabilidad(){
+  const keys=getSelKeys(),sel=new Set(keys);
+  const T=MK.map(k=>MESES[k]),selMs=keys.map(k=>MESES[k]);
+  const agg=getAgg(keys),n=keys.length;
+  const totResOp=Math.round(agg.resUSD/agg.ops);
+  const totResEmp=Math.round(agg.resUSD/(agg.dot*n));
+  const single=keys.length===1&&!ytdMode;
+  let sub2="",sub3="",sub4="";
+  if(single){
+    const m=MESES[keys[0]],idx=MK.indexOf(keys[0]),ant=idx>0?MESES[MK[idx-1]]:null;
+    sub2=ant?vStr(m.resUSD,ant.resUSD)+" vs "+ant.lc:"Inicio";
+    sub3=ant?"USD "+resOp(ant)+" en "+ant.lc:"";
+    sub4=ant?"USD "+resEmp(ant)+" en "+ant.lc:"";
+  }else{sub2=ytdMode?"Promedio mensual 2026":n+" meses acumulados";sub3="Sobre "+agg.ops+" ops totales";sub4="Dotacion prom: "+agg.dot+" pers.";}
+  const ytdEBITDA=ytdMode?Math.round(agg.resUSD/n):agg.resUSD;
+  const ytdCovLabel=ytdMode?(Math.round(agg.ops/n)+"/"+Math.round(agg.pe/n)+" ops (prom.)"):(agg.ops+" ops / "+Math.round(agg.pe/n)+" min/mes");
+  document.getElementById("rent-kpi-grid").innerHTML=[
+    {l:ytdMode?"EBITDA Prom./Mes (prom.)":"EBITDA Periodo",v:fU(ytdEBITDA),s:sub2,c:"neu"},
+    {l:"Rent. / Operacion (prom.)",v:"USD "+totResOp,s:sub3,c:"neu"},
+    {l:"Rent. / Empleado Prom./Mes",v:"USD "+totResEmp,s:sub4,c:"neu"},
+    {l:"Cobertura PE",v:(agg.ops/agg.pe).toFixed(1)+"x",s:ytdCovLabel,c:"pos"},
+  ].map(k=>'<div class="kpi-card"><div class="kpi-label">'+k.l+'</div><div class="kpi-value">'+k.v+'</div><div class="kpi-sub kpi-'+k.c+'">'+k.s+'</div></div>').join("");
+  const pLbl=ytdMode?"Año en Curso":keys.map(k=>MESES[k].lc).join(" + ");
+  dc("rent-mes");
+  _ch["rent-mes"]=new Chart(document.getElementById("chart-rent-mes").getContext("2d"),{
+    data:{labels:selMs.map(m=>m.lc),datasets:[
+      {type:"bar",label:"Rent./Op 2026",data:selMs.map(m=>resOp(m)),backgroundColor:"#1E2D6B",borderRadius:4,order:3,showLabel:true},
+      {type:"line",label:"Prom. seleccion (USD "+totResOp+")",data:Array(selMs.length).fill(totResOp),borderColor:"#D97706",borderWidth:2,borderDash:[4,3],pointRadius:0,order:2,showLabel:false},
+      {type:"line",label:"Prom. 2025 (USD "+RENT_2025_OP_AVG+")",data:Array(selMs.length).fill(RENT_2025_OP_AVG),borderColor:"rgba(220,38,38,0.7)",borderWidth:2,borderDash:[6,3],pointRadius:0,order:1,showLabel:false},
+    ]},options:{responsive:true,maintainAspectRatio:false,...DS,scales:{...DS.scales,y:{...DS.scales.y,title:{display:true,text:"USD / Operacion",color:"#5B6CA8"}}}}
+  });
+  const vsAnual=vStr(totResOp,RENT_2025_OP_AVG);
+  const vsAnualC=totResOp>=RENT_2025_OP_AVG?"verde":"rojo";
+  document.getElementById("rent-insight").innerHTML=
+    '<strong>'+pLbl+':</strong> Rent./Op <strong>USD '+totResOp+'</strong>'+
+    ' | Prom. 2025: <strong>USD '+RENT_2025_OP_AVG+'/op</strong> '+
+    '<span style="color:var(--'+vsAnualC+')">'+vsAnual+'</span> interanual'+
+    ' | Cobertura PE: <strong>'+(agg.ops/agg.pe*n).toFixed(1)+'x</strong>'+
+    (ytdMode?' | EBITDA Prom./Mes: <strong>'+fU(ytdEBITDA)+'</strong> <em style="font-size:10px;color:var(--muted)">(promedio)</em>':keys.length>1?' | EBITDA Acum.: <strong>'+fU(agg.resUSD)+'</strong>':"");
+  const avgPEdisp=Math.round(agg.pe/n);
+  const peAvgCard=n>1?'<div class="pe-card selected" style="grid-column:span 1;border-width:2px;">'+
+    '<div class="pe-mes">PROMEDIO</div><div class="pe-val">'+avgPEdisp+'</div><div class="pe-label">ops min. prom.</div></div>':""; 
+  document.getElementById("pe-grid").innerHTML=peAvgCard+T.map((m,i)=>{
+    const k=MK[i],s=sel.has(k);
+    return '<div class="pe-card'+(s?" selected":"")+'">'+'<div class="pe-mes">'+m.lc+'</div><div class="pe-val">'+m.pe+'</div><div class="pe-label">ops min.</div></div>';
+  }).join("");
+  dc("pe");
+  _ch["pe"]=new Chart(document.getElementById("chart-pe").getContext("2d"),{type:"bar",
+    data:{labels:selMs.map(m=>m.lc),datasets:[
+      {label:"Operaciones",data:selMs.map(m=>m.ops),backgroundColor:"#1E2D6B",borderRadius:4,showLabel:true},
+      {label:"P. Equilibrio",data:selMs.map(m=>m.pe),backgroundColor:"rgba(217,119,6,0.7)",borderRadius:4,showLabel:true},
+    ]},options:{responsive:true,maintainAspectRatio:false,...DS}
+  });
+  dc("rent-ev");
+  _ch["rent-ev"]=new Chart(document.getElementById("chart-rent-ev").getContext("2d"),{type:"line",
+    data:{labels:T.map(m=>m.lc),datasets:[
+      {label:"Rent./Op (USD)",data:T.map(m=>resOp(m)),borderColor:"#D97706",backgroundColor:"rgba(217,119,6,0.10)",fill:true,tension:0.3,
+        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#D97706":"#5a3a00"),showLabel:false},
+      {label:"Rent./Emp (USD)",data:T.map(m=>resEmp(m)),borderColor:"#059669",tension:0.3,
+        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#059669":"#1a4a2a"),yAxisID:"yE",showLabel:false},
+    ]},options:{responsive:true,maintainAspectRatio:false,...DS,
+      scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
+  });
+}
+
+initFilterBar();
+showView("resumen");
+
+
+</script>
+</body>
+</html>
