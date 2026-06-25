@@ -28,7 +28,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .sidebar-brand .brand-name{font-size:10px;color:#5A6EA0;margin-top:6px;font-weight:600;letter-spacing:.5px;}
 .sidebar-nav{flex:1;padding:14px 0;}
 .nav-section{font-size:9.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#4A5E94;padding:10px 22px 4px;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;cursor:pointer;font-size:13px;font-weight:500;color:#8898CC;transition:all .15s;border-left:3px solid transparent;margin:1px 0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;cursor:pointer;font-size:14.5px;font-weight:500;color:#FFFFFF;transition:all .15s;border-left:3px solid transparent;margin:1px 0;}
 .nav-item:hover{background:rgba(165,180,252,0.10);color:#C7D2FE;}
 .nav-item.active{background:rgba(165,180,252,0.15);color:#A5B4FC;border-left-color:#A5B4FC;}
 .nav-item .icon{font-size:15px;width:18px;text-align:center;opacity:.8;}
@@ -554,6 +554,7 @@ function showView(n){
   document.getElementById("view-"+n).classList.add("active");
   document.getElementById("nav-"+n).classList.add("active");
   document.getElementById("page-title").textContent=VTITLES[n];
+  document.querySelector(".filter-bar").style.display=n==="objetivos"?"none":"";
   currentView=n;renderView(n);
 }
 function renderCurrentView(){renderView(currentView);}
@@ -595,24 +596,24 @@ function renderObjetivos(){
     <div class="obj-grid">
       ${objCard({name:"Tiempo de Liberaci&oacute;n 0&ndash;6 d&iacute;as",badge:badgeLib,badgeTxt:lib2026>=libMeta?"Superado":"En proceso",val:lib2026+"%",valSm:"en 0-6 d&iacute;as (acum. 2026)",target:"Meta: llevar al "+libMeta+"% (+15% sobre base 40%)",pct:cpct(lib2026,libMeta),barCls:badgeLib,auto:"Calculado autom&aacute;ticamente desde datos Liberaci&oacute;n"})}
       ${objCard({name:"Rentabilidad m&iacute;nima u$s 400 / op.",badge:badgeRent,badgeTxt:rentOp>=400?"Alcanzado":rentOp>=300?"En proceso":"Por debajo",val:"u$s "+rentOp,valSm:"/ op. promedio YTD",target:"Meta: &ge; u$s 400 por operaci&oacute;n",pct:cpct(rentOp,400),barCls:badgeRent,auto:"Calculado desde EBITDA mensual &divide; operaciones"})}
-      ${objCard({name:"Manual de Procedimientos",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"Actualizaci&oacute;n Q1 y Q3 &middot; &ge;90% aprobaci&oacute;n",pct:null,auto:"Requiere carga manual"})}
-      ${objCard({name:"Tabla de Polivalencias",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"3 competencias cr&iacute;ticas por perfil",pct:null,auto:"Requiere carga manual"})}
+      ${objCard({name:"Manual de Procedimientos",badge:"a",badgeTxt:"En proceso",val:"Q1 ✓",valSm:"Q3 pendiente",target:"Actualizaci&oacute;n Q1 y Q3 &middot; &ge;90% aprobaci&oacute;n",pct:50,barCls:"a",auto:"Q1 entregado &mdash; Q3 pendiente"})}
+      ${objCard({name:"Tabla de Polivalencias",badge:"r",badgeTxt:"Pendiente",val:"&mdash;",target:"3 competencias cr&iacute;ticas por perfil",pct:null,auto:"Pendiente de ejecuci&oacute;n"})}
     </div>
     <div class="obj-section-lbl">Metas Operativas</div>
     <div class="obj-grid">
       ${objCard({name:"Operaciones Anuales",badge:badgeOps,badgeTxt:"En proceso",val:ytdOps.toLocaleString("es-AR"),valSm:"ops acum. &bull; proy. "+proyAnual.toLocaleString("es-AR"),target:"Meta: 4.200 operaciones en el a&ntilde;o",pct:cpct(proyAnual,4200),barCls:badgeOps,auto:"Proyecci&oacute;n = promedio mensual &times; 12"})}
-      ${objCard({name:"Capacitaciones",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"&ge;80% ejecuci&oacute;n &middot; score &ge;4/5",pct:null,auto:"Requiere carga manual"})}
+      ${objCard({name:"Capacitaciones",badge:"a",badgeTxt:"En curso",val:"&mdash;",target:"&ge;80% ejecuci&oacute;n &middot; score &ge;4/5",pct:null,auto:"Sin datos num&eacute;ricos a&uacute;n"})}
       ${objCard({name:"Mejoras Operativas",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"2 mejoras de optimizaci&oacute;n de tiempos y recursos",pct:null,auto:"Requiere carga manual"})}
       ${objCard({name:"Satisfacci&oacute;n Cliente",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"&ge;4/5 &mdash; interno y externo",pct:null,auto:"Requiere carga manual"})}
     </div>
     <div class="obj-section-lbl">Entregables y Reportes</div>
     <div class="obj-entregables">
       ${entrItem("v","Presupuesto Anual","Presentado en Enero &#10003;")}
-      ${entrItem("a","Plan de Capacitaci&oacute;n","Q1 &middot; pendiente confirmaci&oacute;n de estado")}
+      ${entrItem("v","Plan de Capacitaci&oacute;n","Entregado en Q1 &#10003;")}
       ${entrItem("a","Matriz de Puestos","Q2 (en curso) y Q4 &middot; pendiente confirmaci&oacute;n")}
       ${entrItem("v","Informe Mensual","Al d&iacute;a &mdash; entrega mensual activa")}
-      ${entrItem("n","No Conformidades","100% NC cr&iacute;ticas &middot; 80% NC menores &mdash; sin dato")}
-      ${entrItem("n","Esquema RACI","Q1 &middot; pendiente confirmaci&oacute;n de estado")}
+      ${entrItem("a","No Conformidades","En proceso &mdash; 100% NC cr&iacute;ticas &middot; 80% NC menores")}
+      ${entrItem("v","Esquema RACI","Entregado en Q1 &#10003;")}
     </div>
     <div style="margin-top:18px;font-size:10.5px;color:var(--muted2);text-align:right;">Los campos &ldquo;Sin dato&rdquo; se actualizan inform&aacute;ndole los valores a la IA.</div>
   `;
