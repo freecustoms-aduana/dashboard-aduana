@@ -170,6 +170,10 @@ tfoot td.right{text-align:right;}
 .obj-bar.a{background:var(--amber);}
 .obj-bar.r{background:var(--rojo);}
 .obj-auto{font-size:9px;letter-spacing:.5px;color:var(--muted2);margin-top:4px;}
+.obj-tip-wrap{position:relative;display:inline-block;margin-left:5px;cursor:help;vertical-align:middle;}
+.obj-tip-icon{font-size:9px;color:var(--muted2);border:1px solid var(--border);border-radius:50%;width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;font-style:normal;}
+.obj-tip-box{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--nav);border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:11px;color:var(--text);white-space:nowrap;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,0.18);line-height:1.7;}
+.obj-tip-wrap:hover .obj-tip-box{display:block;}
 .obj-entregables{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
 .obj-entr{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;}
 .obj-entr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
@@ -563,14 +567,17 @@ function renderView(n){
     operaciones:renderOperaciones,facturacion:renderFacturacion,rentabilidad:renderRentabilidad,objetivos:renderObjetivos}[n]||function(){})();
 }
 
-function objCard({name,badge,badgeTxt,val,valSm,target,pct,barCls,auto}){
+function objCard({name,badge,badgeTxt,val,valSm,target,pct,barCls,auto,tipLines}){
   const barHtml=pct!=null
     ?`<div class="obj-bar-bg"><div class="obj-bar ${barCls}" style="width:${pct}%"></div></div>`
+    :"";
+  const tipHtml=tipLines
+    ?`<span class="obj-tip-wrap"><i class="obj-tip-icon">i</i><div class="obj-tip-box">${tipLines.map(l=>"&#9679; "+l).join("<br>")}</div></span>`
     :"";
   return `<div class="obj-card">
     <div class="obj-card-top"><div class="obj-card-name">${name}</div><div class="obj-badge ${badge}">${badgeTxt}</div></div>
     <div class="obj-val">${val}<small>${valSm||""}</small></div>
-    <div class="obj-target">${target}</div>
+    <div class="obj-target">${target}${tipHtml}</div>
     ${barHtml}
     <div class="obj-auto">&#9679; ${auto}</div>
   </div>`;
@@ -603,7 +610,7 @@ function renderObjetivos(){
     <div class="obj-grid">
       ${objCard({name:"Operaciones Anuales",badge:badgeOps,badgeTxt:"En proceso",val:ytdOps.toLocaleString("es-AR"),valSm:"ops acum. &bull; proy. "+proyAnual.toLocaleString("es-AR"),target:"Meta: 4.200 operaciones en el a&ntilde;o",pct:cpct(proyAnual,4200),barCls:badgeOps,auto:"Proyecci&oacute;n = promedio mensual &times; 12"})}
       ${objCard({name:"Capacitaciones",badge:"a",badgeTxt:"En curso",val:"&mdash;",target:"&ge;80% ejecuci&oacute;n &middot; score &ge;4/5",pct:null,auto:"Sin datos num&eacute;ricos a&uacute;n"})}
-      ${objCard({name:"Mejoras Operativas",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"2 mejoras de optimizaci&oacute;n de tiempos y recursos",pct:null,auto:"Requiere carga manual"})}
+      ${objCard({name:"Mejoras Operativas",badge:"v",badgeTxt:"5 implementadas",val:"5",valSm:"mejoras en 2026",target:"Objetivo: 2 mejoras de optimizaci&oacute;n de tiempos y recursos",pct:100,barCls:"v",auto:"Relevado desde informes gerenciales Gamma 2026",tipLines:["Sistema DUX — procesamiento autom&aacute;tico de DIT","Cambio de comisionista en Campana","Optimizaci&oacute;n de la estructura de Aduana","Unificaci&oacute;n de los criterios operativos","Optimizaci&oacute;n de Clasificaci&oacute;n Arancelaria"]})}
       ${objCard({name:"Satisfacci&oacute;n Cliente",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"&ge;4/5 &mdash; interno y externo",pct:null,auto:"Requiere carga manual"})}
     </div>
     <div class="obj-section-lbl">Entregables y Reportes</div>
