@@ -151,6 +151,34 @@ tfoot td.right{text-align:right;}
 .nov-mes-label{font-size:12px;font-weight:700;color:var(--acc);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
 .nov-mes-label span{background:var(--lavanda);border:1px solid var(--lavanda2);border-radius:20px;padding:3px 14px;}
 
+.obj-section-lbl{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted2);margin:24px 0 10px 2px;}
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-bottom:6px;}
+.obj-card{background:var(--card);border-radius:14px;padding:18px 20px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.05);}
+.obj-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.obj-card-name{font-size:12.5px;font-weight:700;color:var(--text);line-height:1.35;}
+.obj-badge{font-size:9.5px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.obj-badge.v{background:var(--verde-dim);color:var(--verde);}
+.obj-badge.r{background:var(--rojo-dim);color:var(--rojo);}
+.obj-badge.a{background:var(--amber-dim);color:var(--amber);}
+.obj-badge.n{background:var(--lavanda);color:var(--muted);}
+.obj-val{font-size:24px;font-weight:800;color:var(--text);margin:4px 0 2px;}
+.obj-val small{font-size:12px;font-weight:500;color:var(--muted);margin-left:3px;}
+.obj-target{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.obj-bar-bg{height:5px;background:var(--lavanda2);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.obj-bar{height:5px;border-radius:3px;}
+.obj-bar.v{background:var(--verde);}
+.obj-bar.a{background:var(--amber);}
+.obj-bar.r{background:var(--rojo);}
+.obj-auto{font-size:9px;letter-spacing:.5px;color:var(--muted2);margin-top:4px;}
+.obj-entregables{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
+.obj-entr{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.obj-entr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.obj-entr-dot.v{background:var(--verde);}
+.obj-entr-dot.a{background:var(--amber);}
+.obj-entr-dot.n{background:var(--muted2);}
+.obj-entr-body{flex:1;}
+.obj-entr-title{font-size:12.5px;font-weight:700;color:var(--text);}
+.obj-entr-desc{font-size:11px;color:var(--muted);margin-top:2px;}
 @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.versus-grid,.two-col{grid-template-columns:1fr;}}
 
 </style>
@@ -216,6 +244,8 @@ async function checkPw(){
     <div class="nav-item" onclick="showView('facturacion')" id="nav-facturacion"><span class="icon">&#128181;</span> Facturacion USD</div>
     <div class="nav-section">Finanzas</div>
     <div class="nav-item" onclick="showView('rentabilidad')" id="nav-rentabilidad"><span class="icon">&#128176;</span> Rentabilidad</div>
+    <div class="nav-section">Gerencia</div>
+    <div class="nav-item" onclick="showView('objetivos')" id="nav-objetivos"><span class="icon">&#9733;</span> Objetivos 2026</div>
   </nav>
   <div class="sidebar-footer">Fuente: Ganancias 2026 &bull; Facturacion 2526</div>
 </aside>
@@ -298,6 +328,9 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">PE</span><div class="section-title">Punto de Equilibrio</div></div><div id="pe-grid" class="pe-grid"></div><div class="chart-wrap-sm"><canvas id="chart-pe"></canvas></div></div>
       </div>
       <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado (todos los meses)</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
+    </div>
+    <div class="view" id="view-objetivos">
+      <div id="obj-content"></div>
     </div>
   </div>
 </main>
@@ -514,7 +547,7 @@ function toggleYTD(){
 }
 
 /* === NAV === */
-const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 — Operaciones",facturacion:"Top 10 — Facturacion USD",rentabilidad:"Analisis de Rentabilidad"};
+const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 — Operaciones",facturacion:"Top 10 — Facturacion USD",rentabilidad:"Analisis de Rentabilidad",objetivos:"Objetivos Gerenciales 2026"};
 function showView(n){
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
@@ -526,7 +559,63 @@ function showView(n){
 function renderCurrentView(){renderView(currentView);}
 function renderView(n){
   ({novedades:renderNovedades,resumen:renderResumen,evolucion:renderEvolucion,interanual:renderInteranual,kpis:renderKpis,
-    operaciones:renderOperaciones,facturacion:renderFacturacion,rentabilidad:renderRentabilidad}[n]||function(){})();
+    operaciones:renderOperaciones,facturacion:renderFacturacion,rentabilidad:renderRentabilidad,objetivos:renderObjetivos}[n]||function(){})();
+}
+
+function objCard({name,badge,badgeTxt,val,valSm,target,pct,barCls,auto}){
+  const barHtml=pct!=null
+    ?`<div class="obj-bar-bg"><div class="obj-bar ${barCls}" style="width:${pct}%"></div></div>`
+    :"";
+  return `<div class="obj-card">
+    <div class="obj-card-top"><div class="obj-card-name">${name}</div><div class="obj-badge ${badge}">${badgeTxt}</div></div>
+    <div class="obj-val">${val}<small>${valSm||""}</small></div>
+    <div class="obj-target">${target}</div>
+    ${barHtml}
+    <div class="obj-auto">&#9679; ${auto}</div>
+  </div>`;
+}
+function entrItem(cls,title,desc){
+  return `<div class="obj-entr"><div class="obj-entr-dot ${cls}"></div><div class="obj-entr-body"><div class="obj-entr-title">${title}</div><div class="obj-entr-desc">${desc}</div></div></div>`;
+}
+function renderObjetivos(){
+  const mks=Object.values(MESES);
+  const ytdOps=mks.reduce((s,m)=>s+m.ops,0);
+  const ytdRes=mks.reduce((s,m)=>s+m.resUSD,0);
+  const nM=mks.length;
+  const proyAnual=Math.round(ytdOps/nM*12);
+  const rentOp=Math.round(ytdRes/ytdOps);
+  const lib2026=LIB.b0[2];
+  const libMeta=Math.round(40*1.15*10)/10;
+  const cpct=(v,t)=>Math.min(100,Math.round(v/t*100));
+  const badgeLib=lib2026>=libMeta?"v":"a";
+  const badgeRent=rentOp>=400?"v":rentOp>=300?"a":"r";
+  const badgeOps=proyAnual>=4200?"v":"a";
+  document.getElementById("obj-content").innerHTML=`
+    <div class="obj-section-lbl">Objetivos Estrat&eacute;gicos</div>
+    <div class="obj-grid">
+      ${objCard({name:"Tiempo de Liberaci&oacute;n 0&ndash;6 d&iacute;as",badge:badgeLib,badgeTxt:lib2026>=libMeta?"Superado":"En proceso",val:lib2026+"%",valSm:"en 0-6 d&iacute;as (acum. 2026)",target:"Meta: llevar al "+libMeta+"% (+15% sobre base 40%)",pct:cpct(lib2026,libMeta),barCls:badgeLib,auto:"Calculado autom&aacute;ticamente desde datos Liberaci&oacute;n"})}
+      ${objCard({name:"Rentabilidad m&iacute;nima u$s 400 / op.",badge:badgeRent,badgeTxt:rentOp>=400?"Alcanzado":rentOp>=300?"En proceso":"Por debajo",val:"u$s "+rentOp,valSm:"/ op. promedio YTD",target:"Meta: &ge; u$s 400 por operaci&oacute;n",pct:cpct(rentOp,400),barCls:badgeRent,auto:"Calculado desde EBITDA mensual &divide; operaciones"})}
+      ${objCard({name:"Manual de Procedimientos",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"Actualizaci&oacute;n Q1 y Q3 &middot; &ge;90% aprobaci&oacute;n",pct:null,auto:"Requiere carga manual"})}
+      ${objCard({name:"Tabla de Polivalencias",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"3 competencias cr&iacute;ticas por perfil",pct:null,auto:"Requiere carga manual"})}
+    </div>
+    <div class="obj-section-lbl">Metas Operativas</div>
+    <div class="obj-grid">
+      ${objCard({name:"Operaciones Anuales",badge:badgeOps,badgeTxt:"En proceso",val:ytdOps.toLocaleString("es-AR"),valSm:"ops acum. &bull; proy. "+proyAnual.toLocaleString("es-AR"),target:"Meta: 4.200 operaciones en el a&ntilde;o",pct:cpct(proyAnual,4200),barCls:badgeOps,auto:"Proyecci&oacute;n = promedio mensual &times; 12"})}
+      ${objCard({name:"Capacitaciones",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"&ge;80% ejecuci&oacute;n &middot; score &ge;4/5",pct:null,auto:"Requiere carga manual"})}
+      ${objCard({name:"Mejoras Operativas",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"2 mejoras de optimizaci&oacute;n de tiempos y recursos",pct:null,auto:"Requiere carga manual"})}
+      ${objCard({name:"Satisfacci&oacute;n Cliente",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"&ge;4/5 &mdash; interno y externo",pct:null,auto:"Requiere carga manual"})}
+    </div>
+    <div class="obj-section-lbl">Entregables y Reportes</div>
+    <div class="obj-entregables">
+      ${entrItem("v","Presupuesto Anual","Presentado en Enero &#10003;")}
+      ${entrItem("a","Plan de Capacitaci&oacute;n","Q1 &middot; pendiente confirmaci&oacute;n de estado")}
+      ${entrItem("a","Matriz de Puestos","Q2 (en curso) y Q4 &middot; pendiente confirmaci&oacute;n")}
+      ${entrItem("v","Informe Mensual","Al d&iacute;a &mdash; entrega mensual activa")}
+      ${entrItem("n","No Conformidades","100% NC cr&iacute;ticas &middot; 80% NC menores &mdash; sin dato")}
+      ${entrItem("n","Esquema RACI","Q1 &middot; pendiente confirmaci&oacute;n de estado")}
+    </div>
+    <div style="margin-top:18px;font-size:10.5px;color:var(--muted2);text-align:right;">Los campos &ldquo;Sin dato&rdquo; se actualizan inform&aacute;ndole los valores a la IA.</div>
+  `;
 }
 
 /* === HELPERS === */
