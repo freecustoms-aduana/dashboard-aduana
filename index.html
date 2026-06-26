@@ -350,8 +350,7 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">PE</span><div class="section-title">Punto de Equilibrio</div></div><div id="pe-grid" class="pe-grid"></div><div class="chart-wrap-sm"><canvas id="chart-pe"></canvas></div></div>
       </div>
       <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado — Análisis /mes</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
-      <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Margen % por Equipo — Análisis /mes</div></div><div class="chart-wrap"><canvas id="chart-eq-margen"></canvas></div></div>
-      <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Peso Estrat&eacute;gico — Aporte al Ingreso</div></div><div class="chart-wrap"><canvas id="chart-eq-peso"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Peso Estrat&eacute;gico — Aporte al Ingreso — Análisis /mes</div></div><div class="chart-wrap"><canvas id="chart-eq-peso"></canvas></div></div>
       <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title">Rentabilidad por Equipo — Mayor a Menor</div></div><table id="eq-rank-table" class="data-table"></table></div>
     </div>
     <div class="view" id="view-objetivos">
@@ -1143,15 +1142,18 @@ function renderRentabilidad(){
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
   });
   // === GRÁFICOS DE EQUIPOS ===
-  // Margen % por equipo — líneas, filtrado por meses seleccionados
-  const eqIdxMapM={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4};
-  const eqSelIdx=keys.map(k=>eqIdxMapM[k]).filter(i=>i!==undefined);
+  // Peso estratégico — líneas, % de revenue por equipo sobre total, filtrado por meses
+  const eqIdxMap2={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4};
+  const eqSelIdx=keys.map(k=>eqIdxMap2[k]).filter(i=>i!==undefined);
   const eqSelLbls=eqSelIdx.map(i=>EQUIPOS.labels[i]);
-  dc("eq-margen");
-  _ch["eq-margen"]=new Chart(document.getElementById("chart-eq-margen").getContext("2d"),{type:"line",
+  const revTotals=EQUIPOS.labels.map((_,mi)=>EQUIPOS.teams.reduce((s,t)=>s+t.rev[mi],0));
+  const fmtK=v=>"USD "+(v>=1000?(v/1000).toFixed(1)+"K":v);
+  dc("eq-peso");
+  _ch["eq-peso"]=new Chart(document.getElementById("chart-eq-peso").getContext("2d"),{type:"line",
     data:{labels:eqSelLbls,datasets:EQUIPOS.teams.map((t,i)=>({
       label:t.abbr+" — "+t.name+" ("+t.exec+")",
-      data:eqSelIdx.map(i=>t.margen[i]),
+      data:eqSelIdx.map(i=>+(t.rev[i]/revTotals[i]*100).toFixed(1)),
+      rawRev:t.rev,
       borderColor:EQUIPOS.colors[i],
       backgroundColor:EQUIPOS.colors[i]+"22",
       tension:0.35,
@@ -1161,45 +1163,23 @@ function renderRentabilidad(){
       showLabel:false,
     }))},
     options:{responsive:true,maintainAspectRatio:false,...DS,
-      plugins:{...DS.plugins,legend:{display:true,labels:{color:"#5B6CA8",boxWidth:12,padding:14,font:{size:11}}}},
-      scales:{...DS.scales,y:{...DS.scales.y,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"},min:0,max:100}}}
-  });
-  // Peso estratégico — stacked 100% con abbr:XX% en cada segmento + tooltip con cálculo
-  const revTotals=EQUIPOS.labels.map((_,mi)=>EQUIPOS.teams.reduce((s,t)=>s+t.rev[mi],0));
-  const fmtK=v=>"USD "+(v>=1000?(v/1000).toFixed(1)+"K":v);
-  dc("eq-peso");
-  _ch["eq-peso"]=new Chart(document.getElementById("chart-eq-peso").getContext("2d"),{type:"bar",
-    data:{labels:EQUIPOS.labels,datasets:EQUIPOS.teams.map((t,i)=>({
-      label:t.abbr+" — "+t.name+" ("+t.exec+")",
-      data:t.rev.map((v,mi)=>+(v/revTotals[mi]*100).toFixed(1)),
-      rawRev:t.rev,
-      abbr:t.abbr,
-      backgroundColor:EQUIPOS.colors[i],
-      borderRadius:i===EQUIPOS.teams.length-1?4:0,
-      stack:"s",
-      showLabel:true,
-      labelFmt:v=>t.abbr+": "+v+"%",
-    }))},
-    options:{responsive:true,maintainAspectRatio:false,...DS,
       plugins:{...DS.plugins,
         legend:{display:true,labels:{color:"#5B6CA8",boxWidth:12,padding:14,font:{size:11}}},
         tooltip:{callbacks:{
           label:ctx=>{
-            const mi=ctx.dataIndex;
-            const raw=ctx.dataset.rawRev[mi];
-            const total=revTotals[mi];
+            const i=eqSelIdx[ctx.dataIndex];
+            const raw=ctx.dataset.rawRev[i];
+            const total=revTotals[i];
             return " "+ctx.dataset.label+": "+fmtK(raw)+" / "+fmtK(total)+" = "+ctx.parsed.y+"%";
           }
         }}
       },
-      scales:{...DS.scales,
-        x:{...DS.scales.x,stacked:true},
-        y:{...DS.scales.y,stacked:true,min:0,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
+      scales:{...DS.scales,y:{...DS.scales.y,min:0,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}
+    }
   });
-  // Tabla ranking por rentabilidad — responde al filtro de meses
-  const eqIdxMap={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4};
-  const selIdx=keys.map(k=>eqIdxMap[k]).filter(i=>i!==undefined);
-  const selLbls=selIdx.map(i=>EQUIPOS.labels[i]);
+  // Tabla ranking por rentabilidad — responde al filtro de meses (reutiliza eqSelIdx)
+  const selIdx=eqSelIdx;
+  const selLbls=eqSelLbls;
   const ranked=[...EQUIPOS.teams].map(t=>{
     const selRes=selIdx.map(i=>t.res[i]);
     const selMar=selIdx.map(i=>t.margen[i]);
