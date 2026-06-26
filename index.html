@@ -334,7 +334,7 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="ops-table-title">Clientes por Operaciones</div></div><table id="ops-table"></table></div>
         <div class="section"><div class="section-header"><span class="section-chip">Comparativa</span><div class="section-title" id="ops-chart-title">Mes vs Promedio 2025</div></div><div class="chart-wrap-tall"><canvas id="chart-ops"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Ene a May 2026 vs Promedio 2025</div></div><div style="overflow-x:auto"><table id="ops-ev-table"></table></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Análisis /mes vs Promedio 2025</div></div><div style="overflow-x:auto"><table id="ops-ev-table"></table></div></div>
     </div>
     <div class="view" id="view-facturacion">
       <div class="two-col">
@@ -349,8 +349,8 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">EBITDA/Op</span><div class="section-title">Rentabilidad/Op (USD) vs Promedios de referencia</div></div><div class="chart-wrap"><canvas id="chart-rent-mes"></canvas></div><div class="insight" id="rent-insight"></div></div>
         <div class="section"><div class="section-header"><span class="section-chip">PE</span><div class="section-title">Punto de Equilibrio</div></div><div id="pe-grid" class="pe-grid"></div><div class="chart-wrap-sm"><canvas id="chart-pe"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado (todos los meses)</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
-      <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Margen % por Equipo — Ene a May 2026</div></div><div class="chart-wrap"><canvas id="chart-eq-margen"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado — Análisis /mes</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Margen % por Equipo — Análisis /mes</div></div><div class="chart-wrap"><canvas id="chart-eq-margen"></canvas></div></div>
       <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Peso Estrat&eacute;gico — Aporte al Ingreso</div></div><div class="chart-wrap"><canvas id="chart-eq-peso"></canvas></div></div>
       <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title">Rentabilidad por Equipo — Mayor a Menor</div></div><table id="eq-rank-table" class="data-table"></table></div>
     </div>
@@ -1143,12 +1143,15 @@ function renderRentabilidad(){
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
   });
   // === GRÁFICOS DE EQUIPOS ===
-  // Margen % por equipo — líneas con % en cada punto
+  // Margen % por equipo — líneas, filtrado por meses seleccionados
+  const eqIdxMapM={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4};
+  const eqSelIdx=keys.map(k=>eqIdxMapM[k]).filter(i=>i!==undefined);
+  const eqSelLbls=eqSelIdx.map(i=>EQUIPOS.labels[i]);
   dc("eq-margen");
   _ch["eq-margen"]=new Chart(document.getElementById("chart-eq-margen").getContext("2d"),{type:"line",
-    data:{labels:EQUIPOS.labels,datasets:EQUIPOS.teams.map((t,i)=>({
+    data:{labels:eqSelLbls,datasets:EQUIPOS.teams.map((t,i)=>({
       label:t.abbr+" — "+t.name+" ("+t.exec+")",
-      data:t.margen,
+      data:eqSelIdx.map(i=>t.margen[i]),
       borderColor:EQUIPOS.colors[i],
       backgroundColor:EQUIPOS.colors[i]+"22",
       tension:0.35,
