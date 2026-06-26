@@ -46,6 +46,11 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .month-toggle{padding:4px 14px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-size:11.5px;font-weight:600;color:var(--muted);background:transparent;transition:all .15s;font-family:'Poppins',sans-serif;}
 .month-toggle:hover{border-color:var(--acc);color:var(--acc);}
 .month-toggle.active{background:var(--acc);color:#fff;border-color:var(--acc);}
+.month-toggle.en-curso{border-color:var(--amber);color:var(--amber);}
+.month-toggle.en-curso:hover{background:var(--amber-dim);}
+.month-toggle.en-curso.active{background:var(--amber);color:#fff;border-color:var(--amber);}
+.prov-banner{background:#FEF3C7;border-bottom:1px solid #FDE68A;padding:7px 32px;font-size:11.5px;color:#92400E;font-weight:600;display:none;align-items:center;gap:8px;}
+.prov-banner.visible{display:flex;}
 .filter-sep{height:18px;width:1px;background:var(--border);margin:0 4px;}
 .ytd-btn{padding:4px 14px;border-radius:20px;border:1px solid var(--acc);cursor:pointer;font-size:11.5px;font-weight:700;color:var(--acc);background:transparent;transition:all .15s;font-family:'Poppins',sans-serif;}
 .ytd-btn:hover{background:var(--lavanda);}
@@ -172,7 +177,7 @@ tfoot td.right{text-align:right;}
 .obj-auto{font-size:9px;letter-spacing:.5px;color:var(--muted2);margin-top:4px;}
 .obj-tip-wrap{position:relative;display:inline-block;margin-left:5px;cursor:help;vertical-align:middle;}
 .obj-tip-icon{font-size:9px;color:var(--muted2);border:1px solid var(--border);border-radius:50%;width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;font-style:normal;}
-.obj-tip-box{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--nav);border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:11px;color:var(--text);white-space:nowrap;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,0.18);line-height:1.7;}
+.obj-tip-box{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:#1a2340;border:1px solid #2e3f6e;border-radius:10px;padding:10px 13px;font-size:11px;color:#e8ecf8;white-space:nowrap;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,0.45);line-height:1.9;}
 .obj-tip-wrap:hover .obj-tip-box{display:block;}
 .obj-entregables{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
 .obj-entr{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;}
@@ -270,6 +275,7 @@ async function checkPw(){
     <div class="filter-sep"></div>
     <button class="ytd-btn" id="ytd-btn" onclick="toggleYTD()">&#9733; Año en Curso</button>
   </div>
+  <div class="prov-banner" id="prov-banner">&#9888; <span>Jun 2026 — Datos provisorios al 26/06. MOD (ARS 87.683.702) y tipo de cambio (1.431,6) estimados al cierre de mayo. Se actualizan automáticamente antes del 10/07.</span></div>
   <div class="content">
     <div class="view active" id="view-resumen">
       <div id="analisis-wrap">
@@ -357,6 +363,7 @@ const MESES={
   "2026-03":{label:"Mar 2026",lc:"Mar",ing:243352209,cos:47601092,mod:98955256,ops:283,dot:35,tc:1409.5,resUSD:68675,pe:143},
   "2026-04":{label:"Abr 2026",lc:"Abr",ing:280299356,cos:41545575,mod:126560046,ops:323,dot:34,tc:1415.8,resUSD:79244,pe:171},
   "2026-05":{label:"May 2026",lc:"May",ing:237673973,cos:43840348,mod:87683702,ops:262,dot:26,tc:1431.6,resUSD:74149,pe:119},
+  "2026-06":{label:"Jun 2026",lc:"Jun",ing:230041223,cos:10574411,mod:87683702,ops:248,dot:26,tc:1431.6,resUSD:92049,pe:127,enCurso:true},
 };
 const MK=Object.keys(MESES);
 const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:273,May:300};
@@ -488,9 +495,16 @@ const NOVEDADES={
     hitos:[],
     desvios:[],
     personal:{ing:[],desv:[],ren:[],otros:[]}
+  },
+  "2026-06":{
+    acciones:[],
+    oportunidades:[],
+    hitos:[],
+    desvios:[],
+    personal:{ing:[],desv:[],ren:[],otros:[]}
   }
 };
-const FACT_MESES=["2026-01","2026-02","2026-03","2026-04","2026-05"];
+const FACT_MESES=["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
 const SEL={
   labels:["2024","2025","2026 (acum.)"],
   verde: [48.1, 78.0, 85.5],
@@ -499,10 +513,10 @@ const SEL={
 };
 const LIB={
   labels:["2024","2025","2026 (acum.)"],
-  b0:  [39.3,38.9,56.3],
-  b7:  [18.5,20.4,15.4],
-  b12: [7.3,6.7,2.4],
-  b16: [34.9,33.9,25.8],
+  b0:  [42.89,42.73,57.74],
+  b7:  [21.52,23.06,15.47],
+  b12: [8.35,7.40,2.36],
+  b16: [27.24,26.81,24.43],
 };
 const FACT_COLORS=["#1E2D6B","#3B4FA8","#059669","#6366F1","#7C3AED","#0891B2","#D97706","#DC2626"];
 
@@ -527,8 +541,11 @@ function getAgg(keys){
 
 /* === FILTER BAR === */
 function initFilterBar(){
-  document.getElementById("month-toggles").innerHTML=MK.map(k=>
-    '<button class="month-toggle" data-k="'+k+'" onclick="toggleMonth(this.dataset.k)">'+MESES[k].label+'</button>').join("");
+  document.getElementById("month-toggles").innerHTML=MK.map(k=>{
+    const ec=MESES[k].enCurso;
+    const lbl=ec?"&#9679; "+MESES[k].label+" (en curso)":MESES[k].label;
+    return '<button class="month-toggle'+(ec?" en-curso":"")+'" data-k="'+k+'" onclick="toggleMonth(this.dataset.k)">'+lbl+'</button>';
+  }).join("");
   updateFilterBar();
 }
 function updateFilterBar(){
@@ -536,6 +553,8 @@ function updateFilterBar(){
   document.getElementById("ytd-btn").classList.toggle("active",ytdMode);
   const keys=getSelKeys();
   document.getElementById("badge-mes").textContent=ytdMode?"Año en Curso":keys.length===1?MESES[keys[0]].label:keys.length+" meses";
+  const hasCurso=!ytdMode&&keys.some(k=>MESES[k].enCurso);
+  document.getElementById("prov-banner").classList.toggle("visible",hasCurso);
 }
 function toggleMonth(k){
   if(ytdMode){ytdMode=false;selMonths=new Set([k]);}
