@@ -352,6 +352,7 @@ async function checkPw(){
       <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado (todos los meses)</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
       <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Margen % por Equipo — Ene a May 2026</div></div><div class="chart-wrap"><canvas id="chart-eq-margen"></canvas></div></div>
       <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Peso Estrat&eacute;gico — Aporte al Ingreso</div></div><div class="chart-wrap"><canvas id="chart-eq-peso"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title">Rentabilidad por Equipo — Mayor a Menor</div></div><table id="eq-rank-table" class="data-table"></table></div>
     </div>
     <div class="view" id="view-objetivos">
       <div id="obj-content"></div>
@@ -411,11 +412,11 @@ const EQUIPOS={
   labels:["Ene","Feb","Mar","Abr","May"],
   colors:["#1E2D6B","#2D47A8","#4B7BE5","#7BA3F0","#B8CEFA"],
   teams:[
-    {name:"Neum\xe1ticos",exec:"Mauro Pescio",margen:[47.4,59.5,45.3,45.8,53.4],rev:[58084,72485,59394,69085,70949]},
-    {name:"L\xednea Blanca",exec:"Nicol\xe1s G\xf3mez",margen:[47.9,47.2,36.0,38.0,33.9],rev:[35606,35675,32219,38494,24408]},
-    {name:"Maquinaria",exec:"Andrea Pacheco",margen:[30.4,28.2,34.9,35.9,43.1],rev:[16437,21498,29642,34291,30596]},
-    {name:"Alimentos y Qu\xedmicos",exec:"Daira Juarez",margen:[2.3,10.5,26.6,27.4,30.6],rev:[16185,18643,28016,33210,25256]},
-    {name:"Varios",exec:"Jennifer Almendra",margen:[48.7,32.9,53.1,50.3,47.7],rev:[18025,9301,23383,22900,14814]},
+    {name:"Neum\xe1ticos",abbr:"NE",exec:"Mauro Pescio",margen:[47.4,59.5,45.3,45.8,53.4],rev:[58084,72485,59394,69085,70949],res:[27546,43104,26899,31672,37886]},
+    {name:"L\xednea Blanca",abbr:"LB",exec:"Nicol\xe1s G\xf3mez",margen:[47.9,47.2,36.0,38.0,33.9],rev:[35606,35675,32219,38494,24408],res:[17054,16842,11599,14609,8271]},
+    {name:"Maquinaria",abbr:"MA",exec:"Andrea Pacheco",margen:[30.4,28.2,34.9,35.9,43.1],rev:[16437,21498,29642,34291,30596],res:[4994,6055,10335,12325,13192]},
+    {name:"Alimentos y Qu\xedmicos",abbr:"AQ",exec:"Daira Juarez",margen:[2.3,10.5,26.6,27.4,30.6],rev:[16185,18643,28016,33210,25256],res:[369,1949,7439,9110,7728]},
+    {name:"Varios",abbr:"VA",exec:"Jennifer Almendra",margen:[48.7,32.9,53.1,50.3,47.7],rev:[18025,9301,23383,22900,14814],res:[8778,3063,12405,11528,7074]},
   ]
 };
 const FACT_EV={
@@ -691,15 +692,20 @@ Chart.register({id:"lbl",afterDatasetsDraw(chart){
     const meta=chart.getDatasetMeta(di);if(meta.hidden)return;
     meta.data.forEach((bar,i)=>{
       const v=ds.data[i];if(v==null||v===0)return;
+      const fmt=ds.labelFmt?ds.labelFmt(v):(typeof v==="number"?v.toLocaleString("es-AR"):String(v));
       const isH=chart.config.options&&chart.config.options.indexAxis==="y";
-      ctx.save();ctx.font="bold 10px Segoe UI";
-      if(isH){
+      ctx.save();ctx.font="bold 10px Poppins,Segoe UI,sans-serif";
+      if(bar.base===undefined){
+        // Línea — dibujar sobre el punto
+        ctx.fillStyle=ds.borderColor||"#1E2D6B";ctx.textAlign="center";ctx.textBaseline="bottom";
+        ctx.fillText(fmt,bar.x,bar.y-5);
+      }else if(isH){
         const bl=Math.abs(bar.x-bar.base);
-        if(bl<32){ctx.fillStyle="#5B6CA8";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(v,bar.x+3,bar.y);}
-        else{ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(v,bar.base+(bar.x-bar.base)/2,bar.y);}
+        if(bl<32){ctx.fillStyle="#5B6CA8";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(fmt,bar.x+3,bar.y);}
+        else{ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(fmt,bar.base+(bar.x-bar.base)/2,bar.y);}
       }else{
         const bh=Math.abs(bar.y-bar.base);
-        if(bh>16){ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(typeof v==="number"?v.toLocaleString("es-AR"):v,bar.x,bar.base+(bar.y-bar.base)/2);}
+        if(bh>16){ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(fmt,bar.x,bar.base+(bar.y-bar.base)/2);}
       }
       ctx.restore();
     });
@@ -1129,45 +1135,48 @@ function renderRentabilidad(){
   dc("rent-ev");
   _ch["rent-ev"]=new Chart(document.getElementById("chart-rent-ev").getContext("2d"),{type:"line",
     data:{labels:T.map(m=>m.lc),datasets:[
-      {label:"Rent./Op (USD)",data:T.map(m=>resOp(m)),borderColor:"#D97706",backgroundColor:"rgba(217,119,6,0.10)",fill:true,tension:0.3,
-        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#D97706":"#5a3a00"),showLabel:false},
-      {label:"Rent./Emp (USD)",data:T.map(m=>resEmp(m)),borderColor:"#059669",tension:0.3,
-        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#059669":"#1a4a2a"),yAxisID:"yE",showLabel:false},
+      {label:"Rent./Op (USD)",data:T.map(m=>resOp(m)),borderColor:"#1E2D6B",backgroundColor:"rgba(30,45,107,0.10)",fill:true,tension:0.3,
+        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#1E2D6B":"#0A1233"),showLabel:false},
+      {label:"Rent./Emp (USD)",data:T.map(m=>resEmp(m)),borderColor:"#A5B4FC",tension:0.3,
+        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#A5B4FC":"#6474CC"),yAxisID:"yE",showLabel:false},
     ]},options:{responsive:true,maintainAspectRatio:false,...DS,
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
   });
   // === GRÁFICOS DE EQUIPOS ===
-  // Margen % por equipo — líneas, sin valores en barras
+  // Margen % por equipo — líneas con % en cada punto
   dc("eq-margen");
   _ch["eq-margen"]=new Chart(document.getElementById("chart-eq-margen").getContext("2d"),{type:"line",
     data:{labels:EQUIPOS.labels,datasets:EQUIPOS.teams.map((t,i)=>({
-      label:t.name+" ("+t.exec+")",
+      label:t.abbr+" — "+t.name+" ("+t.exec+")",
       data:t.margen,
       borderColor:EQUIPOS.colors[i],
       backgroundColor:EQUIPOS.colors[i]+"22",
       tension:0.35,
       borderWidth:2.5,
-      pointRadius:4,
+      pointRadius:5,
       pointBackgroundColor:EQUIPOS.colors[i],
-      showLabel:false,
+      showLabel:true,
+      labelFmt:v=>v+"%",
     }))},
     options:{responsive:true,maintainAspectRatio:false,...DS,
       plugins:{...DS.plugins,legend:{display:true,labels:{color:"#5B6CA8",boxWidth:12,padding:14,font:{size:11}}}},
       scales:{...DS.scales,y:{...DS.scales.y,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"},min:0,max:100}}}
   });
-  // Peso estratégico — stacked 100% por revenue
+  // Peso estratégico — stacked 100% con abbr:XX% en cada segmento + tooltip con cálculo
   const revTotals=EQUIPOS.labels.map((_,mi)=>EQUIPOS.teams.reduce((s,t)=>s+t.rev[mi],0));
-  const fmtK=v=>v>=1000?"USD "+(v/1000).toFixed(1)+"K":"USD "+v;
+  const fmtK=v=>"USD "+(v>=1000?(v/1000).toFixed(1)+"K":v);
   dc("eq-peso");
   _ch["eq-peso"]=new Chart(document.getElementById("chart-eq-peso").getContext("2d"),{type:"bar",
     data:{labels:EQUIPOS.labels,datasets:EQUIPOS.teams.map((t,i)=>({
-      label:t.name+" ("+t.exec+")",
+      label:t.abbr+" — "+t.name+" ("+t.exec+")",
       data:t.rev.map((v,mi)=>+(v/revTotals[mi]*100).toFixed(1)),
       rawRev:t.rev,
+      abbr:t.abbr,
       backgroundColor:EQUIPOS.colors[i],
       borderRadius:i===EQUIPOS.teams.length-1?4:0,
       stack:"s",
-      showLabel:false,
+      showLabel:true,
+      labelFmt:v=>t.abbr+": "+v+"%",
     }))},
     options:{responsive:true,maintainAspectRatio:false,...DS,
       plugins:{...DS.plugins,
@@ -1185,6 +1194,18 @@ function renderRentabilidad(){
         x:{...DS.scales.x,stacked:true},
         y:{...DS.scales.y,stacked:true,min:0,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
   });
+  // Tabla ranking por rentabilidad total
+  const ranked=[...EQUIPOS.teams].map(t=>({...t,total:t.res.reduce((s,v)=>s+v,0),avgM:+(t.margen.reduce((s,v)=>s+v,0)/t.margen.length).toFixed(1)})).sort((a,b)=>b.total-a.total);
+  document.getElementById("eq-rank-table").innerHTML=
+    '<thead><tr><th class="center">#</th><th>Equipo</th><th class="center">Ene</th><th class="center">Feb</th><th class="center">Mar</th><th class="center">Abr</th><th class="center">May</th><th class="center">Total</th><th class="center">Margen %</th></tr></thead><tbody>'+
+    ranked.map((t,ri)=>'<tr>'
+      +'<td class="center" style="font-weight:800;color:var(--acc)">'+(ri+1)+'</td>'
+      +'<td><b>'+t.abbr+' — '+t.name+'</b><br><span style="font-size:11px;color:var(--muted)">'+t.exec+'</span></td>'
+      +t.res.map(v=>'<td class="center">'+(v<0?'<span style="color:var(--rojo)">'+fU(v)+'</span>':fU(v))+'</td>').join('')
+      +'<td class="center"><b>'+fU(t.total)+'</b></td>'
+      +'<td class="center"><span style="font-weight:700;color:var(--acc)">'+t.avgM+'%</span></td>'
+      +'</tr>'
+    ).join('')+'</tbody>';
 }
 
 initFilterBar();
