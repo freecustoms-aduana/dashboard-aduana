@@ -136,6 +136,16 @@ tfoot td.right{text-align:right;}
 .nov-item-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:5px;}
 .nov-item-desc{font-size:12.5px;color:#2E3F80;line-height:1.65;}
 .nov-item-imp{font-size:10.5px;font-weight:700;margin-top:7px;padding:3px 10px;border-radius:6px;display:inline-block;}
+.nov-item.past{opacity:0.52;background:var(--bg);border:1px solid var(--border);}
+.nov-item.past .nov-item-title{color:var(--muted);}
+.nov-item.past .nov-item-desc{color:var(--muted2);}
+.nov-ytd-label{font-size:10px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:1px;margin:12px 0 7px;padding-left:2px;}
+.nov-ytd-label.past-label{color:var(--muted2);}
+.nov-desvio-ytd{padding:10px 4px;}
+.nov-desvio-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.desvio-num{font-size:26px;font-weight:800;color:var(--text);line-height:1;}
+.desvio-num.rojo{color:var(--rojo);}
+.desvio-lbl{font-size:12px;color:var(--muted);font-weight:500;}
 .imp-neg{color:var(--rojo);background:var(--rojo-dim);}
 .imp-warn{color:var(--amber);background:var(--amber-dim);}
 .imp-ok{color:var(--verde);background:var(--verde-dim);}
@@ -366,7 +376,7 @@ const MESES={
   "2026-06":{label:"Jun 2026",lc:"Jun",ing:230041223,cos:10574411,mod:87683702,ops:248,dot:26,tc:1431.6,resUSD:92049,pe:127,enCurso:true},
 };
 const MK=Object.keys(MESES);
-const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:273,May:300};
+const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:271,May:300,Jun:289,Jul:259,Ago:282,Sep:311,Oct:271,Nov:271,Dic:279};
 const RENT_2025_OP_AVG=354;
 const TOP10={
   "2026-03":[{n:"Grupo GSB",p:24,m:58},{n:"Grupo Larocca",p:28,m:54},{n:"Cia. Arg. Aceites",p:19,m:22},{n:"Grupo Corral",p:33,m:31},{n:"Bedson S.A.",p:15,m:20},{n:"Barack Argentina",p:6,m:7},{n:"Ultralight SRL",p:5,m:7},{n:"Hogar y Tec.",p:29,m:14},{n:"Grupo Calzetta",p:16,m:14},{n:"Seis Erre Alim.",p:7,m:4}],
@@ -800,20 +810,66 @@ function renderEvolucion(){
 function renderNovedades(){
   const keys=getSelKeys(),sel=new Set(keys);
   const lastKey=keys[keys.length-1];
-  const nd=NOVEDADES[lastKey]||{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}};
-  const lbl=ytdMode?"Ano en Curso 2026":keys.length===1?MESES[lastKey].label:MESES[lastKey].label+" (ultimo mes sel.)";
+  const lbl=ytdMode?"A\xf1o en Curso 2026":keys.length===1?MESES[lastKey].label:MESES[lastKey].label+" (\xfaltimo mes sel.)";
   document.getElementById("nov-mes-label-txt").textContent=lbl;
 
-  const mkCards=(items,emptyMsg)=>items.length===0?
-    '<div class="nov-item"><div class="nov-item-desc" style="color:var(--muted)">'+emptyMsg+'</div></div>':
-    items.map(it=>'<div class="nov-item"><div class="nov-item-title">'+it.t+'</div><div class="nov-item-desc">'+it.d+'</div>'+
-      (it.imp?'<div class="nov-item-imp imp-'+it.sev+'">Impacto: '+it.imp+'</div>':'')+
+  const mkCards=(items,emptyMsg)=>items.length===0
+    ?'<div class="nov-item"><div class="nov-item-desc" style="color:var(--muted)">'+emptyMsg+'</div></div>'
+    :items.map(it=>'<div class="nov-item"><div class="nov-item-title">'+it.t+'</div><div class="nov-item-desc">'+it.d+'</div>'+(it.imp?'<div class="nov-item-imp imp-'+it.sev+'">Impacto: '+it.imp+'</div>':'')+
     '</div>').join('');
 
-  document.getElementById('nov-acciones').innerHTML=mkCards(nd.acciones,'Sin acciones registradas este mes.');
-  document.getElementById('nov-oportunidades').innerHTML=mkCards(nd.oportunidades,'Sin oportunidades registradas este mes.');
-  document.getElementById('nov-hitos').innerHTML=mkCards(nd.hitos,'Sin hitos estrategicos este mes.');
-  document.getElementById('nov-desvios').innerHTML=mkCards(nd.desvios,'Sin desvios registrados este mes.');
+  if(ytdMode){
+    // Acciones y Oportunidades: deduplica por título. Último mes = en curso (destacado), meses anteriores = past (muted)
+    const buildYtdList=(field)=>{
+      const map=new Map();
+      for(const k of keys){
+        for(const it of ((NOVEDADES[k]||{})[field]||[])){
+          if(!map.has(it.t)) map.set(it.t,{item:it,inLast:false});
+          if(k===lastKey) map.get(it.t).inLast=true;
+        }
+      }
+      const enCurso=[...map.values()].filter(v=>v.inLast);
+      const pasados=[...map.values()].filter(v=>!v.inLast);
+      const mkItem=(v,cls)=>'<div class="nov-item '+(cls||'')+'"><div class="nov-item-title">'+v.item.t+'</div><div class="nov-item-desc">'+v.item.d+'</div></div>';
+      let html='';
+      if(enCurso.length){
+        html+='<div class="nov-ytd-label">&#9679; '+MESES[lastKey].label+' — En curso</div>';
+        html+=enCurso.map(v=>mkItem(v,'')).join('');
+      }
+      if(pasados.length){
+        html+='<div class="nov-ytd-label past-label">&#10003; Meses anteriores</div>';
+        html+=pasados.map(v=>mkItem(v,'past')).join('');
+      }
+      return html||'<div class="nov-item"><div class="nov-item-desc" style="color:var(--muted)">Sin registros en el a\xf1o.</div></div>';
+    };
+    document.getElementById('nov-acciones').innerHTML=buildYtdList('acciones');
+    document.getElementById('nov-oportunidades').innerHTML=buildYtdList('oportunidades');
+
+    // Hitos: todos los meses
+    const allHitos=keys.flatMap(k=>((NOVEDADES[k]||{}).hitos)||[]);
+    document.getElementById('nov-hitos').innerHTML=mkCards(allHitos,'Sin hitos estrat\xe9gicos en el a\xf1o.');
+
+    // Desvíos: contador + sumatoria + tooltip hover con detalle
+    const allDev=keys.flatMap(k=>((NOVEDADES[k]||{}).desvios)||[]).filter(d=>d.sev!=='ok');
+    const parseUSD=imp=>{if(!imp)return 0;const m=imp.match(/USD\s*([\d.,]+)/);if(!m)return 0;return parseFloat(m[1].replace(/\./g,'').replace(',','.'))||0;};
+    const totalUSD=allDev.reduce((s,d)=>s+parseUSD(d.imp),0);
+    const fmtUSD=n=>n>0?'USD '+n.toLocaleString('es-AR'):'N/D';
+    const tipContent=allDev.map(d=>'<b>'+d.t+'</b><br><span style="color:#A5B4FC;font-size:10.5px">'+(d.imp||'Sin impacto econ\xf3mico')+'</span>').join('<br><br>');
+    const tipHtml=allDev.length?'<span class="obj-tip-wrap" style="margin-left:8px;vertical-align:middle"><i class="obj-tip-icon">i</i><div class="obj-tip-box" style="white-space:normal;max-width:340px;line-height:1.75;text-align:left">'+tipContent+'</div></span>':'';
+    document.getElementById('nov-desvios').innerHTML=allDev.length===0
+      ?'<div class="nov-item"><div class="nov-item-desc" style="color:var(--verde)">Sin desv\xedos con impacto econ\xf3mico en el a\xf1o.</div></div>'
+      :'<div class="nov-desvio-ytd">'
+        +'<div class="nov-desvio-row"><span class="desvio-num">'+allDev.length+'</span><span class="desvio-lbl">desv\xedos registrados</span>'+tipHtml+'</div>'
+        +'<div class="nov-desvio-row"><span class="desvio-num rojo">'+fmtUSD(totalUSD)+'</span><span class="desvio-lbl">impacto econ\xf3mico total</span></div>'
+        +'</div>';
+
+  } else {
+    const nd=NOVEDADES[lastKey]||{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}};
+    document.getElementById('nov-acciones').innerHTML=mkCards(nd.acciones,'Sin acciones registradas este mes.');
+    document.getElementById('nov-oportunidades').innerHTML=mkCards(nd.oportunidades,'Sin oportunidades registradas este mes.');
+    document.getElementById('nov-hitos').innerHTML=mkCards(nd.hitos,'Sin hitos estrat\xe9gicos este mes.');
+    document.getElementById('nov-desvios').innerHTML=mkCards(nd.desvios,'Sin desv\xedos registrados este mes.');
+  }
 
   // Movimientos de personal — siempre muestra todos los meses disponibles
   const movMonths=["2026-02","2026-03","2026-04","2026-05"];
