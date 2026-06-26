@@ -350,6 +350,10 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">PE</span><div class="section-title">Punto de Equilibrio</div></div><div id="pe-grid" class="pe-grid"></div><div class="chart-wrap-sm"><canvas id="chart-pe"></canvas></div></div>
       </div>
       <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado (todos los meses)</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
+      <div class="two-col">
+        <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Margen % por Equipo — Ene a May 2026</div></div><div class="chart-wrap"><canvas id="chart-eq-margen"></canvas></div></div>
+        <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Peso Estrat&eacute;gico — Aporte al Ingreso</div></div><div class="chart-wrap"><canvas id="chart-eq-peso"></canvas></div></div>
+      </div>
     </div>
     <div class="view" id="view-objetivos">
       <div id="obj-content"></div>
@@ -404,6 +408,17 @@ const FACT={
   "2026-03":[{n:"Grupo GSB",u:25231},{n:"Grupo Larocca",u:22546},{n:"Grupo Corral",u:22230},{n:"Bedson S.A.",u:14621},{n:"Grupo Calzetta",u:14618},{n:"Hogar y Tec.",u:11713},{n:"Cia. Arg. Aceites",u:8759},{n:"Ultralight SRL",u:8520},{n:"Barack Argentina",u:7513},{n:"Liguen Ilum.",u:5393}],
   "2026-04":[{n:"Grupo GSB",u:24740},{n:"Grupo Larocca",u:23427},{n:"Grupo Calzetta",u:23168},{n:"Grupo Corral",u:22489},{n:"Hogar y Tec.",u:21124},{n:"Bedson S.A.",u:14913},{n:"Ultralight SRL",u:11258},{n:"Cia. Arg. Aceites",u:7160},{n:"Defiba Servicios",u:6773},{n:"Ferreiros y Vilela",u:6657}],
   "2026-05":[{n:"Grupo Corral",u:36053},{n:"Grupo GSB",u:26566},{n:"Grupo Larocca",u:18058},{n:"Grupo Calzetta",u:16838},{n:"Bedson S.A.",u:13057},{n:"Hogar y Tec.",u:12168},{n:"Ultralight SRL",u:9949},{n:"Seis Erre Alim.",u:4877},{n:"Cia. Arg. Aceites",u:4752},{n:"New Material SAS",u:3381}],
+};
+const EQUIPOS={
+  labels:["Ene","Feb","Mar","Abr","May"],
+  colors:["#1E2D6B","#4B7BE5","#059669","#D97706","#9333EA"],
+  teams:[
+    {name:"Neum\xe1ticos",exec:"Mauro Pescio",margen:[47.4,59.5,45.3,45.8,53.4],rev:[58084,72485,59394,69085,70949]},
+    {name:"L\xednea Blanca",exec:"Nicol\xe1s G\xf3mez",margen:[47.9,47.2,36.0,38.0,33.9],rev:[35606,35675,32219,38494,24408]},
+    {name:"Maquinaria",exec:"Andrea Pacheco",margen:[30.4,28.2,34.9,35.9,43.1],rev:[16437,21498,29642,34291,30596]},
+    {name:"Alimentos y Qu\xedmicos",exec:"Daira Juarez",margen:[2.3,10.5,26.6,27.4,30.6],rev:[16185,18643,28016,33210,25256]},
+    {name:"Varios",exec:"Jennifer Almendra",margen:[48.7,32.9,53.1,50.3,47.7],rev:[18025,9301,23383,22900,14814]},
+  ]
 };
 const FACT_EV={
   "Grupo Corral":   {"2026-01":18159,"2026-02":25070,"2026-03":22230,"2026-04":22489,"2026-05":36053},
@@ -1122,6 +1137,43 @@ function renderRentabilidad(){
         pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#059669":"#1a4a2a"),yAxisID:"yE",showLabel:false},
     ]},options:{responsive:true,maintainAspectRatio:false,...DS,
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
+  });
+  // === GRÁFICOS DE EQUIPOS ===
+  // Margen % por equipo — líneas, sin valores en barras
+  dc("eq-margen");
+  _ch["eq-margen"]=new Chart(document.getElementById("chart-eq-margen").getContext("2d"),{type:"line",
+    data:{labels:EQUIPOS.labels,datasets:EQUIPOS.teams.map((t,i)=>({
+      label:t.name+" ("+t.exec+")",
+      data:t.margen,
+      borderColor:EQUIPOS.colors[i],
+      backgroundColor:EQUIPOS.colors[i]+"22",
+      tension:0.35,
+      borderWidth:2.5,
+      pointRadius:4,
+      pointBackgroundColor:EQUIPOS.colors[i],
+      showLabel:false,
+    }))},
+    options:{responsive:true,maintainAspectRatio:false,...DS,
+      plugins:{...DS.plugins,legend:{display:true,labels:{color:"#5B6CA8",boxWidth:12,padding:14,font:{size:11}}}},
+      scales:{...DS.scales,y:{...DS.scales.y,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"},min:0,max:100}}}
+  });
+  // Peso estratégico — stacked 100% por revenue
+  const revTotals=EQUIPOS.labels.map((_,mi)=>EQUIPOS.teams.reduce((s,t)=>s+t.rev[mi],0));
+  dc("eq-peso");
+  _ch["eq-peso"]=new Chart(document.getElementById("chart-eq-peso").getContext("2d"),{type:"bar",
+    data:{labels:EQUIPOS.labels,datasets:EQUIPOS.teams.map((t,i)=>({
+      label:t.name+" ("+t.exec+")",
+      data:t.rev.map((v,mi)=>+(v/revTotals[mi]*100).toFixed(1)),
+      backgroundColor:EQUIPOS.colors[i],
+      borderRadius:i===EQUIPOS.teams.length-1?4:0,
+      stack:"s",
+      showLabel:false,
+    }))},
+    options:{responsive:true,maintainAspectRatio:false,...DS,
+      plugins:{...DS.plugins,legend:{display:true,labels:{color:"#5B6CA8",boxWidth:12,padding:14,font:{size:11}}}},
+      scales:{...DS.scales,
+        x:{...DS.scales.x,stacked:true},
+        y:{...DS.scales.y,stacked:true,min:0,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
   });
 }
 
