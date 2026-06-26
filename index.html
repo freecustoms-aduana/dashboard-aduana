@@ -821,20 +821,21 @@ function renderNovedades(){
     '</div>').join('');
 
   if(ytdMode){
-    // Acciones y Oportunidades: deduplica por título. Último mes = en curso (destacado + desc), meses anteriores = solo título, muted
+    // Acciones y Oportunidades: deduplica por título. Último mes CERRADO = en curso (destacado + desc), meses anteriores = solo título, muted
+    const lastClosedKey=[...keys].reverse().find(k=>!MESES[k].enCurso)||lastKey;
     const buildYtdList=(field)=>{
       const map=new Map();
       for(const k of keys){
         for(const it of ((NOVEDADES[k]||{})[field]||[])){
           if(!map.has(it.t)) map.set(it.t,{item:it,inLast:false});
-          if(k===lastKey) map.get(it.t).inLast=true;
+          if(k===lastClosedKey) map.get(it.t).inLast=true;
         }
       }
       const enCurso=[...map.values()].filter(v=>v.inLast);
       const pasados=[...map.values()].filter(v=>!v.inLast);
       let html='';
       if(enCurso.length){
-        html+='<div class="nov-ytd-label">&#9679; '+MESES[lastKey].label+' — En curso</div>';
+        html+='<div class="nov-ytd-label">&#9679; '+MESES[lastClosedKey].label+' — En curso</div>';
         html+=enCurso.map(v=>'<div class="nov-item"><div class="nov-item-title">'+v.item.t+'</div><div class="nov-item-desc">'+v.item.d+'</div></div>').join('');
       }
       if(pasados.length){
