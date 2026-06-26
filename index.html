@@ -141,11 +141,13 @@ tfoot td.right{text-align:right;}
 .nov-item.past .nov-item-desc{color:var(--muted2);}
 .nov-ytd-label{font-size:10px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:1px;margin:12px 0 7px;padding-left:2px;}
 .nov-ytd-label.past-label{color:var(--muted2);}
-.nov-desvio-ytd{padding:10px 4px;}
-.nov-desvio-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-.desvio-num{font-size:26px;font-weight:800;color:var(--text);line-height:1;}
-.desvio-num.rojo{color:var(--rojo);}
-.desvio-lbl{font-size:12px;color:var(--muted);font-weight:500;}
+.dev-ytd-wrap{display:flex;align-items:stretch;gap:0;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-top:4px;}
+.dev-ytd-stat{flex:1;padding:16px 18px;display:flex;flex-direction:column;gap:5px;background:var(--bg);}
+.dev-ytd-stat:first-child{border-right:1px solid var(--border);}
+.dev-ytd-num{font-size:28px;font-weight:800;color:var(--text);line-height:1;}
+.dev-ytd-num.rojo{color:var(--rojo);}
+.dev-ytd-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.7px;}
+.dev-ytd-footer{padding:9px 16px;background:var(--lavanda);border-top:1px solid var(--lavanda2);display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--acc);font-weight:600;}
 .imp-neg{color:var(--rojo);background:var(--rojo-dim);}
 .imp-warn{color:var(--amber);background:var(--amber-dim);}
 .imp-ok{color:var(--verde);background:var(--verde-dim);}
@@ -819,7 +821,7 @@ function renderNovedades(){
     '</div>').join('');
 
   if(ytdMode){
-    // Acciones y Oportunidades: deduplica por título. Último mes = en curso (destacado), meses anteriores = past (muted)
+    // Acciones y Oportunidades: deduplica por título. Último mes = en curso (destacado + desc), meses anteriores = solo título, muted
     const buildYtdList=(field)=>{
       const map=new Map();
       for(const k of keys){
@@ -830,38 +832,40 @@ function renderNovedades(){
       }
       const enCurso=[...map.values()].filter(v=>v.inLast);
       const pasados=[...map.values()].filter(v=>!v.inLast);
-      const mkItem=(v,cls)=>'<div class="nov-item '+(cls||'')+'"><div class="nov-item-title">'+v.item.t+'</div><div class="nov-item-desc">'+v.item.d+'</div></div>';
       let html='';
       if(enCurso.length){
         html+='<div class="nov-ytd-label">&#9679; '+MESES[lastKey].label+' — En curso</div>';
-        html+=enCurso.map(v=>mkItem(v,'')).join('');
+        html+=enCurso.map(v=>'<div class="nov-item"><div class="nov-item-title">'+v.item.t+'</div><div class="nov-item-desc">'+v.item.d+'</div></div>').join('');
       }
       if(pasados.length){
         html+='<div class="nov-ytd-label past-label">&#10003; Meses anteriores</div>';
-        html+=pasados.map(v=>mkItem(v,'past')).join('');
+        html+=pasados.map(v=>'<div class="nov-item past"><div class="nov-item-title">'+v.item.t+'</div></div>').join('');
       }
       return html||'<div class="nov-item"><div class="nov-item-desc" style="color:var(--muted)">Sin registros en el a\xf1o.</div></div>';
     };
     document.getElementById('nov-acciones').innerHTML=buildYtdList('acciones');
     document.getElementById('nov-oportunidades').innerHTML=buildYtdList('oportunidades');
 
-    // Hitos: todos los meses
+    // Hitos: todos los meses, solo título
     const allHitos=keys.flatMap(k=>((NOVEDADES[k]||{}).hitos)||[]);
-    document.getElementById('nov-hitos').innerHTML=mkCards(allHitos,'Sin hitos estrat\xe9gicos en el a\xf1o.');
+    document.getElementById('nov-hitos').innerHTML=allHitos.length===0
+      ?'<div class="nov-item"><div class="nov-item-desc" style="color:var(--muted)">Sin hitos estrat\xe9gicos en el a\xf1o.</div></div>'
+      :allHitos.map(it=>'<div class="nov-item"><div class="nov-item-title">'+it.t+'</div></div>').join('');
 
-    // Desvíos: contador + sumatoria + tooltip hover con detalle
+    // Desvíos: card resumen con cantidad + monto + tooltip con solo título de cada desvío
     const allDev=keys.flatMap(k=>((NOVEDADES[k]||{}).desvios)||[]).filter(d=>d.sev!=='ok');
     const parseUSD=imp=>{if(!imp)return 0;const m=imp.match(/USD\s*([\d.,]+)/);if(!m)return 0;return parseFloat(m[1].replace(/\./g,'').replace(',','.'))||0;};
     const totalUSD=allDev.reduce((s,d)=>s+parseUSD(d.imp),0);
     const fmtUSD=n=>n>0?'USD '+n.toLocaleString('es-AR'):'N/D';
-    const tipContent=allDev.map(d=>'<b>'+d.t+'</b><br><span style="color:#A5B4FC;font-size:10.5px">'+(d.imp||'Sin impacto econ\xf3mico')+'</span>').join('<br><br>');
-    const tipHtml=allDev.length?'<span class="obj-tip-wrap" style="margin-left:8px;vertical-align:middle"><i class="obj-tip-icon">i</i><div class="obj-tip-box" style="white-space:normal;max-width:340px;line-height:1.75;text-align:left">'+tipContent+'</div></span>':'';
+    const tipContent=allDev.map(d=>'&#9679; '+d.t).join('<br>');
+    const tipHtml='<span class="obj-tip-wrap"><i class="obj-tip-icon">i</i><div class="obj-tip-box" style="white-space:normal;max-width:320px;line-height:2">'+tipContent+'</div></span>';
     document.getElementById('nov-desvios').innerHTML=allDev.length===0
       ?'<div class="nov-item"><div class="nov-item-desc" style="color:var(--verde)">Sin desv\xedos con impacto econ\xf3mico en el a\xf1o.</div></div>'
-      :'<div class="nov-desvio-ytd">'
-        +'<div class="nov-desvio-row"><span class="desvio-num">'+allDev.length+'</span><span class="desvio-lbl">desv\xedos registrados</span>'+tipHtml+'</div>'
-        +'<div class="nov-desvio-row"><span class="desvio-num rojo">'+fmtUSD(totalUSD)+'</span><span class="desvio-lbl">impacto econ\xf3mico total</span></div>'
-        +'</div>';
+      :'<div class="dev-ytd-wrap">'
+        +'<div class="dev-ytd-stat"><div class="dev-ytd-num">'+allDev.length+'</div><div class="dev-ytd-lbl">Desv\xedos</div></div>'
+        +'<div class="dev-ytd-stat"><div class="dev-ytd-num rojo">'+fmtUSD(totalUSD)+'</div><div class="dev-ytd-lbl">Impacto total</div></div>'
+        +'</div>'
+        +'<div class="dev-ytd-footer">Ver detalle '+tipHtml+'</div>';
 
   } else {
     const nd=NOVEDADES[lastKey]||{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}};
