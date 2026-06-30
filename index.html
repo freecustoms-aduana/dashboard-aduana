@@ -237,7 +237,7 @@ async function checkPw(){
     document.getElementById('pw-overlay').style.display='none';
     localStorage.setItem('auth',hash);
   }else{
-    document.getElementById('pw-err').textContent='Contraseña incorrecta';
+    document.getElementById('pw-err').textContent='ContraseÃ±a incorrecta';
     document.getElementById('pw-input').value='';
   }
 }
@@ -285,9 +285,9 @@ async function checkPw(){
     <span class="filter-label">Periodo:</span>
     <div id="month-toggles" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
     <div class="filter-sep"></div>
-    <button class="ytd-btn" id="ytd-btn" onclick="toggleYTD()">&#9733; Año en Curso</button>
+    <button class="ytd-btn" id="ytd-btn" onclick="toggleYTD()">&#9733; AÃ±o en Curso</button>
   </div>
-  <div class="prov-banner" id="prov-banner">&#9888; <span>Jun 2026 — Datos provisorios al 26/06. MOD (ARS 87.683.702) y tipo de cambio (1.431,6) estimados al cierre de mayo. Se actualizan automáticamente antes del 10/07.</span></div>
+  <div class="prov-banner" id="prov-banner">&#9888; <span>Jun 2026 â Datos provisorios al 26/06. MOD (ARS 87.683.702) y tipo de cambio (1.431,6) estimados al cierre de mayo. Se actualizan automÃ¡ticamente antes del 10/07.</span></div>
   <div class="content">
     <div class="view active" id="view-resumen">
       <div id="analisis-wrap">
@@ -321,8 +321,8 @@ async function checkPw(){
     </div>
     <div class="view" id="view-kpis">
       <div class="two-col">
-        <div class="section"><div class="section-header"><span class="section-chip">Selectividad</span><div class="section-title">Canales de Selectividad por Año — IMPO + EXPO (%)</div></div><div class="chart-wrap-tall"><canvas id="chart-sel"></canvas></div><div class="insight" style="margin-top:14px">Distribucion de canales R / N / V sobre el total de operaciones IMPO+EXPO oficializadas por año. 2026 corresponde al acumulado enero&ndash;mayo.</div></div>
-        <div class="section"><div class="section-header"><span class="section-chip">Liberacion</span><div class="section-title">Tiempos de Liberacion — IMPO (%)</div></div><div class="chart-wrap-tall"><canvas id="chart-lib"></canvas></div><div class="insight" style="margin-top:14px">Distribucion porcentual de dias transcurridos desde arribo hasta liberacion total. 2024 y 2025 son promedios anuales; 2026 se muestra mensualmente.</div></div>
+        <div class="section"><div class="section-header"><span class="section-chip">Selectividad</span><div class="section-title">Canales de Selectividad por AÃ±o â IMPO + EXPO (%)</div></div><div class="chart-wrap-tall"><canvas id="chart-sel"></canvas></div><div class="insight" style="margin-top:14px">Distribucion de canales R / N / V sobre el total de operaciones IMPO+EXPO oficializadas por aÃ±o. 2026 corresponde al acumulado enero&ndash;mayo.</div></div>
+        <div class="section"><div class="section-header"><span class="section-chip">Liberacion</span><div class="section-title">Tiempos de Liberacion â IMPO (%)</div></div><div class="chart-wrap-tall"><canvas id="chart-lib"></canvas></div><div class="insight" style="margin-top:14px">Distribucion porcentual de dias transcurridos desde arribo hasta liberacion total. 2024 y 2025 son promedios anuales; 2026 se muestra mensualmente.</div></div>
       </div>
     </div>
     <div class="view" id="view-interanual">
@@ -334,7 +334,7 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="ops-table-title">Clientes por Operaciones</div></div><table id="ops-table"></table></div>
         <div class="section"><div class="section-header"><span class="section-chip">Comparativa</span><div class="section-title" id="ops-chart-title">Mes vs Promedio 2025</div></div><div class="chart-wrap-tall"><canvas id="chart-ops"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Análisis /mes vs Promedio 2025</div></div><div style="overflow-x:auto"><table id="ops-ev-table"></table></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente â AnÃ¡lisis /mes vs Promedio 2025</div></div><div style="overflow-x:auto"><table id="ops-ev-table"></table></div></div>
     </div>
     <div class="view" id="view-facturacion">
       <div class="two-col">
@@ -349,9 +349,9 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">EBITDA/Op</span><div class="section-title">Rentabilidad/Op (USD) vs Promedios de referencia</div></div><div class="chart-wrap"><canvas id="chart-rent-mes"></canvas></div><div class="insight" id="rent-insight"></div></div>
         <div class="section"><div class="section-header"><span class="section-chip">PE</span><div class="section-title">Punto de Equilibrio</div></div><div id="pe-grid" class="pe-grid"></div><div class="chart-wrap-sm"><canvas id="chart-pe"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado — Análisis /mes</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
-      <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Peso Estrat&eacute;gico — Aporte al Ingreso — Análisis /mes</div></div><div class="chart-wrap"><canvas id="chart-eq-peso"></canvas></div></div>
-      <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title">Rentabilidad por Equipo — Mayor a Menor</div></div><table id="eq-rank-table" class="data-table"></table></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Eficiencia</span><div class="section-title">Evolucion Rent./Op y Rent./Empleado â AnÃ¡lisis /mes</div></div><div class="chart-wrap"><canvas id="chart-rent-ev"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Equipos</span><div class="section-title">Peso Estrat&eacute;gico â Aporte al Ingreso â AnÃ¡lisis /mes</div></div><div class="chart-wrap"><canvas id="chart-eq-peso"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title">Rentabilidad por Equipo â Mayor a Menor</div></div><table id="eq-rank-table" class="data-table"></table></div>
     </div>
     <div class="view" id="view-objetivos">
       <div id="obj-content"></div>
@@ -361,11 +361,11 @@ async function checkPw(){
 </div>
 <script>
 const ANALISIS_DATA={
-  "2026-01": '<p>Durante enero de 2026, el area de Aduana inicio el ejercicio con <b>228 operaciones</b> oficializadas, en linea con el desempeño estacional historico del mes. La ganancia bruta (EBITDA) alcanzo <b>USD 58.741</b> (ARS ~86,1M al TC 1.465), con una rentabilidad por operacion de <b>USD 258/op</b> y de <b>USD 1.728 por empleado</b> sobre una dotacion de 34 personas. El tipo de cambio operativo fue ARS 1.465.</p><p>El principal condicionante del mes fue el ratio MOD/Ingresos, que se ubico en <b>37,9%</b>, el mas elevado del año, limitando la conversion de facturacion en resultado operativo. Este comportamiento es propio del inicio de año, donde la estructura de costos de personal opera a plena capacidad frente a un volumen operativo en proceso de aceleracion.</p><p>Los cuatro grupos estrategicos —Corral, Larocca, GSB y Calzetta— concentraron <b>143 de las 228 operaciones (62,7%)</b>, sosteniendo el nucleo de actividad del mes. En terminos interanuales, el area opero con 228 operaciones frente a las 232 registradas en enero 2025, una variacion de <b>-1,7%</b> que confirma la estabilidad del volumen base.</p><p>El punto de equilibrio mensual se ubico en <b>110 operaciones</b>, operandose <b>2,1 veces por encima</b> del minimo requerido para cubrir la estructura de costos fijos del area, con cobertura holgada desde el arranque del ejercicio.</p>',
-  "2026-02": '<p>Febrero 2026 presento una recuperacion operativa y financiera sostenida, con <b>238 operaciones</b> (+4,4% vs. enero) y un EBITDA de <b>USD 71.051</b> (ARS ~101,3M al TC 1.426), el segundo resultado mas alto del año a esa fecha. La rentabilidad por operacion escalo a <b>USD 298/op</b> (+15,5%) y la ganancia por empleado se ubico en <b>USD 1.920</b>.</p><p>El mes registro la dotacion mas alta del ejercicio con <b>37 empleados</b>. A pesar de ello, la mejora en volumen y la selectividad operativa permitieron absorber el incremento de MOD —que represento el 45,8% de los ingresos— y mejorar los indicadores unitarios. La facturacion supero los ARS 224M.</p><p>Los grupos estrategicos Corral, Larocca, GSB y Calzetta sumaron <b>133 operaciones (55,9%)</b> del total, con distribucion mas equilibrada respecto a enero. Larocca lidero el ranking con 38 operaciones. Frente a febrero 2025 (221 ops.), el area mostro un avance interanual de <b>+7,7%</b>, confirmando la tendencia de crecimiento.</p><p>El punto de equilibrio se establecio en <b>120 operaciones</b>, con una cobertura de <b>1,98x</b>, sosteniendo el margen operativo en niveles positivos y consolidando la tendencia ascendente del ejercicio.</p>',
-  "2026-03": '<p>Marzo 2026 marco el mayor salto operativo del año, con <b>283 operaciones</b> (+18,9% vs. febrero), superando ampliamente la marca de marzo 2025 (238 ops., <b>+18,9% interanual</b>). Sin embargo, el EBITDA evidencio una leve contraccion a <b>USD 68.675</b> (ARS ~96,8M al TC 1.410), reflejo del impacto que el crecimiento de volumen genero sobre la estructura de costos directos.</p><p>La rentabilidad por operacion descendi&oacute; de USD 298 a <b>USD 243/op</b> (-18,5%), dinamica esperable en meses de alto volumen donde el MOD se distribuye sobre mas despachos pero sin incrementarse proporcionalmente. La dotacion se ubico en 35 empleados, con una ganancia por empleado de <b>USD 1.962</b>.</p><p>El dinamismo del mes fue liderado por Grupo GSB (58 ops.) y Grupo Larocca (54 ops.), que junto a Corral y Calzetta concentraron <b>157 de las 283 operaciones (55,5%)</b>. La aceleracion de GSB y Larocca refleja el inicio de temporada alta en sus segmentos de actividad.</p><p>Con un punto de equilibrio de <b>143 operaciones</b>, el area opero <b>1,98x por encima del minimo</b>, sosteniendo la cobertura a pesar del efecto dilutivo del volumen sobre el margen unitario. El acumulado enero&ndash;marzo totalizo <b>749 operaciones</b> y un EBITDA de <b>USD 198.467</b>.</p>',
-  "2026-04": '<p>Abril 2026 represento un <b>hito historico</b> para el area, con <b>323 operaciones</b> oficializadas (+14,1% vs. marzo y +18,3% vs. abril 2025), el mayor volumen mensual registrado. El EBITDA alcanzo <b>USD 79.244</b> (ARS ~112,2M al TC 1.416), tambien un maximo historico, con <b>USD 245/op</b> y <b>USD 2.331 por empleado</b>.</p><p>El resultado confirma que el area logro escalar su volumen sin deteriorar la estructura de rentabilidad. El crecimiento de ingresos a ARS 280,3M absorbio el incremento en MOD (ARS 126,6M, el mas elevado del año), manteniendo margenes consistentes y mejorando el EBITDA respecto al mes anterior en <b>+15,4%</b>.</p><p>Grupo GSB se consolido como lider operativo con <b>75 operaciones</b>, seguido por Grupo Larocca (44), Grupo Corral (33) y Cia. Argentina de Aceites (32). Los cuatro grupos estrategicos principales concentraron <b>175 de las 323 operaciones (54,2%)</b>, con GSB como traccionador clave del record mensual.</p><p>El punto de equilibrio fue el mas exigente del año: <b>171 operaciones</b>. Aun asi, el area lo supero en <b>1,89x</b>, confirmando que la expansion operativa se realizo sobre una base financiera solida. El acumulado enero&ndash;abril totalizo <b>1.072 operaciones</b> y un EBITDA de <b>USD 277.711</b>.</p>',
-  "2026-05": '<p>Mayo 2026 consolido una estabilizacion saludable tras el record historico de abril, con <b>262 operaciones</b> (-18,9%) y un EBITDA de <b>USD 74.149</b> (ARS ~106,2M al TC 1.432). La reduccion de volumen no implico deterioro estructural: la rentabilidad por operacion mejoro a <b>USD 283/op</b> (+15,5% vs. abril), el mejor ratio del año.</p><p>La contraccion de la dotacion a <b>26 empleados</b> &mdash;frente a los 34 de abril&mdash; fue el principal factor en la mejora de los ratios unitarios, elevando la ganancia por empleado a <b>USD 2.852</b> (+22,4%), tambien el maximo del año. El area demostro capacidad de mantener rentabilidad con una estructura mas liviana, reflejando una gestion eficiente de los costos directos.</p><p>Grupo GSB lider&oacute; por segundo mes consecutivo con <b>76 operaciones</b>, seguido por Grupo Corral (45) &mdash;su mejor mes del ejercicio&mdash; y Grupo Calzetta (22). Los cuatro grupos estrategicos sumaron <b>164 de las 262 operaciones (62,6%)</b>. En terminos interanuales, el area registro 262 ops. frente a las 300 de mayo 2025 (<b>-12,7% interanual</b>).</p><p>Con un punto de equilibrio de <b>119 operaciones</b> y una cobertura de <b>2,2x</b>, la mayor del año, el area opero con amplio margen sobre el minimo requerido. El acumulado enero&ndash;mayo 2026 totaliza <b>1.334 operaciones</b> y un EBITDA de <b>USD 351.860</b>, con una tendencia de rentabilidad unitaria al alza que consolida el desempeño positivo del ejercicio.</p>'
+  "2026-01": '<p>Durante enero de 2026, el area de Aduana inicio el ejercicio con <b>228 operaciones</b> oficializadas, en linea con el desempeÃ±o estacional historico del mes. La ganancia bruta (EBITDA) alcanzo <b>USD 58.741</b> (ARS ~86,1M al TC 1.465), con una rentabilidad por operacion de <b>USD 258/op</b> y de <b>USD 1.728 por empleado</b> sobre una dotacion de 34 personas. El tipo de cambio operativo fue ARS 1.465.</p><p>El principal condicionante del mes fue el ratio MOD/Ingresos, que se ubico en <b>37,9%</b>, el mas elevado del aÃ±o, limitando la conversion de facturacion en resultado operativo. Este comportamiento es propio del inicio de aÃ±o, donde la estructura de costos de personal opera a plena capacidad frente a un volumen operativo en proceso de aceleracion.</p><p>Los cuatro grupos estrategicos âCorral, Larocca, GSB y Calzettaâ concentraron <b>143 de las 228 operaciones (62,7%)</b>, sosteniendo el nucleo de actividad del mes. En terminos interanuales, el area opero con 228 operaciones frente a las 232 registradas en enero 2025, una variacion de <b>-1,7%</b> que confirma la estabilidad del volumen base.</p><p>El punto de equilibrio mensual se ubico en <b>110 operaciones</b>, operandose <b>2,1 veces por encima</b> del minimo requerido para cubrir la estructura de costos fijos del area, con cobertura holgada desde el arranque del ejercicio.</p>',
+  "2026-02": '<p>Febrero 2026 presento una recuperacion operativa y financiera sostenida, con <b>238 operaciones</b> (+4,4% vs. enero) y un EBITDA de <b>USD 71.051</b> (ARS ~101,3M al TC 1.426), el segundo resultado mas alto del aÃ±o a esa fecha. La rentabilidad por operacion escalo a <b>USD 298/op</b> (+15,5%) y la ganancia por empleado se ubico en <b>USD 1.920</b>.</p><p>El mes registro la dotacion mas alta del ejercicio con <b>37 empleados</b>. A pesar de ello, la mejora en volumen y la selectividad operativa permitieron absorber el incremento de MOD âque represento el 45,8% de los ingresosâ y mejorar los indicadores unitarios. La facturacion supero los ARS 224M.</p><p>Los grupos estrategicos Corral, Larocca, GSB y Calzetta sumaron <b>133 operaciones (55,9%)</b> del total, con distribucion mas equilibrada respecto a enero. Larocca lidero el ranking con 38 operaciones. Frente a febrero 2025 (221 ops.), el area mostro un avance interanual de <b>+7,7%</b>, confirmando la tendencia de crecimiento.</p><p>El punto de equilibrio se establecio en <b>120 operaciones</b>, con una cobertura de <b>1,98x</b>, sosteniendo el margen operativo en niveles positivos y consolidando la tendencia ascendente del ejercicio.</p>',
+  "2026-03": '<p>Marzo 2026 marco el mayor salto operativo del aÃ±o, con <b>283 operaciones</b> (+18,9% vs. febrero), superando ampliamente la marca de marzo 2025 (238 ops., <b>+18,9% interanual</b>). Sin embargo, el EBITDA evidencio una leve contraccion a <b>USD 68.675</b> (ARS ~96,8M al TC 1.410), reflejo del impacto que el crecimiento de volumen genero sobre la estructura de costos directos.</p><p>La rentabilidad por operacion descendi&oacute; de USD 298 a <b>USD 243/op</b> (-18,5%), dinamica esperable en meses de alto volumen donde el MOD se distribuye sobre mas despachos pero sin incrementarse proporcionalmente. La dotacion se ubico en 35 empleados, con una ganancia por empleado de <b>USD 1.962</b>.</p><p>El dinamismo del mes fue liderado por Grupo GSB (58 ops.) y Grupo Larocca (54 ops.), que junto a Corral y Calzetta concentraron <b>157 de las 283 operaciones (55,5%)</b>. La aceleracion de GSB y Larocca refleja el inicio de temporada alta en sus segmentos de actividad.</p><p>Con un punto de equilibrio de <b>143 operaciones</b>, el area opero <b>1,98x por encima del minimo</b>, sosteniendo la cobertura a pesar del efecto dilutivo del volumen sobre el margen unitario. El acumulado enero&ndash;marzo totalizo <b>749 operaciones</b> y un EBITDA de <b>USD 198.467</b>.</p>',
+  "2026-04": '<p>Abril 2026 represento un <b>hito historico</b> para el area, con <b>323 operaciones</b> oficializadas (+14,1% vs. marzo y +18,3% vs. abril 2025), el mayor volumen mensual registrado. El EBITDA alcanzo <b>USD 79.244</b> (ARS ~112,2M al TC 1.416), tambien un maximo historico, con <b>USD 245/op</b> y <b>USD 2.331 por empleado</b>.</p><p>El resultado confirma que el area logro escalar su volumen sin deteriorar la estructura de rentabilidad. El crecimiento de ingresos a ARS 280,3M absorbio el incremento en MOD (ARS 126,6M, el mas elevado del aÃ±o), manteniendo margenes consistentes y mejorando el EBITDA respecto al mes anterior en <b>+15,4%</b>.</p><p>Grupo GSB se consolido como lider operativo con <b>75 operaciones</b>, seguido por Grupo Larocca (44), Grupo Corral (33) y Cia. Argentina de Aceites (32). Los cuatro grupos estrategicos principales concentraron <b>175 de las 323 operaciones (54,2%)</b>, con GSB como traccionador clave del record mensual.</p><p>El punto de equilibrio fue el mas exigente del aÃ±o: <b>171 operaciones</b>. Aun asi, el area lo supero en <b>1,89x</b>, confirmando que la expansion operativa se realizo sobre una base financiera solida. El acumulado enero&ndash;abril totalizo <b>1.072 operaciones</b> y un EBITDA de <b>USD 277.711</b>.</p>',
+  "2026-05": '<p>Mayo 2026 consolido una estabilizacion saludable tras el record historico de abril, con <b>262 operaciones</b> (-18,9%) y un EBITDA de <b>USD 74.149</b> (ARS ~106,2M al TC 1.432). La reduccion de volumen no implico deterioro estructural: la rentabilidad por operacion mejoro a <b>USD 283/op</b> (+15,5% vs. abril), el mejor ratio del aÃ±o.</p><p>La contraccion de la dotacion a <b>26 empleados</b> &mdash;frente a los 34 de abril&mdash; fue el principal factor en la mejora de los ratios unitarios, elevando la ganancia por empleado a <b>USD 2.852</b> (+22,4%), tambien el maximo del aÃ±o. El area demostro capacidad de mantener rentabilidad con una estructura mas liviana, reflejando una gestion eficiente de los costos directos.</p><p>Grupo GSB lider&oacute; por segundo mes consecutivo con <b>76 operaciones</b>, seguido por Grupo Corral (45) &mdash;su mejor mes del ejercicio&mdash; y Grupo Calzetta (22). Los cuatro grupos estrategicos sumaron <b>164 de las 262 operaciones (62,6%)</b>. En terminos interanuales, el area registro 262 ops. frente a las 300 de mayo 2025 (<b>-12,7% interanual</b>).</p><p>Con un punto de equilibrio de <b>119 operaciones</b> y una cobertura de <b>2,2x</b>, la mayor del aÃ±o, el area opero con amplio margen sobre el minimo requerido. El acumulado enero&ndash;mayo 2026 totaliza <b>1.334 operaciones</b> y un EBITDA de <b>USD 351.860</b>, con una tendencia de rentabilidad unitaria al alza que consolida el desempeÃ±o positivo del ejercicio.</p>'
 };
 
 Chart.defaults.color='#5B6CA8';
@@ -433,89 +433,89 @@ const NOVEDADES={
   "2026-01":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}},
   "2026-02":{
     acciones:[
-      {t:"Reestructuración Clasificación Arancelaria",d:"Se mantiene activo el proceso de reestructuración. Ya existe un potencial candidato para ingresar al área."},
-      {t:"Búsquedas Activas",d:"Operador de Clasificación Arancelaria."},
-      {t:"Revisión de Perfiles",d:"Se determinó el perfil de Gloria Albornoz como Analista de Comex. Se está revisando el perfil de Lorenzo Sansone como Supervisor."},
-      {t:"Evaluación de Permanencia",d:"Revisión de continuidad de Darío Franco, Lucas Mingelgrün y Rocío González."}
+      {t:"ReestructuraciÃ³n ClasificaciÃ³n Arancelaria",d:"Se mantiene activo el proceso de reestructuraciÃ³n. Ya existe un potencial candidato para ingresar al Ã¡rea."},
+      {t:"BÃºsquedas Activas",d:"Operador de ClasificaciÃ³n Arancelaria."},
+      {t:"RevisiÃ³n de Perfiles",d:"Se determinÃ³ el perfil de Gloria Albornoz como Analista de Comex. Se estÃ¡ revisando el perfil de Lorenzo Sansone como Supervisor."},
+      {t:"EvaluaciÃ³n de Permanencia",d:"RevisiÃ³n de continuidad de DarÃ­o Franco, Lucas MingelgrÃ¼n y RocÃ­o GonzÃ¡lez."}
     ],
     oportunidades:[
-      {t:"Carga en DUX por Clasificación",d:"Implementación de carga de ítems por parte de Clasificación para minimizar errores en la declaración de las PA. Trabajando con Mymtec."},
-      {t:"Corrección de despachos/permisos",d:"Unificación del área en el uso de herramientas para optimizar las correcciones de despachos."},
-      {t:"Capacitaciones al personal",d:"Se implementarán reuniones quincenales a partir del 10 de marzo para unificar el criterio técnico operativo."}
+      {t:"Carga en DUX por ClasificaciÃ³n",d:"ImplementaciÃ³n de carga de Ã­tems por parte de ClasificaciÃ³n para minimizar errores en la declaraciÃ³n de las PA. Trabajando con Mymtec."},
+      {t:"CorrecciÃ³n de despachos/permisos",d:"UnificaciÃ³n del Ã¡rea en el uso de herramientas para optimizar las correcciones de despachos."},
+      {t:"Capacitaciones al personal",d:"Se implementarÃ¡n reuniones quincenales a partir del 10 de marzo para unificar el criterio tÃ©cnico operativo."}
     ],
     hitos:[
-      {t:"Clasificación Arancelaria del Equipo de Neumáticos",d:"Se comenzó a trabajar en la clasificación de todos los ítems de Neumáticos y a revalidar los clasificados previamente, unificando el procedimiento para todo el sector."}
+      {t:"ClasificaciÃ³n Arancelaria del Equipo de NeumÃ¡ticos",d:"Se comenzÃ³ a trabajar en la clasificaciÃ³n de todos los Ã­tems de NeumÃ¡ticos y a revalidar los clasificados previamente, unificando el procedimiento para todo el sector."}
     ],
     desvios:[
-      {t:"Hogar y Tecnología — Error en Clasificación Arancelaria",d:"Airfryer declarada con PA de freidora en lugar de horno eléctrico. Generó extra costos por almacenaje en Terminal.",imp:"USD 4.500",sev:"neg"},
-      {t:"Flama SRL — Falta de seguimiento de arribo de carga",d:"Falta de seguimiento del arribo de carga. Sin impacto económico, pero con riesgo latente de extra costos por almacenaje y demora de contenedores.",imp:"Sin impacto (riesgo latente)",sev:"warn"}
+      {t:"Hogar y TecnologÃ­a â Error en ClasificaciÃ³n Arancelaria",d:"Airfryer declarada con PA de freidora en lugar de horno elÃ©ctrico. GenerÃ³ extra costos por almacenaje en Terminal.",imp:"USD 4.500",sev:"neg"},
+      {t:"Flama SRL â Falta de seguimiento de arribo de carga",d:"Falta de seguimiento del arribo de carga. Sin impacto econÃ³mico, pero con riesgo latente de extra costos por almacenaje y demora de contenedores.",imp:"Sin impacto (riesgo latente)",sev:"warn"}
     ],
     personal:{
-      ing:["Lautaro Parks — Operador SIM, Equipo Varios","Tomás Arias — Operador SIM, Equipo Maquinaria"],
+      ing:["Lautaro Parks â Operador SIM, Equipo Varios","TomÃ¡s Arias â Operador SIM, Equipo Maquinaria"],
       desv:["Milagros Albornoz"],
       ren:[],
-      otros:["Promoción: Andreina Lobo — Operadora SIM, Equipo Neumáticos"]
+      otros:["PromociÃ³n: Andreina Lobo â Operadora SIM, Equipo NeumÃ¡ticos"]
     }
   },
   "2026-03":{
     acciones:[
-      {t:"Reestructuración Clasificación Arancelaria",d:"Se mantiene activo el proceso. Ya existe un potencial candidato para ingresar al área."},
-      {t:"Revisión de Perfiles",d:"Se está revisando el perfil de Lorenzo Sansone como Supervisor."},
-      {t:"Evaluación de Permanencia",d:"Revisión de continuidad de Lucas Mingelgrün y Rocío González."}
+      {t:"ReestructuraciÃ³n ClasificaciÃ³n Arancelaria",d:"Se mantiene activo el proceso. Ya existe un potencial candidato para ingresar al Ã¡rea."},
+      {t:"RevisiÃ³n de Perfiles",d:"Se estÃ¡ revisando el perfil de Lorenzo Sansone como Supervisor."},
+      {t:"EvaluaciÃ³n de Permanencia",d:"RevisiÃ³n de continuidad de Lucas MingelgrÃ¼n y RocÃ­o GonzÃ¡lez."}
     ],
     oportunidades:[
-      {t:"Carga en DUX por Clasificación",d:"Implementación de carga de ítems por parte de Clasificación. Trabajando con Mymtec para su implementación."},
-      {t:"Corrección de despachos/permisos",d:"Unificación del área en el uso de herramientas para optimizar las correcciones de despachos."},
-      {t:"Capacitaciones al personal",d:"Se comenzará a trabajar en el Plan de Capacitación 2026 con reuniones quincenales."}
+      {t:"Carga en DUX por ClasificaciÃ³n",d:"ImplementaciÃ³n de carga de Ã­tems por parte de ClasificaciÃ³n. Trabajando con Mymtec para su implementaciÃ³n."},
+      {t:"CorrecciÃ³n de despachos/permisos",d:"UnificaciÃ³n del Ã¡rea en el uso de herramientas para optimizar las correcciones de despachos."},
+      {t:"Capacitaciones al personal",d:"Se comenzarÃ¡ a trabajar en el Plan de CapacitaciÃ³n 2026 con reuniones quincenales."}
     ],
     hitos:[
-      {t:"Cambio en el Comisionista en Aduana Campana",d:"El cambio de Federico Camerota en reemplazo de Rosana brindó más visibilidad en las operaciones. El próximo paso es atacar los problemas identificados."},
-      {t:"Inicio de Plan de Capacitación",d:"Se dio inicio al Plan de Capacitación con reuniones quincenales para unificar el criterio técnico operativo en el área."}
+      {t:"Cambio en el Comisionista en Aduana Campana",d:"El cambio de Federico Camerota en reemplazo de Rosana brindÃ³ mÃ¡s visibilidad en las operaciones. El prÃ³ximo paso es atacar los problemas identificados."},
+      {t:"Inicio de Plan de CapacitaciÃ³n",d:"Se dio inicio al Plan de CapacitaciÃ³n con reuniones quincenales para unificar el criterio tÃ©cnico operativo en el Ã¡rea."}
     ],
     desvios:[
-      {t:"Sin desvíos con impacto económico",d:"Durante marzo de 2026 no se registraron desvíos con impacto económico en el área.",imp:"",sev:"ok"}
+      {t:"Sin desvÃ­os con impacto econÃ³mico",d:"Durante marzo de 2026 no se registraron desvÃ­os con impacto econÃ³mico en el Ã¡rea.",imp:"",sev:"ok"}
     ],
     personal:{
       ing:[],
       desv:["Juan Cruz Amendola"],
-      ren:["Darío Franco"],
+      ren:["DarÃ­o Franco"],
       otros:[]
     }
   },
   "2026-04":{
     acciones:[
-      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se inició la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago Antuña."},
-      {t:"Capacitaciones Semanales",d:"Se están llevando a cabo capacitaciones semanales con el equipo de Aduana."}
+      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se iniciÃ³ la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago AntuÃ±a."},
+      {t:"Capacitaciones Semanales",d:"Se estÃ¡n llevando a cabo capacitaciones semanales con el equipo de Aduana."}
     ],
     oportunidades:[
-      {t:"Carga en DUX — Clasificación",d:"Implementación de carga de ítems por Clasificación para minimizar errores en la declaración de las PA. Proyecto en pausa."},
-      {t:"Corrección de despachos/permisos",d:"Implementación de nuevas herramientas para la corrección de despachos: IA, herramientas de MiSIM, etc."}
+      {t:"Carga en DUX â ClasificaciÃ³n",d:"ImplementaciÃ³n de carga de Ã­tems por ClasificaciÃ³n para minimizar errores en la declaraciÃ³n de las PA. Proyecto en pausa."},
+      {t:"CorrecciÃ³n de despachos/permisos",d:"ImplementaciÃ³n de nuevas herramientas para la correcciÃ³n de despachos: IA, herramientas de MiSIM, etc."}
     ],
     hitos:[
-      {t:"Optimización de la Estructura de Aduana",d:"Se profundizaron los cambios en la estructura de Aduana, dejando al sector optimizado de cara al escenario actual."},
-      {t:"Nueva Etapa en Clasificación Arancelaria",d:"Inicio de nueva etapa buscando mayor efectividad en las clasificaciones, optimización de procesos y mejor comunicación con el Área Operativa."}
+      {t:"OptimizaciÃ³n de la Estructura de Aduana",d:"Se profundizaron los cambios en la estructura de Aduana, dejando al sector optimizado de cara al escenario actual."},
+      {t:"Nueva Etapa en ClasificaciÃ³n Arancelaria",d:"Inicio de nueva etapa buscando mayor efectividad en las clasificaciones, optimizaciÃ³n de procesos y mejor comunicaciÃ³n con el Ãrea Operativa."}
     ],
     desvios:[
-      {t:"Incorrecta liquidación de tributos — Grupo Dateng",d:"Liquidación incorrecta de tributos en una operación del cliente Grupo Dateng.",imp:"Por determinar",sev:"neg"},
-      {t:"Extravío de OM en Ezeiza",d:"Se registró el extravío de una OM en la Aduana de Ezeiza.",imp:"USD 750",sev:"neg"}
+      {t:"Incorrecta liquidaciÃ³n de tributos â Grupo Dateng",d:"LiquidaciÃ³n incorrecta de tributos en una operaciÃ³n del cliente Grupo Dateng.",imp:"Por determinar",sev:"neg"},
+      {t:"ExtravÃ­o de OM en Ezeiza",d:"Se registrÃ³ el extravÃ­o de una OM en la Aduana de Ezeiza.",imp:"USD 750",sev:"neg"}
     ],
     personal:{
-      ing:["Damián Spirollari — Resp. de Clasificación Arancelaria"],
-      desv:["Rocío González","Nilda Villafañe","Lucas Mingelgrün","Mariana Faletto","Martina Carballa","Lautaro Vargas"],
+      ing:["DamiÃ¡n Spirollari â Resp. de ClasificaciÃ³n Arancelaria"],
+      desv:["RocÃ­o GonzÃ¡lez","Nilda VillafaÃ±e","Lucas MingelgrÃ¼n","Mariana Faletto","Martina Carballa","Lautaro Vargas"],
       ren:["Lautaro Astorga"],
       otros:["Pase de Gloria Albornoz al Sector Comercial"]
     }
   },
   "2026-05":{
     acciones:[
-      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se continúa con la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago Antuña."},
-      {t:"Capacitaciones Semanales",d:"Se continúan llevando a cabo capacitaciones semanales con el equipo de Aduana."},
-      {t:"Clasificación Arancelaria — Reclasificación del Catálogo",d:"Se inició el proceso de reclasificación del catálogo actual de posiciones arancelarias."},
-      {t:"Revisión de la Matriz de Puestos",d:"Se está llevando a cabo la revisión de la matriz de puestos del área."}
+      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se continÃºa con la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago AntuÃ±a."},
+      {t:"Capacitaciones Semanales",d:"Se continÃºan llevando a cabo capacitaciones semanales con el equipo de Aduana."},
+      {t:"ClasificaciÃ³n Arancelaria â ReclasificaciÃ³n del CatÃ¡logo",d:"Se iniciÃ³ el proceso de reclasificaciÃ³n del catÃ¡logo actual de posiciones arancelarias."},
+      {t:"RevisiÃ³n de la Matriz de Puestos",d:"Se estÃ¡ llevando a cabo la revisiÃ³n de la matriz de puestos del Ã¡rea."}
     ],
     oportunidades:[
       {t:"Comisionista Ezeiza",d:"Analizar el cambio del comisionista de Ezeiza por uno propio de Free Customs (Guido)."},
-      {t:"Estrategia Comercial",d:"Comenzar a trabajar de manera directa en orientar la matriz comercial hacia la industria minera, oil & gas y energía."}
+      {t:"Estrategia Comercial",d:"Comenzar a trabajar de manera directa en orientar la matriz comercial hacia la industria minera, oil & gas y energÃ­a."}
     ],
     hitos:[],
     desvios:[],
@@ -557,7 +557,7 @@ function getAgg(keys){
   const ops=ms.reduce((s,m)=>s+m.ops,0);
   const res=ms.reduce((s,m)=>s+m.resUSD,0);
   const dot=Math.round(ms.reduce((s,m)=>s+m.dot,0)/n);
-  return{label:ytdMode?"Año en Curso 2026":keys.map(k=>MESES[k].lc).join(" + "),
+  return{label:ytdMode?"AÃ±o en Curso 2026":keys.map(k=>MESES[k].lc).join(" + "),
     ops,resUSD:res,ing:ms.reduce((s,m)=>s+m.ing,0),
     cos:ms.reduce((s,m)=>s+m.cos,0),mod:ms.reduce((s,m)=>s+m.mod,0),
     dot,tc:+(ms.reduce((s,m)=>s+m.tc,0)/n).toFixed(1),
@@ -577,7 +577,7 @@ function updateFilterBar(){
   document.querySelectorAll(".month-toggle").forEach(b=>b.classList.toggle("active",selMonths.has(b.dataset.k)&&!ytdMode));
   document.getElementById("ytd-btn").classList.toggle("active",ytdMode);
   const keys=getSelKeys();
-  document.getElementById("badge-mes").textContent=ytdMode?"Año en Curso":keys.length===1?MESES[keys[0]].label:keys.length+" meses";
+  document.getElementById("badge-mes").textContent=ytdMode?"AÃ±o en Curso":keys.length===1?MESES[keys[0]].label:keys.length+" meses";
   const hasCurso=!ytdMode&&keys.some(k=>MESES[k].enCurso);
   document.getElementById("prov-banner").classList.toggle("visible",hasCurso);
 }
@@ -595,7 +595,7 @@ function toggleYTD(){
 }
 
 /* === NAV === */
-const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 — Operaciones",facturacion:"Top 10 — Facturacion USD",rentabilidad:"Analisis de Rentabilidad",objetivos:"Objetivos Gerenciales 2026"};
+const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 â Operaciones",facturacion:"Top 10 â Facturacion USD",rentabilidad:"Analisis de Rentabilidad",objetivos:"Objetivos Gerenciales 2026"};
 function showView(n){
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
@@ -647,14 +647,14 @@ function renderObjetivos(){
     <div class="obj-grid">
       ${objCard({name:"Tiempo de Liberaci&oacute;n 0&ndash;6 d&iacute;as",badge:badgeLib,badgeTxt:lib2026>=libMeta?"Superado":"En proceso",val:lib2026+"%",valSm:"en 0-6 d&iacute;as (acum. 2026)",target:"Meta: llevar al "+libMeta+"% (+15% sobre base 40%)",pct:cpct(lib2026,libMeta),barCls:badgeLib,auto:"Calculado autom&aacute;ticamente desde datos Liberaci&oacute;n"})}
       ${objCard({name:"Rentabilidad m&iacute;nima u$s 400 / op.",badge:badgeRent,badgeTxt:rentOp>=400?"Alcanzado":rentOp>=300?"En proceso":"Por debajo",val:"u$s "+rentOp,valSm:"/ op. promedio YTD",target:"Meta: &ge; u$s 400 por operaci&oacute;n",pct:cpct(rentOp,400),barCls:badgeRent,auto:"Calculado desde EBITDA mensual &divide; operaciones"})}
-      ${objCard({name:"Manual de Procedimientos",badge:"a",badgeTxt:"En proceso",val:"Q1 ✓",valSm:"Q3 pendiente",target:"Actualizaci&oacute;n Q1 y Q3 &middot; &ge;90% aprobaci&oacute;n",pct:50,barCls:"a",auto:"Q1 entregado &mdash; Q3 pendiente"})}
+      ${objCard({name:"Manual de Procedimientos",badge:"a",badgeTxt:"En proceso",val:"Q1 â",valSm:"Q3 pendiente",target:"Actualizaci&oacute;n Q1 y Q3 &middot; &ge;90% aprobaci&oacute;n",pct:50,barCls:"a",auto:"Q1 entregado &mdash; Q3 pendiente"})}
       ${objCard({name:"Tabla de Polivalencias",badge:"r",badgeTxt:"Pendiente",val:"&mdash;",target:"3 competencias cr&iacute;ticas por perfil",pct:null,auto:"Pendiente de ejecuci&oacute;n"})}
     </div>
     <div class="obj-section-lbl">Metas Operativas</div>
     <div class="obj-grid">
       ${objCard({name:"Operaciones Anuales",badge:badgeOps,badgeTxt:"En proceso",val:ytdOps.toLocaleString("es-AR"),valSm:"ops acum. &bull; proy. "+proyAnual.toLocaleString("es-AR"),target:"Meta: 4.200 operaciones en el a&ntilde;o",pct:cpct(proyAnual,4200),barCls:badgeOps,auto:"Proyecci&oacute;n = promedio mensual &times; 12"})}
       ${objCard({name:"Capacitaciones",badge:"a",badgeTxt:"En curso",val:"&mdash;",target:"&ge;80% ejecuci&oacute;n &middot; score &ge;4/5",pct:null,auto:"Sin datos num&eacute;ricos a&uacute;n"})}
-      ${objCard({name:"Mejoras Operativas",badge:"v",badgeTxt:"5 implementadas",val:"5",valSm:"mejoras en 2026",target:"Objetivo: 2 mejoras de optimizaci&oacute;n de tiempos y recursos",pct:100,barCls:"v",auto:"Relevado desde informes gerenciales Gamma 2026",tipLines:["Sistema DUX — procesamiento autom&aacute;tico de DIT","Cambio de comisionista en Campana","Optimizaci&oacute;n de la estructura de Aduana","Unificaci&oacute;n de los criterios operativos","Optimizaci&oacute;n de Clasificaci&oacute;n Arancelaria"]})}
+      ${objCard({name:"Mejoras Operativas",badge:"v",badgeTxt:"5 implementadas",val:"5",valSm:"mejoras en 2026",target:"Objetivo: 2 mejoras de optimizaci&oacute;n de tiempos y recursos",pct:100,barCls:"v",auto:"Relevado desde informes gerenciales Gamma 2026",tipLines:["Sistema DUX â procesamiento autom&aacute;tico de DIT","Cambio de comisionista en Campana","Optimizaci&oacute;n de la estructura de Aduana","Unificaci&oacute;n de los criterios operativos","Optimizaci&oacute;n de Clasificaci&oacute;n Arancelaria"]})}
       ${objCard({name:"Satisfacci&oacute;n Cliente",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"&ge;4/5 &mdash; interno y externo",pct:null,auto:"Requiere carga manual"})}
     </div>
     <div class="obj-section-lbl">Entregables y Reportes</div>
@@ -695,7 +695,7 @@ Chart.register({id:"lbl",afterDatasetsDraw(chart){
       const isH=chart.config.options&&chart.config.options.indexAxis==="y";
       ctx.save();ctx.font="bold 10px Poppins,Segoe UI,sans-serif";
       if(bar.base===undefined){
-        // Línea — dibujar sobre el punto
+        // LÃ­nea â dibujar sobre el punto
         ctx.fillStyle=ds.borderColor||"#1E2D6B";ctx.textAlign="center";ctx.textBaseline="bottom";
         ctx.fillText(fmt,bar.x,bar.y-5);
       }else if(isH){
@@ -792,7 +792,7 @@ function renderResumen(){
     document.getElementById("multi-compare").innerHTML=
       '<div class="section"><div class="section-header">'+
       '<span class="section-chip">Comparativa</span>'+
-      '<div class="section-title">Comparacion de meses seleccionados'+(ytdMode?' &mdash; <span style="color:var(--acc);font-size:11px">Año en Curso: todos los valores son promedios mensuales</span>':"")+'</div></div>'+
+      '<div class="section-title">Comparacion de meses seleccionados'+(ytdMode?' &mdash; <span style="color:var(--acc);font-size:11px">AÃ±o en Curso: todos los valores son promedios mensuales</span>':"")+'</div></div>'+
       '<div style="overflow-x:auto"><table><thead><tr><th>Metrica</th>'+
       keys.map(k=>'<th class="center">'+MESES[k].label+'</th>').join("")+
       '<th class="center" style="color:var(--acc)">'+aggLbl+'</th></tr></thead><tbody>'+
@@ -839,7 +839,7 @@ function renderNovedades(){
     '</div>').join('');
 
   if(ytdMode){
-    // Acciones y Oportunidades: deduplica por título. Último mes CERRADO = en curso (destacado + desc), meses anteriores = solo título, muted
+    // Acciones y Oportunidades: deduplica por tÃ­tulo. Ãltimo mes CERRADO = en curso (destacado + desc), meses anteriores = solo tÃ­tulo, muted
     const lastClosedKey=[...keys].reverse().find(k=>!MESES[k].enCurso)||lastKey;
     const buildYtdList=(field)=>{
       const map=new Map();
@@ -853,7 +853,7 @@ function renderNovedades(){
       const pasados=[...map.values()].filter(v=>!v.inLast);
       let html='';
       if(enCurso.length){
-        html+='<div class="nov-ytd-label">&#9679; '+MESES[lastClosedKey].label+' — En curso</div>';
+        html+='<div class="nov-ytd-label">&#9679; '+MESES[lastClosedKey].label+' â En curso</div>';
         html+=enCurso.map(v=>'<div class="nov-item"><div class="nov-item-title">'+v.item.t+'</div><div class="nov-item-desc">'+v.item.d+'</div></div>').join('');
       }
       if(pasados.length){
@@ -865,13 +865,13 @@ function renderNovedades(){
     document.getElementById('nov-acciones').innerHTML=buildYtdList('acciones');
     document.getElementById('nov-oportunidades').innerHTML=buildYtdList('oportunidades');
 
-    // Hitos: todos los meses, solo título
+    // Hitos: todos los meses, solo tÃ­tulo
     const allHitos=keys.flatMap(k=>((NOVEDADES[k]||{}).hitos)||[]);
     document.getElementById('nov-hitos').innerHTML=allHitos.length===0
       ?'<div class="nov-item"><div class="nov-item-desc" style="color:var(--muted)">Sin hitos estrat\xe9gicos en el a\xf1o.</div></div>'
       :allHitos.map(it=>'<div class="nov-item"><div class="nov-item-title">'+it.t+'</div></div>').join('');
 
-    // Desvíos: card resumen con cantidad + monto + tooltip con solo título de cada desvío
+    // DesvÃ­os: card resumen con cantidad + monto + tooltip con solo tÃ­tulo de cada desvÃ­o
     const allDev=keys.flatMap(k=>((NOVEDADES[k]||{}).desvios)||[]).filter(d=>d.sev!=='ok');
     const parseUSD=imp=>{if(!imp)return 0;const m=imp.match(/USD\s*([\d.,]+)/);if(!m)return 0;return parseFloat(m[1].replace(/\./g,'').replace(',','.'))||0;};
     const totalUSD=allDev.reduce((s,d)=>s+parseUSD(d.imp),0);
@@ -894,7 +894,7 @@ function renderNovedades(){
     document.getElementById('nov-desvios').innerHTML=mkCards(nd.desvios,'Sin desv\xedos registrados este mes.');
   }
 
-  // Movimientos de personal — siempre muestra todos los meses disponibles
+  // Movimientos de personal â siempre muestra todos los meses disponibles
   const movMonths=["2026-02","2026-03","2026-04","2026-05"];
   document.getElementById('nov-personal').innerHTML=movMonths.map(k=>{
     const mn=(NOVEDADES[k]&&NOVEDADES[k].personal)||{ing:[],desv:[],ren:[],otros:[]};
@@ -913,7 +913,7 @@ function renderNovedades(){
 /* === KPIs OPERATIVOS === */
 function renderKpis(){
   const selK=new Set(getSelKeys());
-  // Selectividad — stacked bar, colores R abajo, N medio, V arriba
+  // Selectividad â stacked bar, colores R abajo, N medio, V arriba
   dc("sel");
   _ch["sel"]=new Chart(document.getElementById("chart-sel").getContext("2d"),{type:"bar",
     data:{labels:SEL.labels,datasets:[
@@ -926,7 +926,7 @@ function renderKpis(){
         x:{...DS.scales.x,stacked:true},
         y:{...DS.scales.y,stacked:true,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
   });
-  // Tiempos de liberacion — stacked bar, destaca meses seleccionados 2026
+  // Tiempos de liberacion â stacked bar, destaca meses seleccionados 2026
   const libSelAlpha=LIB.labels.map((l,i)=>{
     if(i<2) return 1; // 2024, 2025 siempre visible
     const k="2026-0"+(i-1); // 2026-01..05
@@ -955,7 +955,7 @@ function renderKpis(){
 function renderInteranual(){
   const keys=getSelKeys(),L=keys.map(k=>MESES[k].lc);
   const ops25=keys.map(k=>OPS_2025[MESES[k].lc]),ops26=keys.map(k=>MESES[k].ops);
-  document.getElementById("inter-title").textContent="Operaciones 2025 vs 2026 — "+L.join(", ");
+  document.getElementById("inter-title").textContent="Operaciones 2025 vs 2026 â "+L.join(", ");
   dc("inter-ops");
   _ch["inter-ops"]=new Chart(document.getElementById("chart-inter-ops").getContext("2d"),{type:"bar",
     data:{labels:L,datasets:[
@@ -991,7 +991,7 @@ function renderOperaciones(){
     periodLabel=ytdMode?"Prom. mensual":keys.map(k=>MESES[k].lc).join(" + ");
   }
   const dataCol=ytdMode?"Prom./Mes":single?periodLabel:"Acum.";
-  document.getElementById("ops-table-title").textContent=ytdMode?"Ranking Prom. mensual — Año en Curso":single?"Ranking — "+periodLabel:"Ranking — "+periodLabel;
+  document.getElementById("ops-table-title").textContent=ytdMode?"Ranking Prom. mensual â AÃ±o en Curso":single?"Ranking â "+periodLabel:"Ranking â "+periodLabel;
   document.getElementById("ops-chart-title").textContent=ytdMode?"Prom. mensual vs Prom. 2025":periodLabel+" vs Promedio 2025";
   document.getElementById("ops-table").innerHTML=
     '<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Prom. 2025</th>'+
@@ -1034,11 +1034,11 @@ function renderFacturacion(){
   if(ytdMode)Object.keys(aggMap).forEach(k=>{aggMap[k]=Math.round(aggMap[k]/factN);});
   const sorted=Object.entries(aggMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const total=sorted.reduce((s,[,v])=>s+v,0);
-  const pLbl=ytdMode?"Prom. mensual (Año en Curso)":keys.map(k=>MESES[k].lc).join(" + ");
+  const pLbl=ytdMode?"Prom. mensual (AÃ±o en Curso)":keys.map(k=>MESES[k].lc).join(" + ");
   const usdColHdr=ytdMode?'USD/mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"USD";
   const footLbl=ytdMode?"TOTAL PROM. TOP 10":"TOTAL TOP 10";
-  document.getElementById("fact-title").textContent="Top 10 — "+pLbl;
-  document.getElementById("fact-detail-title").textContent=ytdMode?"Por cliente — Promedio mensual 2026 vs Prom. 2025":"Por cliente 2026 vs Prom. 2025 — "+pLbl;
+  document.getElementById("fact-title").textContent="Top 10 â "+pLbl;
+  document.getElementById("fact-detail-title").textContent=ytdMode?"Por cliente â Promedio mensual 2026 vs Prom. 2025":"Por cliente 2026 vs Prom. 2025 â "+pLbl;
   document.getElementById("fact-table").innerHTML=
     '<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">'+usdColHdr+'</th><th class="center">%</th></tr></thead><tbody>'+
     sorted.map(([n,u],i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+'</td><td><strong style="color:var(--text)">'+n+'</strong></td><td class="right bold">'+u.toLocaleString("es-AR")+'</td><td class="center" style="color:var(--muted)">'+(u/total*100).toFixed(1)+'%</td></tr>').join("")+
@@ -1100,7 +1100,7 @@ function renderRentabilidad(){
     {l:"Rent. / Empleado Prom./Mes",v:"USD "+totResEmp,s:sub4,c:"neu"},
     {l:"Cobertura PE",v:(agg.ops/agg.pe).toFixed(1)+"x",s:ytdCovLabel,c:"pos"},
   ].map(k=>'<div class="kpi-card"><div class="kpi-label">'+k.l+'</div><div class="kpi-value">'+k.v+'</div><div class="kpi-sub kpi-'+k.c+'">'+k.s+'</div></div>').join("");
-  const pLbl=ytdMode?"Año en Curso":keys.map(k=>MESES[k].lc).join(" + ");
+  const pLbl=ytdMode?"AÃ±o en Curso":keys.map(k=>MESES[k].lc).join(" + ");
   dc("rent-mes");
   _ch["rent-mes"]=new Chart(document.getElementById("chart-rent-mes").getContext("2d"),{
     data:{labels:selMs.map(m=>m.lc),datasets:[
@@ -1141,8 +1141,8 @@ function renderRentabilidad(){
     ]},options:{responsive:true,maintainAspectRatio:false,...DS,
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
   });
-  // === GRÁFICOS DE EQUIPOS ===
-  // Peso estratégico — líneas, % de revenue por equipo sobre total, filtrado por meses
+  // === GRÃFICOS DE EQUIPOS ===
+  // Peso estratÃ©gico â lÃ­neas, % de revenue por equipo sobre total, filtrado por meses
   const eqIdxMap2={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4};
   const eqSelIdx=keys.map(k=>eqIdxMap2[k]).filter(i=>i!==undefined);
   const eqSelLbls=eqSelIdx.map(i=>EQUIPOS.labels[i]);
@@ -1151,7 +1151,7 @@ function renderRentabilidad(){
   dc("eq-peso");
   _ch["eq-peso"]=new Chart(document.getElementById("chart-eq-peso").getContext("2d"),{type:"line",
     data:{labels:eqSelLbls,datasets:EQUIPOS.teams.map((t,i)=>({
-      label:t.abbr+" — "+t.name+" ("+t.exec+")",
+      label:t.abbr+" â "+t.name+" ("+t.exec+")",
       data:eqSelIdx.map(i=>+(t.rev[i]/revTotals[i]*100).toFixed(1)),
       rawRev:t.rev,
       borderColor:EQUIPOS.colors[i],
@@ -1177,7 +1177,7 @@ function renderRentabilidad(){
       scales:{...DS.scales,y:{...DS.scales.y,min:0,max:100,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}
     }
   });
-  // Tabla ranking por rentabilidad — responde al filtro de meses (reutiliza eqSelIdx)
+  // Tabla ranking por rentabilidad â responde al filtro de meses (reutiliza eqSelIdx)
   const selIdx=eqSelIdx;
   const selLbls=eqSelLbls;
   const ranked=[...EQUIPOS.teams].map(t=>{
@@ -1191,7 +1191,7 @@ function renderRentabilidad(){
     +'<th class="center">Total</th><th class="center">Margen %</th></tr></thead><tbody>'+
     ranked.map((t,ri)=>'<tr>'
       +'<td class="center" style="font-weight:800;color:var(--acc)">'+(ri+1)+'</td>'
-      +'<td><b>'+t.abbr+' — '+t.name+'</b><br><span style="font-size:11px;color:var(--muted)">'+t.exec+'</span></td>'
+      +'<td><b>'+t.abbr+' â '+t.name+'</b><br><span style="font-size:11px;color:var(--muted)">'+t.exec+'</span></td>'
       +t.selRes.map(v=>'<td class="center">'+(v<0?'<span style="color:var(--rojo)">'+fU(v)+'</span>':fU(v))+'</td>').join('')
       +'<td class="center"><b>'+fU(t.total)+'</b></td>'
       +'<td class="center"><span style="font-weight:700;color:var(--acc)">'+t.avgM+'%</span></td>'
