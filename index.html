@@ -219,31 +219,7 @@ tfoot td.right{text-align:right;}
 #pw-err{font-family:'Poppins',sans-serif;font-size:12px;color:#F87171;min-height:18px;}
 
   
-  /* ── CONSULTAS ── */
-  #view-consultas { padding: 24px; }
-  .qchat-wrap { max-width: 720px; margin: 0 auto; }
-  .qchat-title { font-size: 1.25rem; font-weight: 700; color: #1e2d6b; margin-bottom: 6px; }
-  .qchat-subtitle { color: #5B6CA8; font-size: 0.85rem; margin-bottom: 20px; }
-  .qchat-row { display: flex; gap: 10px; margin-bottom: 16px; }
-  .qchat-input { flex: 1; padding: 11px 15px; border: 1.5px solid rgba(30,45,107,0.15);
-    border-radius: 8px; background: #fff; color: #1e2d6b; font-size: 0.92rem; outline: none; }
-  .qchat-input:focus { border-color: #a5b4fc; box-shadow: 0 0 0 3px rgba(165,180,252,0.2); }
-  .qchat-btn { padding: 11px 22px; background: #1e2d6b; color: #fff; border: none;
-    border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; }
-  .qchat-btn:hover { background: #2d3e8a; }
-  .qchat-examples { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; }
-  .qchat-chip { padding: 6px 12px; border: 1px solid rgba(30,45,107,0.2); border-radius: 16px;
-    font-size: 0.8rem; color: #5B6CA8; cursor: pointer; background: #fff; transition: all .15s; }
-  .qchat-chip:hover { border-color: #a5b4fc; color: #1e2d6b; background: rgba(165,180,252,0.1); }
-  .qchat-history { display: flex; flex-direction: column; gap: 12px; }
-  .qchat-msg { padding: 12px 16px; border-radius: 10px; font-size: 0.88rem; line-height: 1.65;
-    max-width: 88%; white-space: pre-line; }
-  .qchat-msg.user { background: #1e2d6b; color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
-  .qchat-msg.bot { background: #fff; border: 1px solid rgba(30,45,107,0.12);
-    color: #1e2d6b; align-self: flex-start; border-bottom-left-radius: 3px; }
-  .qchat-msg.bot strong { color: #1e2d6b; font-weight: 700; }
-  .qchat-empty { text-align: center; color: #5B6CA8; padding: 32px 0; font-size: 0.85rem; }
-</style>
+  </style>
 <div id="pw-overlay">
   <div id="pw-box">
     <div id="pw-logo">ADUANA</div>
@@ -293,8 +269,7 @@ async function checkPw(){
     <div class="nav-item" onclick="showView('rentabilidad')" id="nav-rentabilidad"><span class="icon">&#128176;</span> Rentabilidad</div>
     <div class="nav-section">Gerencia</div>
     <div class="nav-item" onclick="showView('objetivos')" id="nav-objetivos"><span class="icon">&#9733;</span> Objetivos 2026</div>
-    <div class="nav-section">Análisis</div>
-    <div class="nav-item" onclick="showView('consultas')" id="nav-consultas"><span class="icon">💬</span> Consultas</div>
+    
   </nav>
   <div class="sidebar-footer">Fuente: Ganancias 2026 &bull; Facturacion 2526</div>
 </aside>
@@ -384,34 +359,7 @@ async function checkPw(){
     <div class="view" id="view-objetivos">
       <div id="obj-content"></div>
     </div>
-  <!-- CONSULTAS -->
-  <div id="view-consultas" class="view">
-    <div class="qchat-wrap">
-      <div class="qchat-title">💬 Consultas sobre el Dashboard</div>
-      <div class="qchat-subtitle">Preguntá en español. Sin internet, sin API externa. Datos actualizados al último cierre.</div>
-      <div class="qchat-row">
-        <input id="qchat-in" class="qchat-input" type="text"
-          placeholder="Ej: ¿Cuántas operaciones tuvo Neumáticos en junio?"
-          onkeydown="if(event.key==='Enter')qchatSend()" />
-        <button class="qchat-btn" onclick="qchatSend()">Consultar →</button>
-      </div>
-      <div class="qchat-examples">
-        <span class="qchat-chip" onclick="qchatAsk(this)">Operaciones en junio</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">EBITDA de mayo</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">¿Cuál fue el mejor mes?</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">Neumáticos en abril</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">Total operaciones 2026</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">Comparar mayo y junio</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">Facturación de Maquinaria</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">Punto de equilibrio junio</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">Evolución del EBITDA</span>
-        <span class="qchat-chip" onclick="qchatAsk(this)">Margen de Línea Blanca</span>
-      </div>
-      <div id="qchat-hist" class="qchat-history">
-        <div class="qchat-empty">Hacé tu primera consulta 👆</div>
-      </div>
-    </div>
-  </div>
+  
   </div>
 </main>
 </div>
@@ -442,6 +390,7 @@ const TOP10={
   "2026-03":[{n:"Grupo GSB",p:24,m:58},{n:"Grupo Larocca",p:28,m:54},{n:"Cia. Arg. Aceites",p:19,m:22},{n:"Grupo Corral",p:33,m:31},{n:"Bedson S.A.",p:15,m:20},{n:"Barack Argentina",p:6,m:7},{n:"Ultralight SRL",p:5,m:7},{n:"Hogar y Tec.",p:29,m:14},{n:"Grupo Calzetta",p:16,m:14},{n:"Seis Erre Alim.",p:7,m:4}],
   "2026-04":[{n:"Grupo GSB",p:24,m:73},{n:"Grupo Larocca",p:28,m:44},{n:"Grupo Corral",p:33,m:33},{n:"Cia. Arg. Aceites",p:19,m:32},{n:"Hogar y Tec.",p:29,m:24},{n:"Grupo Calzetta",p:16,m:23},{n:"Bedson S.A.",p:15,m:20},{n:"Ultralight SRL",p:5,m:7},{n:"Barack Argentina",p:6,m:5},{n:"Seis Erre Alim.",p:7,m:3}],
   "2026-05":[{n:"Grupo GSB",p:24,m:76},{n:"Grupo Corral",p:33,m:45},{n:"Cia. Arg. Aceites",p:19,m:21},{n:"Grupo Calzetta",p:16,m:22},{n:"Grupo Larocca",p:28,m:21},{n:"Seis Erre Alim.",p:7,m:10},{n:"Hogar y Tec.",p:29,m:11},{n:"Ultralight SRL",p:5,m:8},{n:"Bedson S.A.",p:15,m:13},{n:"Barack Argentina",p:6,m:3}],
+  "2026-06":[{n:"Grupo GSB",p:24,m:44},{n:"Grupo Larocca",p:28,m:40},{n:"Cia. Arg. Aceites",p:19,m:25},{n:"Bedson S.A.",p:15,m:20},{n:"Grupo Corral",p:33,m:19},{n:"Grupo Calzetta",p:16,m:13},{n:"Ultralight SRL",p:5,m:8},{n:"Hogar y Tec.",p:29,m:8},{n:"Barack Argentina",p:6,m:7},{n:"Seis Erre Alim.",p:7,m:5}],
 };
 const OPS_CLI={
   "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45},
@@ -1263,150 +1212,7 @@ showView("resumen");
 
   
 
-  // ── QCHAT ENGINE ─────────────────────────────────────────────
-  function qchatSend(){
-    var inp=document.getElementById('qchat-in');
-    var q=inp.value.trim();if(!q)return;
-    inp.value='';
-    qchatBubble('user',q);
-    var ans=qchatAnswer(q);
-    setTimeout(function(){qchatBubble('bot',ans);},160);
-  }
-  function qchatAsk(el){
-    document.getElementById('qchat-in').value=el.textContent;
-    qchatSend();
-  }
-  function qchatBubble(role,text){
-    var h=document.getElementById('qchat-hist');
-    var empty=h.querySelector('.qchat-empty');
-    if(empty)empty.remove();
-    var d=document.createElement('div');
-    d.className='qchat-msg '+role;
-    d.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-    h.appendChild(d);
-    d.scrollIntoView({behavior:'smooth',block:'nearest'});
-  }
-  function _qn(t){return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[¿?¡!,]/g,'');}
-  function _qmon(q){
-    var m={'enero':'2026-01','ene':'2026-01','febrero':'2026-02','feb':'2026-02',
-      'marzo':'2026-03','mar':'2026-03','abril':'2026-04','abr':'2026-04',
-      'mayo':'2026-05','may':'2026-05','junio':'2026-06','jun':'2026-06'};
-    for(var k in m){if(q.indexOf(k)>=0)return m[k];}return null;
-  }
-  function _qmons(q){
-    var m={'enero':'2026-01','ene':'2026-01','febrero':'2026-02','feb':'2026-02',
-      'marzo':'2026-03','mar':'2026-03','abril':'2026-04','abr':'2026-04',
-      'mayo':'2026-05','may':'2026-05','junio':'2026-06','jun':'2026-06'};
-    var f=[];for(var k in m){if(q.indexOf(k)>=0&&f.indexOf(m[k])<0)f.push(m[k]);}return f;
-  }
-  function _qteam(q){
-    var pairs=[['linea blanca','LB'],['blanca','LB'],['neumatico','NE'],['maquinaria','MA'],
-      ['alimento','AQ'],['quimico','AQ'],['varios','VA']];
-    for(var i=0;i<pairs.length;i++){if(q.indexOf(pairs[i][0])>=0)return pairs[i][1];}return null;
-  }
-  function _qu(v){return'USD '+Math.round(v).toLocaleString('es-AR');}
-  function _qa(v){return'$ '+Math.round(v).toLocaleString('es-AR');}
-  function _qp(v){return v.toFixed(1)+'%';}
-  function _qtn(a){return{NE:'Neumáticos',LB:'Línea Blanca',MA:'Maquinaria',AQ:'Alimentos y Químicos',VA:'Varios'}[a]||a;}
-  function _qgt(a){return EQUIPOS.teams.find(function(t){return t.abbr===a;});}
-  function _qmi(k){return EQUIPOS.labels.indexOf(MESES[k]&&MESES[k].lc);}
-  function qchatAnswer(question){
-    var q=_qn(question);
-    var mkeys=Object.keys(MESES);
-    var mon=_qmon(q),mons=_qmons(q),team=_qteam(q);
-    var isOps=/operacion|\bops\b|despacho/.test(q);
-    var isE=/ebitda|resultado|ganancia|utilidad/.test(q);
-    var isF=/facturacion|ingreso/.test(q);
-    var isM=/margen/.test(q);
-    var isPE=/equilibrio|\bpe\b/.test(q);
-    var isTC=/tipo de cambio|\btc\b/.test(q);
-    var isDot=/dotacion|empleado|personal/.test(q);
-    var isBest=/mejor|maximo|mas alto|mayor/.test(q);
-    var isWorst=/peor|minimo|mas bajo|menor/.test(q);
-    var isCmp=/compar|versus|\bvs\b|diferencia/.test(q);
-    var isTrend=/tendencia|evolucion|historico/.test(q);
-    var isAvg=/promedio|media/.test(q);
-    var isTotal=/total|suma|acumulado/.test(q);
-    // COMPARE 2 months
-    if(isCmp&&mons.length>=2){
-      var m1=MESES[mons[0]],m2=MESES[mons[1]];
-      var dO=m2.ops-m1.ops,dE=m2.resUSD-m1.resUSD;
-      return 'Comparando **'+m1.label+'** vs **'+m2.label+'**:\n'+
-        '\n• Operaciones: '+m1.ops+' → '+m2.ops+' ('+(dO>=0?'+':'')+dO+')'+
-        '\n• EBITDA: '+_qu(m1.resUSD)+' → '+_qu(m2.resUSD)+' ('+(dE>=0?'+':'')+_qu(Math.abs(dE))+')'+
-        '\n• Facturación: '+_qu(m1.ing/m1.tc)+' → '+_qu(m2.ing/m2.tc)+
-        '\n• P. Equilibrio: '+m1.pe+' ops → '+m2.pe+' ops';
-    }
-    // BEST/WORST
-    if(isBest&&!mon){
-      if(isOps){var b=mkeys.reduce(function(a,x){return MESES[a].ops>MESES[x].ops?a:x;});return'El mejor mes en operaciones fue **'+MESES[b].label+'** con **'+MESES[b].ops+' ops**.';}
-      if(isF){var b=mkeys.reduce(function(a,x){return MESES[a].ing>MESES[x].ing?a:x;});return'El mejor mes en facturación fue **'+MESES[b].label+'** con **'+_qu(MESES[b].ing/MESES[b].tc)+'**.';}
-      var b=mkeys.reduce(function(a,x){return MESES[a].resUSD>MESES[x].resUSD?a:x;});
-      return'El mejor mes en EBITDA fue **'+MESES[b].label+'** con **'+_qu(MESES[b].resUSD)+'**.';
-    }
-    if(isWorst&&!mon){
-      if(isOps){var b=mkeys.reduce(function(a,x){return MESES[a].ops<MESES[x].ops?a:x;});return'El peor mes en operaciones fue **'+MESES[b].label+'** con **'+MESES[b].ops+' ops**.';}
-      var b=mkeys.reduce(function(a,x){return MESES[a].resUSD<MESES[x].resUSD?a:x;});
-      return'El peor mes en EBITDA fue **'+MESES[b].label+'** con **'+_qu(MESES[b].resUSD)+'**.';
-    }
-    // TEAM + MONTH
-    if(team&&mon){
-      var m=MESES[mon],t=_qgt(team),mi=_qmi(mon);
-      if(!t||mi<0)return'No tengo datos de '+_qtn(team)+' para '+m.label+'.';
-      if(isM)return'El margen de **'+t.name+'** en **'+m.label+'** fue **'+_qp(t.margen[mi])+'**.';
-      if(isF||isOps)return'La facturación de **'+t.name+'** en **'+m.label+'** fue **'+_qu(t.rev[mi])+'**.';
-      if(isE)return'El resultado de **'+t.name+'** en **'+m.label+'** fue **'+_qu(t.res[mi])+'** (margen '+_qp(t.margen[mi])+').';
-      return'**'+t.name+'** en **'+m.label+'**:\n• Facturación: '+_qu(t.rev[mi])+'\n• Resultado: '+_qu(t.res[mi])+'\n• Margen: '+_qp(t.margen[mi]);
-    }
-    // TEAM only
-    if(team&&!mon){
-      var t=_qgt(team);if(!t)return'No encuentro ese equipo.';
-      var L=EQUIPOS.labels;
-      if(isM){var rows=L.map(function(l,i){return'• '+l+': '+_qp(t.margen[i]);}).join('\n');var avg=t.margen.reduce(function(a,b){return a+b;},0)/t.margen.length;return'Margen de **'+t.name+'**:\n'+rows+'\n• **Promedio: '+_qp(avg)+'**';}
-      if(isF){var rows=L.map(function(l,i){return'• '+l+': '+_qu(t.rev[i]);}).join('\n');var tot=t.rev.reduce(function(a,b){return a+b;},0);return'Facturación de **'+t.name+'**:\n'+rows+'\n• **Total: '+_qu(tot)+'**';}
-      if(isE){var rows=L.map(function(l,i){return'• '+l+': '+_qu(t.res[i])+' ('+_qp(t.margen[i])+')';}).join('\n');return'Resultado de **'+t.name+'**:\n'+rows;}
-      var rows=L.map(function(l,i){return'• '+l+': '+_qu(t.rev[i])+' fac | '+_qu(t.res[i])+' res | '+_qp(t.margen[i]);}).join('\n');
-      return'Resumen de **'+t.name+'**:\n'+rows;
-    }
-    // MONTH only
-    if(mon&&!team){
-      var m=MESES[mon];
-      if(isOps)return'En **'+m.label+'** hubo **'+m.ops+' operaciones**.'+(m.enCurso?' ⏳ (mes en curso)':'');
-      if(isE)return'El EBITDA de **'+m.label+'** fue **'+_qu(m.resUSD)+'**.'+(m.enCurso?' ⏳':'');
-      if(isF)return'La facturación de **'+m.label+'** fue **'+_qa(m.ing)+'** ('+_qu(m.ing/m.tc)+').'+(m.enCurso?' ⏳':'');
-      if(isPE)return'El punto de equilibrio de **'+m.label+'** fue **'+m.pe+' ops** (cobertura '+(m.ops/m.pe).toFixed(1)+'x).';
-      if(isTC)return'El tipo de cambio de **'+m.label+'** fue **$'+m.tc+' ARS/USD**.';
-      if(isDot)return'La dotación de **'+m.label+'** fue de **'+m.dot+' personas**.';
-      if(isM){var mg=(m.resUSD/(m.ing/m.tc)*100).toFixed(1);return'El margen de **'+m.label+'** fue **'+mg+'%** (EBITDA '+_qu(m.resUSD)+' / facturación '+_qu(m.ing/m.tc)+').';}
-      var fac=m.ing/m.tc,mg=(m.resUSD/fac*100).toFixed(1);
-      return'**Resumen de '+m.label+':**\n'+
-        '\n• Operaciones: '+m.ops+(m.enCurso?' ⏳':'')+
-        '\n• Facturación: '+_qu(fac)+
-        '\n• EBITDA: '+_qu(m.resUSD)+' (margen '+mg+'%)'+
-        '\n• P. Equilibrio: '+m.pe+' ops (cobertura '+(m.ops/m.pe).toFixed(1)+'x)'+
-        '\n• Tipo de cambio: $'+m.tc+' ARS/USD'+
-        '\n• Dotación: '+m.dot+' personas';
-    }
-    // TREND
-    if(isTrend){
-      if(isOps){var rows=mkeys.map(function(k){return'• '+MESES[k].label+': '+MESES[k].ops+' ops';}).join('\n');return'Evolución de operaciones 2026:\n'+rows;}
-      if(isE){var rows=mkeys.map(function(k){return'• '+MESES[k].label+': '+_qu(MESES[k].resUSD);}).join('\n');return'Evolución del EBITDA 2026:\n'+rows;}
-      if(isF){var rows=mkeys.map(function(k){return'• '+MESES[k].label+': '+_qu(MESES[k].ing/MESES[k].tc);}).join('\n');return'Evolución de facturación 2026:\n'+rows;}
-    }
-    // TOTALS
-    if(isTotal){
-      if(isOps){var t=mkeys.reduce(function(s,k){return s+MESES[k].ops;},0);return'Total de operaciones en 2026 (hasta ahora): **'+t+' ops**.';}
-      if(isE){var t=mkeys.reduce(function(s,k){return s+MESES[k].resUSD;},0);return'EBITDA total acumulado en 2026: **'+_qu(t)+'**.';}
-      if(isF){var t=mkeys.reduce(function(s,k){return s+MESES[k].ing/MESES[k].tc;},0);return'Facturación total acumulada en 2026: **'+_qu(t)+'**.';}
-    }
-    // AVERAGE
-    if(isAvg){
-      if(isOps){var a=Math.round(mkeys.reduce(function(s,k){return s+MESES[k].ops;},0)/mkeys.length);return'Promedio mensual de operaciones en 2026: **'+a+' ops/mes**.';}
-      if(isE){var a=Math.round(mkeys.reduce(function(s,k){return s+MESES[k].resUSD;},0)/mkeys.length);return'EBITDA promedio mensual en 2026: **'+_qu(a)+'**.';}
-    }
-    return'No entendí la pregunta. Probá con:\n• "Operaciones en junio"\n• "Mejor mes en EBITDA"\n• "Neumáticos en mayo"\n• "Comparar abril y mayo"\n• "Total operaciones 2026"';
-  }
-  // ── END QCHAT ──
+  
 </script>
 
 </body>
