@@ -383,7 +383,7 @@ const MESES={
   "2026-03":{label:"Mar 2026",lc:"Mar",ing:243352209,cos:47601092,mod:98955256,ops:283,dot:35,tc:1409.5,resUSD:68675,pe:143},
   "2026-04":{label:"Abr 2026",lc:"Abr",ing:280299356,cos:41545575,mod:126560046,ops:323,dot:34,tc:1415.8,resUSD:79244,pe:171},
   "2026-05":{label:"May 2026",lc:"May",ing:237673973,cos:43840348,mod:87683702,ops:262,dot:26,tc:1431.6,resUSD:74149,pe:119},
-  "2026-06":{label:"Jun 2026",lc:"Jun",ing:241682780,cos:10590411,mod:87683702,ops:256,dot:26,tc:1431.6,resUSD:100174,pe:104,enCurso:true},
+  "2026-06":{label:"Jun 2026",lc:"Jun",ing:230041223,cos:10574411,mod:87683702,ops:248,dot:26,tc:1431.6,resUSD:92049,pe:127,enCurso:true},
 };
 const MK=Object.keys(MESES);
 const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:271,May:300,Jun:289,Jul:259,Ago:282,Sep:311,Oct:271,Nov:271,Dic:279};
@@ -407,6 +407,13 @@ const OPS_CLI={
   "Barack Argentina": {p25: 3.9,"2026-01": 2,"2026-02":10,"2026-03": 7,"2026-04": 5,"2026-05": 3,"2026-06":7},
 };
 const OPS_CLI_KEYS=Object.keys(OPS_CLI);
+const OPS={
+  "2026-01":[{n:"Grupo Larocca",v:67},{n:"Grupo GSB",v:34},{n:"Grupo Corral",v:26},{n:"Grupo Calzetta",v:16},{n:"Cia. Arg. Aceites",v:13},{n:"Hogar y Tec.",v:11},{n:"Bedson S.A.",v:10},{n:"Ferreiros y Vilela",v:10},{n:"Servicios AMG",v:6},{n:"Maxtervision",v:5},{n:"Ultralight SRL",v:5},{n:"Beta Glass S.A.",v:2},{n:"Sailing Gear S.A.",v:2},{n:"Barack Argentina",v:2},{n:"Intermaco SRL",v:2},{n:"DSK Group",v:2},{n:"Guasoldec SRL",v:1},{n:"NEPAL OBJETOS S.R.L",v:1},{n:"Operadora Ferroviaria",v:1},{n:"GRUPRO S.A.",v:1},{n:"DESSOL INDUSTRIAL S.A.",v:1},{n:"Grupo Dateng",v:1},{n:"URBAN HUS INDUSTRY S. R. L.",v:1},{n:"Cresata S.A.",v:1},{n:"Seis Erre Alim.",v:1},{n:"New Material SAS",v:1},{n:"CTT DIGITAL S.R.L.",v:1},{n:"PINSOURCE SA",v:1},{n:"RJ INGENIERIA S.A.",v:1},{n:"BRUNO HNOS. S.A",v:1},{n:"Industrias Erpla",v:1}],
+  "2026-02":[{n:"Grupo GSB",v:42},{n:"Grupo Larocca",v:38},{n:"Grupo Calzetta",v:27},{n:"Grupo Corral",v:26},{n:"Hogar y Tec.",v:16},{n:"Bedson S.A.",v:16},{n:"Cia. Arg. Aceites",v:15},{n:"Barack Argentina",v:10},{n:"Servicios AMG",v:6},{n:"Industrias Erpla",v:5},{n:"Ferreiros y Vilela",v:5},{n:"Ultralight SRL",v:5},{n:"Operadora Ferroviaria",v:3},{n:"DSK Group",v:3},{n:"Cresata S.A.",v:3},{n:"Intermaco SRL",v:3},{n:"Maxtervision",v:3},{n:"Guasoldec SRL",v:2},{n:"PINSOURCE SA",v:2},{n:"TEODORO FUCILE TALLERES INDUSTRIALES S.A.",v:2},{n:"Seis Erre Alim.",v:1},{n:"SKUKI S.A.",v:1},{n:"Liguen Ilum.",v:1},{n:"A Y M D ESPOSITO S R L",v:1},{n:"EGA SERVICIOS S.A.S",v:1},{n:"RIO URUGUAY S.R.L. Y OTROS - UNION TRANSITORIA",v:1}],
+  "2026-03":[{n:"Grupo GSB",v:58},{n:"Grupo Larocca",v:54},{n:"Grupo Corral",v:31},{n:"Cia. Arg. Aceites",v:22},{n:"Bedson S.A.",v:20},{n:"Hogar y Tec.",v:14},{n:"Grupo Calzetta",v:14},{n:"Ferreiros y Vilela",v:9},{n:"Barack Argentina",v:7},{n:"Ultralight SRL",v:7},{n:"Servicios AMG",v:6},{n:"Liguen Ilum.",v:6},{n:"DSK Group",v:4},{n:"Seis Erre Alim.",v:4},{n:"Maxtervision",v:4},{n:"DI BAIA ALEJO CHRISTIAN",v:2},{n:"Industrias Erpla",v:2},{n:"Intermaco SRL",v:2},{n:"Sailing Gear S.A.",v:2},{n:"Defiba Servicios",v:2},{n:"TME SPORTS S.R.L.",v:2},{n:"BRUNO HNOS. S.A",v:1},{n:"Flama SRL",v:1},{n:"TEXTER FEED SRL",v:1},{n:"New Material SAS",v:1},{n:"KUPFER SRL",v:1},{n:"CTT DIGITAL S.R.L.",v:1},{n:"Cresata S.A.",v:1},{n:"Beta Glass S.A.",v:1},{n:"INDUTRA SOCIEDAD DE HECHO",v:1},{n:"Grupo Eslabón",v:1},{n:"BALENT EDUARDO OSCAR",v:1}],
+  "2026-04":[{n:"Grupo GSB",v:75},{n:"Grupo Larocca",v:44},{n:"Grupo Corral",v:33},{n:"Cia. Arg. Aceites",v:32},{n:"Hogar y Tec.",v:24},{n:"Grupo Calzetta",v:23},{n:"Bedson S.A.",v:20},{n:"Ferreiros y Vilela",v:10},{n:"Ultralight SRL",v:7},{n:"Maxtervision",v:6},{n:"Barack Argentina",v:5},{n:"Sailing Gear S.A.",v:5},{n:"DSK Group",v:4},{n:"Servicios AMG",v:4},{n:"Operadora Ferroviaria",v:3},{n:"Seis Erre Alim.",v:3},{n:"New Material SAS",v:3},{n:"Industrias Erpla",v:2},{n:"Guasoldec SRL",v:2},{n:"INDUTRA SOCIEDAD DE HECHO",v:2},{n:"PINSOURCE SA",v:2},{n:"TEXTER FEED SRL",v:2},{n:"Grupo Eslabón",v:2},{n:"RR CONSTRUCCIONES",v:1},{n:"ADRIAN CALVANI",v:1},{n:"BRUNO HNOS. S.A",v:1},{n:"VISION TECHNOLOGIES ARG.",v:1},{n:"DESSOL INDUSTRIAL S.A.",v:1},{n:"TEODORO FUCILE TALLERES",v:1},{n:"Cresata S.A.",v:1},{n:"Bioenertec S.A.",v:1},{n:"Grupo Dateng",v:1}],
+  "2026-05":[{n:"Grupo GSB",v:76},{n:"Grupo Corral",v:45},{n:"Grupo Calzetta",v:22},{n:"Grupo Larocca",v:21},{n:"Cia. Arg. Aceites",v:21},{n:"Bedson S.A.",v:13},{n:"Hogar y Tec.",v:11},{n:"Seis Erre Alim.",v:10},{n:"Ultralight SRL",v:8},{n:"Servicios AMG",v:7},{n:"Cresata S.A.",v:5},{n:"Barack Argentina",v:3},{n:"Ferreiros y Vilela",v:3},{n:"Sailing Gear S.A.",v:3},{n:"Industrias Erpla",v:2},{n:"BRUNO HNOS. S.A",v:2},{n:"DSK Group",v:2},{n:"Operadora Ferroviaria",v:1},{n:"HELI STORE S.A.",v:1},{n:"Beta Glass S.A.",v:1},{n:"New Material SAS",v:1},{n:"Flama SRL",v:1},{n:"BSC Argentina S.A.",v:1},{n:"Intermaco SRL",v:1},{n:"Grupo Eslabón",v:1}],
+};
 const FACT={
   "2026-01":[{n:"Grupo Larocca",u:28267},{n:"Grupo Corral",u:18159},{n:"Ultralight SRL",u:17921},{n:"Grupo GSB",u:12264},{n:"Hogar y Tec.",u:11715},{n:"Grupo Calzetta",u:11658},{n:"Bedson S.A.",u:7145},{n:"Maxtervision",u:5227},{n:"Ferreiros y Vilela",u:4913},{n:"Servicios AMG",u:3102}],
   "2026-02":[{n:"Grupo Calzetta",u:26286},{n:"Grupo Corral",u:25070},{n:"Grupo Larocca",u:21128},{n:"Grupo GSB",u:17141},{n:"Hogar y Tec.",u:14359},{n:"Bedson S.A.",u:11523},{n:"Ultralight SRL",u:9378},{n:"Barack Argentina",u:6455},{n:"Cia. Arg. Aceites",u:3697},{n:"Servicios AMG",u:2839}],
@@ -983,64 +990,50 @@ function renderInteranual(){
 /* === OPERACIONES === */
 function renderOperaciones(){
   const keys=getSelKeys(),n=keys.length,sel=new Set(keys);
-  const single=keys.length===1&&!ytdMode;
-  let data,periodLabel;
-  if(single){
-    const k=keys[0];
-    data=OPS_CLI_KEYS.map(c=>({n:c,p:OPS_CLI[c].p25,m:OPS_CLI[c][k]||0})).sort((a,b)=>b.m-a.m);
-    periodLabel=MESES[k].label;
-  }else{
-    data=OPS_CLI_KEYS.map(c=>{
-      const total=keys.reduce((s,k)=>s+(OPS_CLI[c][k]||0),0);
-      const m=ytdMode?+(total/n).toFixed(1):total;
-      return{n:c,p:OPS_CLI[c].p25,m};
-    }).sort((a,b)=>b.m-a.m);
-    periodLabel=ytdMode?"Prom. mensual":keys.map(k=>MESES[k].lc).join(" + ");
-  }
-  const dataCol=ytdMode?"Prom./Mes":single?periodLabel:"Acum.";
-  document.getElementById("ops-table-title").textContent=ytdMode?"Ranking Prom. mensual — Año en Curso":single?"Ranking — "+periodLabel:"Ranking — "+periodLabel;
-  document.getElementById("ops-chart-title").textContent=ytdMode?"Prom. mensual vs Prom. 2025":periodLabel+" vs Promedio 2025";
+  const periodLabel=keys.length===1?MESES[keys[0]].label:(ytdMode?"Año en Curso":keys.map(k=>MESES[k].lc).join(" + "));
+
+  // Ranking dinámico: usa OPS (todos los clientes), agrega meses seleccionados
+  const opsRD={};
+  keys.forEach(m=>{(OPS[m]||[]).forEach(({n:cn,v})=>{opsRD[cn]=(opsRD[cn]||0)+v;});});
+  const opsRank=Object.entries(opsRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const opsTotal=Object.values(opsRD).reduce((s,v)=>s+v,0);
+
+  document.getElementById("ops-table-title").textContent="Top 10 Operaciones — "+periodLabel;
+  document.getElementById("ops-chart-title").textContent="Top 10 — "+periodLabel;
+
   document.getElementById("ops-table").innerHTML=
-    '<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Prom. 2025</th>'+
-    '<th class="center">'+dataCol+(ytdMode?' <span style="font-size:9px;opacity:.6">(prom.)</span>':"")+'</th><th class="center">Var.</th></tr></thead><tbody>'+
-    data.map((c,i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+
-      '</td><td><strong style="color:var(--text)">'+c.n+'</strong></td><td class="center">'+c.p+
-      '</td><td class="center bold">'+c.m+'</td><td class="'+vCls(c.m,c.p)+'">'+vStr(c.m,c.p)+'</td></tr>').join("")+'</tbody>';
-  const labels=data.map(c=>c.n.replace("Grupo ","").replace(" S.A.","").replace(" SRL","").replace("Cia. Arg. ","").substring(0,12));
+    '<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Ops</th><th class="center">% del total</th></tr></thead><tbody>'+
+    opsRank.map(([nm,v],i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+
+      '</td><td><strong style="color:var(--text)">'+nm+'</strong></td>'+
+      '<td class="center bold">'+v+'</td>'+
+      '<td class="center" style="color:var(--muted)">'+(v/opsTotal*100).toFixed(1)+'%</td></tr>').join("")+'</tbody>';
+
+  const rkLabels=opsRank.map(([nm])=>nm.replace("Grupo ","Gpo. ").replace(" S.A.","").replace(" SRL","").replace("Cia. Arg. ","").substring(0,12));
   dc("ops");
   _ch["ops"]=new Chart(document.getElementById("chart-ops").getContext("2d"),{type:"bar",
-    data:{labels,datasets:[
-      {label:"Prom. 2025",data:data.map(c=>c.p),backgroundColor:"rgba(30,45,107,0.18)",borderRadius:3,showLabel:true},
-      {label:dataCol,data:data.map(c=>c.m),backgroundColor:"#1E2D6B",borderRadius:3,showLabel:true},
+    data:{labels:rkLabels,datasets:[
+      {label:"Ops — "+periodLabel,data:opsRank.map(([,v])=>v),backgroundColor:"#1E2D6B",borderRadius:3,showLabel:true},
     ]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,...DS}
   });
-  // Tabla evolucion completa
+
+  // Tabla evolución OPS_CLI (comparativa fija 10 clientes vs promedio 2025)
+  const evData=OPS_CLI_KEYS.map(c=>{
+    const selTotal=keys.reduce((s,k)=>s+(OPS_CLI[c][k]||0),0);
+    const aggVal=ytdMode?+(selTotal/n).toFixed(1):selTotal;
+    return{c,vals:MK.map(k=>OPS_CLI[c][k]||0),aggVal,p25:OPS_CLI[c].p25};
+  }).sort((a,b)=>b.aggVal-a.aggVal);
+
   document.getElementById("ops-ev-table").innerHTML=
     '<thead><tr><th>Cliente</th>'+MK.map(k=>'<th class="center"'+(sel.has(k)?' style="color:var(--acc)"':'')+'>'+MESES[k].lc+'</th>').join("")+
     '<th class="center" style="color:var(--acc)">'+(ytdMode?"Prom./Mes":"Sel.")+'</th><th class="center">Prom. 2025</th><th class="center">Var.</th></tr></thead><tbody>'+
-    OPS_CLI_KEYS.map(c=>{
-      const vals=MK.map(k=>OPS_CLI[c][k]||0);
-      const selTotal=keys.reduce((s,k)=>s+(OPS_CLI[c][k]||0),0);
-      const aggVal=ytdMode?+(selTotal/n).toFixed(1):selTotal;
-      const p25=OPS_CLI[c].p25;
-      return '<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
-        vals.map((v,i)=>'<td class="center"'+(sel.has(MK[i])?' style="font-weight:700;color:var(--text)"':'')+'>'+v+'</td>').join("")+
-        '<td class="center bold" style="color:var(--acc)">'+aggVal+'</td>'+
-        '<td class="center" style="color:var(--muted)">'+p25+'</td>'+
-        '<td class="'+vCls(aggVal,p25)+'">'+vStr(aggVal,p25)+'</td></tr>';
-    }).join("")+'</tbody>';
-
-  // === RANKING OPS (filtro dinamico) ===
-  const selK=getSelKeys();
-  const selLabel=selK.length===1?MESES[selK[0]].label:('Acumulado '+selK.length+' meses');
-  document.getElementById('top-ops-label').textContent='Top 10 — '+selLabel;
-  const opsRD={};selK.forEach(m=>{(OPS[m]||[]).forEach(({n,v})=>{opsRD[n]=(opsRD[n]||0)+v;});});
-  const opsRank=Object.entries(opsRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const opsCol=selK.length===1?'Ops':'Ops (acum.)';
-  document.getElementById('top-ops-table').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">'+opsCol+'</th></tr></thead><tbody>'+opsRank.map(([n,v],i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+n+'</td><td class="center"><strong>'+v+'</strong></td></tr>').join('')+'</tbody>';
+    evData.map(({c,vals,aggVal,p25})=>'<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
+      vals.map((v,i)=>'<td class="center"'+(sel.has(MK[i])?' style="font-weight:700;color:var(--text)"':'')+'>'+v+'</td>').join("")+
+      '<td class="center bold" style="color:var(--acc)">'+aggVal+'</td>'+
+      '<td class="center" style="color:var(--muted)">'+p25+'</td>'+
+      '<td class="'+vCls(aggVal,p25)+'">'+vStr(aggVal,p25)+'</td></tr>').join("")+'</tbody>';
 }
 
-const OPS = {"2026-01":[{"n":"Grupo Larocca","v":67},{"n":"Grupo GSB","v":34},{"n":"Grupo Corral","v":26},{"n":"Grupo Calzetta","v":16},{"n":"Cia. Arg. Aceites","v":13},{"n":"Hogar y Tec.","v":11},{"n":"Bedson S.A.","v":10},{"n":"Ferreiros y Vilela","v":10},{"n":"SERVICIOS AMG VIAL","v":6},{"n":"MAXTERVISION TEAM","v":5},{"n":"Ultralight SRL","v":5},{"n":"BETA GLASS S.A.","v":2},{"n":"SAILING GEAR S.A","v":2},{"n":"Barack Argentina","v":2},{"n":"INTERMACO SRL","v":2},{"n":"DSK GROUP SRL","v":2},{"n":"GUASOLDEC S.R.L.","v":1},{"n":"Op. Ferroviaria","v":1},{"n":"Seis Erre Alim.","v":1}],"2026-02":[{"n":"Grupo GSB","v":42},{"n":"Grupo Larocca","v":38},{"n":"Grupo Calzetta","v":27},{"n":"Grupo Corral","v":26},{"n":"Hogar y Tec.","v":16},{"n":"Bedson S.A.","v":16},{"n":"Cia. Arg. Aceites","v":15},{"n":"Barack Argentina","v":10},{"n":"SERVICIOS AMG VIAL","v":6},{"n":"INDUSTRIAS ERPLA SA","v":5},{"n":"Ferreiros y Vilela","v":5},{"n":"Ultralight SRL","v":5},{"n":"Op. Ferroviaria","v":3},{"n":"DSK GROUP SRL","v":3},{"n":"CRESATA S.A","v":3},{"n":"INTERMACO SRL","v":3},{"n":"MAXTERVISION TEAM","v":3},{"n":"GUASOLDEC S.R.L.","v":2},{"n":"Seis Erre Alim.","v":1}],"2026-03":[{"n":"Grupo GSB","v":58},{"n":"Grupo Larocca","v":54},{"n":"Grupo Corral","v":31},{"n":"Cia. Arg. Aceites","v":22},{"n":"Bedson S.A.","v":20},{"n":"Hogar y Tec.","v":14},{"n":"Grupo Calzetta","v":14},{"n":"Ferreiros y Vilela","v":9},{"n":"Barack Argentina","v":7},{"n":"Ultralight SRL","v":7},{"n":"SERVICIOS AMG VIAL","v":6},{"n":"LIGUEN ILUMINACION","v":6},{"n":"DSK GROUP SRL","v":4},{"n":"Seis Erre Alim.","v":4},{"n":"MAXTERVISION TEAM","v":4}],"2026-04":[{"n":"Grupo GSB","v":75},{"n":"Grupo Larocca","v":44},{"n":"Grupo Corral","v":33},{"n":"Cia. Arg. Aceites","v":32},{"n":"Hogar y Tec.","v":24},{"n":"Grupo Calzetta","v":23},{"n":"Bedson S.A.","v":20},{"n":"Ferreiros y Vilela","v":10},{"n":"Ultralight SRL","v":7},{"n":"MAXTERVISION TEAM","v":6},{"n":"Barack Argentina","v":5},{"n":"SAILING GEAR S.A","v":5},{"n":"DSK GROUP SRL","v":4},{"n":"SERVICIOS AMG VIAL","v":4},{"n":"Op. Ferroviaria","v":3},{"n":"Seis Erre Alim.","v":3}],"2026-05":[{"n":"Grupo GSB","v":76},{"n":"Grupo Corral","v":45},{"n":"Grupo Calzetta","v":22},{"n":"Grupo Larocca","v":21},{"n":"Cia. Arg. Aceites","v":21},{"n":"Bedson S.A.","v":13},{"n":"Hogar y Tec.","v":11},{"n":"Seis Erre Alim.","v":10},{"n":"Ultralight SRL","v":8},{"n":"SERVICIOS AMG VIAL","v":7},{"n":"CRESATA S.A","v":5},{"n":"Barack Argentina","v":3},{"n":"Ferreiros y Vilela","v":3},{"n":"SAILING GEAR S.A","v":3}],"2026-06":[{"n":"Grupo Larocca","v":52},{"n":"Grupo GSB","v":46},{"n":"Cia. Arg. Aceites","v":28},{"n":"Bedson S.A.","v":23},{"n":"Grupo Corral","v":21},{"n":"Grupo Calzetta","v":19},{"n":"Hogar y Tec.","v":8},{"n":"Ultralight SRL","v":8},{"n":"Barack Argentina","v":7},{"n":"SERVICIOS AMG VIAL","v":7},{"n":"Ferreiros y Vilela","v":7},{"n":"Seis Erre Alim.","v":6},{"n":"CRESATA S.A","v":6},{"n":"GUASOLDEC S.R.L.","v":5}]};
+
 /* === FACTURACION === */
 function renderFacturacion(){
   const keys=getSelKeys(),sel=new Set(keys);
