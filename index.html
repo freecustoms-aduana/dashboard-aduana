@@ -337,8 +337,7 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="ops-table-title">Clientes por Operaciones</div></div><table id="ops-table"></table></div>
         <div class="section"><div class="section-header"><span class="section-chip">Comparativa</span><div class="section-title" id="ops-chart-title">Mes vs Promedio 2025</div></div><div class="chart-wrap-tall"><canvas id="chart-ops"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Análisis /mes vs Promedio 2025</div></div><div style="overflow-x:auto"><div class="section"><div class="section-header"><span class="section-chip">Del Mes</span><div class="section-title" id="top-mes-title">Top 10 — Mes actual</div></div><table id="top-mes-ops"></table></div>
-    <div class="section"><div class="section-header"><span class="section-chip">Del Año</span><div class="section-title">Top 10 — Acumulado 2026</div></div><table id="top-anio-ops"></table></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Análisis /mes vs Promedio 2025</div></div><div style="overflow-x:auto"><div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="top-ops-label">Top 10</div></div><table id="top-ops-table"></table></div>
     <table id="ops-ev-table"></table></div></div>
     </div>
     <div class="view" id="view-facturacion">
@@ -346,8 +345,7 @@ async function checkPw(){
         <div class="section"><div class="section-header"><span class="section-chip">Facturacion</span><div class="section-title" id="fact-title">Top 10 &mdash; USD</div></div><table id="fact-table"></table></div>
         <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Evolucion mensual 2026 por cliente</div></div><div class="chart-wrap"><canvas id="chart-fact-ev"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Detalle</span><div class="section-title" id="fact-detail-title">Por cliente 2026 vs Promedio 2025</div></div><div class="section"><div class="section-header"><span class="section-chip">Del Mes</span><div class="section-title" id="top-mes-fact-title">Top 10 — Mes actual</div></div><table id="top-mes-fact"></table></div>
-    <div class="section"><div class="section-header"><span class="section-chip">Del Año</span><div class="section-title">Top 10 — Acumulado 2026</div></div><table id="top-anio-fact"></table></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Detalle</span><div class="section-title" id="fact-detail-title">Por cliente 2026 vs Promedio 2025</div></div><div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="top-fact-label">Top 10</div></div><table id="top-fact-table"></table></div>
     <table id="fact-ev-table"></table></div>
     </div>
     <div class="view" id="view-rentabilidad">
@@ -1032,14 +1030,13 @@ function renderOperaciones(){
         '<td class="'+vCls(aggVal,p25)+'">'+vStr(aggVal,p25)+'</td></tr>';
     }).join("")+'</tbody>';
 
-  // === TOP DEL MES Y DEL AÑO ===
-  const eCK=MK.find(k=>MESES[k].enCurso)||MK[MK.length-1];
-  const eCLabel=MESES[eCK].label;
-  document.getElementById('top-mes-title').textContent='Top 10 — '+eCLabel;
-  const mOps=OPS_CLI_KEYS.map(c=>({n:c,m:OPS_CLI[c][eCK]||0})).filter(d=>d.m>0).sort((a,b)=>b.m-a.m).slice(0,10);
-  document.getElementById('top-mes-ops').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Ops</th></tr></thead><tbody>'+mOps.map((d,i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+d.n+'</td><td class="center"><strong>'+d.m+'</strong></td></tr>').join('')+'</tbody>';
-  const yOps=OPS_CLI_KEYS.map(c=>({n:c,t:Object.keys(OPS_CLI[c]).filter(k=>k.startsWith('2026')).reduce((s,k)=>s+(OPS_CLI[c][k]||0),0)})).filter(d=>d.t>0).sort((a,b)=>b.t-a.t).slice(0,10);
-  document.getElementById('top-anio-ops').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Ops</th></tr></thead><tbody>'+yOps.map((d,i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+d.n+'</td><td class="center"><strong>'+d.t+'</strong></td></tr>').join('')+'</tbody>';
+  // === RANKING OPS (filtro dinamico) ===
+  const selK=getSelKeys();
+  const selLabel=selK.length===1?MESES[selK[0]].label:('Acumulado '+selK.length+' meses');
+  document.getElementById('top-ops-label').textContent='Top 10 — '+selLabel;
+  const opsRank=OPS_CLI_KEYS.map(c=>({n:c,v:selK.reduce((s,k)=>s+(OPS_CLI[c][k]||0),0)})).filter(d=>d.v>0).sort((a,b)=>b.v-a.v).slice(0,10);
+  const opsCol=selK.length===1?'Ops':'Ops (acum.)';
+  document.getElementById('top-ops-table').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">'+opsCol+'</th></tr></thead><tbody>'+opsRank.map((d,i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+d.n+'</td><td class="center"><strong>'+d.v+'</strong></td></tr>').join('')+'</tbody>';
 }
 
 /* === FACTURACION === */
@@ -1093,15 +1090,14 @@ function renderFacturacion(){
           (dispAgg&&r.avg25?vStr(dispAgg,r.avg25):"--")+'</td></tr>';
     }).join("")+
     '</tbody>';
-  // === TOP FACT MES Y AÑO ===
-  const feCK=MK.find(k=>MESES[k].enCurso)||MK[MK.length-1];
-  const feCLabel=MESES[feCK].label;
-  document.getElementById('top-mes-fact-title').textContent='Top 10 — '+feCLabel;
-  const mFact=(FACT[feCK]||[]).slice(0,10);
-  document.getElementById('top-mes-fact').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">USD</th></tr></thead><tbody>'+mFact.map((d,i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+d.n+'</td><td class="right"><strong>'+d.u.toLocaleString('en-US')+'</strong></td></tr>').join('')+'</tbody>';
-  const yF={};FACT_MESES.forEach(m=>{(FACT[m]||[]).forEach(({n,u})=>{yF[n]=(yF[n]||0)+u;});});
-  const yFS=Object.entries(yF).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  document.getElementById('top-anio-fact').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">USD</th></tr></thead><tbody>'+yFS.map(([n,u],i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+n+'</td><td class="right"><strong>'+u.toLocaleString('en-US')+'</strong></td></tr>').join('')+'</tbody>';
+  // === RANKING FACT (filtro dinamico) ===
+  const fSelK=getSelKeys();
+  const fSelLabel=fSelK.length===1?MESES[fSelK[0]].label:('Acumulado '+fSelK.length+' meses');
+  document.getElementById('top-fact-label').textContent='Top 10 — '+fSelLabel;
+  const factRD={};fSelK.forEach(m=>{(FACT[m]||[]).forEach(({n,u})=>{factRD[n]=(factRD[n]||0)+u;});});
+  const factRA=Object.entries(factRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const factCol=fSelK.length===1?'USD':'USD (acum.)';
+  document.getElementById('top-fact-table').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">'+factCol+'</th></tr></thead><tbody>'+factRA.map(([n,u],i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+n+'</td><td class="right"><strong>'+u.toLocaleString('en-US')+'</strong></td></tr>').join('')+'</tbody>';
 }
 
 /* === RENTABILIDAD === */
