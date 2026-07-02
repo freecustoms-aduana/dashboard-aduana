@@ -217,9 +217,7 @@ tfoot td.right{text-align:right;}
 #pw-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#1D4ED8;color:#fff;font-size:14px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:background .15s;margin-bottom:8px;}
 #pw-btn:hover{background:#2563EB;}
 #pw-err{font-family:'Poppins',sans-serif;font-size:12px;color:#F87171;min-height:18px;}
-
-  
-  </style>
+</style>
 <div id="pw-overlay">
   <div id="pw-box">
     <div id="pw-logo">ADUANA</div>
@@ -263,13 +261,12 @@ async function checkPw(){
     <div class="nav-item" onclick="showView('kpis')" id="nav-kpis"><span class="icon">&#127919;</span> KPIs Operativos</div>
     <div class="nav-item" onclick="showView('novedades')" id="nav-novedades"><span class="icon">&#128466;</span> Novedades</div>
     <div class="nav-section">Clientes</div>
-    <div class="nav-item" onclick="showView('operaciones')" id="nav-operaciones"><span class="icon">&#127942;</span> Operaciones</div>
+    <div class="nav-item" onclick="showView('operaciones')" id="nav-operaciones"><span class="icon">&#127942;</span> Top Operaciones</div>
     <div class="nav-item" onclick="showView('facturacion')" id="nav-facturacion"><span class="icon">&#128181;</span> Facturacion USD</div>
     <div class="nav-section">Finanzas</div>
     <div class="nav-item" onclick="showView('rentabilidad')" id="nav-rentabilidad"><span class="icon">&#128176;</span> Rentabilidad</div>
     <div class="nav-section">Gerencia</div>
     <div class="nav-item" onclick="showView('objetivos')" id="nav-objetivos"><span class="icon">&#9733;</span> Objetivos 2026</div>
-    
   </nav>
   <div class="sidebar-footer">Fuente: Ganancias 2026 &bull; Facturacion 2526</div>
 </aside>
@@ -330,23 +327,23 @@ async function checkPw(){
     </div>
     <div class="view" id="view-interanual">
       <div class="section"><div class="section-header"><span class="section-chip">Interanual</span><div class="section-title" id="inter-title">Operaciones 2025 vs 2026</div></div><div class="chart-wrap-tall"><canvas id="chart-inter-ops"></canvas></div></div>
-      <div class="section"><div class="section-header"><span class="section-chip">Variacion</span><div class="section-title">Variacion % interanual</div></div><div class="chart-wrap"><canvas id="chart-inter-var"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Variacion</span><div class="section-title">Variación % interanual</div></div><div class="chart-wrap"><canvas id="chart-inter-var"></canvas></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Operaciones</span><div class="section-title">Top 10 Clientes 2025 (Ops) — Evolución en 2026</div></div><div style="overflow-x:auto"><table id="inter-ops-cli-table" class="data-table"></table></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Facturación</span><div class="section-title">Top 10 Clientes 2025 (USD) — Evolución en 2026</div></div><div style="overflow-x:auto"><table id="inter-fact-cli-table" class="data-table"></table></div></div>
     </div>
     <div class="view" id="view-operaciones">
       <div class="two-col">
         <div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="ops-table-title">Clientes por Operaciones</div></div><table id="ops-table"></table></div>
         <div class="section"><div class="section-header"><span class="section-chip">Comparativa</span><div class="section-title" id="ops-chart-title">Mes vs Promedio 2025</div></div><div class="chart-wrap-tall"><canvas id="chart-ops"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Análisis /mes vs Promedio 2025</div></div><div style="overflow-x:auto"><div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="top-ops-label">Top 10</div></div><table id="top-ops-table"></table></div>
-    <table id="ops-ev-table"></table></div></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Operaciones por cliente — Análisis /mes vs Promedio 2025</div></div><div style="overflow-x:auto"><table id="ops-ev-table"></table></div></div>
     </div>
     <div class="view" id="view-facturacion">
       <div class="two-col">
         <div class="section"><div class="section-header"><span class="section-chip">Facturacion</span><div class="section-title" id="fact-title">Top 10 &mdash; USD</div></div><table id="fact-table"></table></div>
         <div class="section"><div class="section-header"><span class="section-chip">Evolucion</span><div class="section-title">Evolucion mensual 2026 por cliente</div></div><div class="chart-wrap"><canvas id="chart-fact-ev"></canvas></div></div>
       </div>
-      <div class="section"><div class="section-header"><span class="section-chip">Detalle</span><div class="section-title" id="fact-detail-title">Por cliente 2026 vs Promedio 2025</div></div><div class="section"><div class="section-header"><span class="section-chip">Ranking</span><div class="section-title" id="top-fact-label">Top 10</div></div><table id="top-fact-table"></table></div>
-    <table id="fact-ev-table"></table></div>
+      <div class="section"><div class="section-header"><span class="section-chip">Detalle</span><div class="section-title" id="fact-detail-title">Por cliente 2026 vs Promedio 2025</div></div><table id="fact-ev-table"></table></div>
     </div>
     <div class="view" id="view-rentabilidad">
       <div id="rent-kpi-grid" class="kpi-grid"></div>
@@ -361,7 +358,6 @@ async function checkPw(){
     <div class="view" id="view-objetivos">
       <div id="obj-content"></div>
     </div>
-  
   </div>
 </main>
 </div>
@@ -371,7 +367,8 @@ const ANALISIS_DATA={
   "2026-02": '<p>Febrero 2026 presento una recuperacion operativa y financiera sostenida, con <b>238 operaciones</b> (+4,4% vs. enero) y un EBITDA de <b>USD 71.051</b> (ARS ~101,3M al TC 1.426), el segundo resultado mas alto del año a esa fecha. La rentabilidad por operacion escalo a <b>USD 298/op</b> (+15,5%) y la ganancia por empleado se ubico en <b>USD 1.920</b>.</p><p>El mes registro la dotacion mas alta del ejercicio con <b>37 empleados</b>. A pesar de ello, la mejora en volumen y la selectividad operativa permitieron absorber el incremento de MOD —que represento el 45,8% de los ingresos— y mejorar los indicadores unitarios. La facturacion supero los ARS 224M.</p><p>Los grupos estrategicos Corral, Larocca, GSB y Calzetta sumaron <b>133 operaciones (55,9%)</b> del total, con distribucion mas equilibrada respecto a enero. Larocca lidero el ranking con 38 operaciones. Frente a febrero 2025 (221 ops.), el area mostro un avance interanual de <b>+7,7%</b>, confirmando la tendencia de crecimiento.</p><p>El punto de equilibrio se establecio en <b>120 operaciones</b>, con una cobertura de <b>1,98x</b>, sosteniendo el margen operativo en niveles positivos y consolidando la tendencia ascendente del ejercicio.</p>',
   "2026-03": '<p>Marzo 2026 marco el mayor salto operativo del año, con <b>283 operaciones</b> (+18,9% vs. febrero), superando ampliamente la marca de marzo 2025 (238 ops., <b>+18,9% interanual</b>). Sin embargo, el EBITDA evidencio una leve contraccion a <b>USD 68.675</b> (ARS ~96,8M al TC 1.410), reflejo del impacto que el crecimiento de volumen genero sobre la estructura de costos directos.</p><p>La rentabilidad por operacion descendi&oacute; de USD 298 a <b>USD 243/op</b> (-18,5%), dinamica esperable en meses de alto volumen donde el MOD se distribuye sobre mas despachos pero sin incrementarse proporcionalmente. La dotacion se ubico en 35 empleados, con una ganancia por empleado de <b>USD 1.962</b>.</p><p>El dinamismo del mes fue liderado por Grupo GSB (58 ops.) y Grupo Larocca (54 ops.), que junto a Corral y Calzetta concentraron <b>157 de las 283 operaciones (55,5%)</b>. La aceleracion de GSB y Larocca refleja el inicio de temporada alta en sus segmentos de actividad.</p><p>Con un punto de equilibrio de <b>143 operaciones</b>, el area opero <b>1,98x por encima del minimo</b>, sosteniendo la cobertura a pesar del efecto dilutivo del volumen sobre el margen unitario. El acumulado enero&ndash;marzo totalizo <b>749 operaciones</b> y un EBITDA de <b>USD 198.467</b>.</p>',
   "2026-04": '<p>Abril 2026 represento un <b>hito historico</b> para el area, con <b>323 operaciones</b> oficializadas (+14,1% vs. marzo y +18,3% vs. abril 2025), el mayor volumen mensual registrado. El EBITDA alcanzo <b>USD 79.244</b> (ARS ~112,2M al TC 1.416), tambien un maximo historico, con <b>USD 245/op</b> y <b>USD 2.331 por empleado</b>.</p><p>El resultado confirma que el area logro escalar su volumen sin deteriorar la estructura de rentabilidad. El crecimiento de ingresos a ARS 280,3M absorbio el incremento en MOD (ARS 126,6M, el mas elevado del año), manteniendo margenes consistentes y mejorando el EBITDA respecto al mes anterior en <b>+15,4%</b>.</p><p>Grupo GSB se consolido como lider operativo con <b>75 operaciones</b>, seguido por Grupo Larocca (44), Grupo Corral (33) y Cia. Argentina de Aceites (32). Los cuatro grupos estrategicos principales concentraron <b>175 de las 323 operaciones (54,2%)</b>, con GSB como traccionador clave del record mensual.</p><p>El punto de equilibrio fue el mas exigente del año: <b>171 operaciones</b>. Aun asi, el area lo supero en <b>1,89x</b>, confirmando que la expansion operativa se realizo sobre una base financiera solida. El acumulado enero&ndash;abril totalizo <b>1.072 operaciones</b> y un EBITDA de <b>USD 277.711</b>.</p>',
-  "2026-05": '<p>Mayo 2026 consolido una estabilizacion saludable tras el record historico de abril, con <b>262 operaciones</b> (-18,9%) y un EBITDA de <b>USD 74.149</b> (ARS ~106,2M al TC 1.432). La reduccion de volumen no implico deterioro estructural: la rentabilidad por operacion mejoro a <b>USD 283/op</b> (+15,5% vs. abril), el mejor ratio del año.</p><p>La contraccion de la dotacion a <b>26 empleados</b> &mdash;frente a los 34 de abril&mdash; fue el principal factor en la mejora de los ratios unitarios, elevando la ganancia por empleado a <b>USD 2.852</b> (+22,4%), tambien el maximo del año. El area demostro capacidad de mantener rentabilidad con una estructura mas liviana, reflejando una gestion eficiente de los costos directos.</p><p>Grupo GSB lider&oacute; por segundo mes consecutivo con <b>76 operaciones</b>, seguido por Grupo Corral (45) &mdash;su mejor mes del ejercicio&mdash; y Grupo Calzetta (22). Los cuatro grupos estrategicos sumaron <b>164 de las 262 operaciones (62,6%)</b>. En terminos interanuales, el area registro 262 ops. frente a las 300 de mayo 2025 (<b>-12,7% interanual</b>).</p><p>Con un punto de equilibrio de <b>119 operaciones</b> y una cobertura de <b>2,2x</b>, la mayor del año, el area opero con amplio margen sobre el minimo requerido. El acumulado enero&ndash;mayo 2026 totaliza <b>1.334 operaciones</b> y un EBITDA de <b>USD 351.860</b>, con una tendencia de rentabilidad unitaria al alza que consolida el desempeño positivo del ejercicio.</p>'
+  "2026-05": '<p>Mayo 2026 consolido una estabilizacion saludable tras el record historico de abril, con <b>262 operaciones</b> (-18,9%) y un EBITDA de <b>USD 74.149</b> (ARS ~106,2M al TC 1.432). La reduccion de volumen no implico deterioro estructural: la rentabilidad por operacion mejoro a <b>USD 283/op</b> (+15,5% vs. abril), el mejor ratio del año.</p><p>La contraccion de la dotacion a <b>26 empleados</b> &mdash;frente a los 34 de abril&mdash; fue el principal factor en la mejora de los ratios unitarios, elevando la ganancia por empleado a <b>USD 2.852</b> (+22,4%), tambien el maximo del año. El area demostro capacidad de mantener rentabilidad con una estructura mas liviana, reflejando una gestion eficiente de los costos directos.</p><p>Grupo GSB lider&oacute; por segundo mes consecutivo con <b>76 operaciones</b>, seguido por Grupo Corral (45) &mdash;su mejor mes del ejercicio&mdash; y Grupo Calzetta (22). Los cuatro grupos estrategicos sumaron <b>164 de las 262 operaciones (62,6%)</b>. En terminos interanuales, el area registro 262 ops. frente a las 300 de mayo 2025 (<b>-12,7% interanual</b>).</p><p>Con un punto de equilibrio de <b>119 operaciones</b> y una cobertura de <b>2,2x</b>, la mayor del año, el area opero con amplio margen sobre el minimo requerido. El acumulado enero&ndash;mayo 2026 totaliza <b>1.334 operaciones</b> y un EBITDA de <b>USD 351.860</b>, con una tendencia de rentabilidad unitaria al alza que consolida el desempeño positivo del ejercicio.</p>',
+  "2026-06": '<p>Junio 2026 en curso. Datos financieros provisorios: <b>271 operaciones</b>, ingresos ARS 270,8M. MOD pendiente de cierre de n&oacute;mina. TC estimado: 1.437. Lectura gerencial disponible al cierre del mes.</p>'
 };
 
 Chart.defaults.color='#5B6CA8';
@@ -383,7 +380,7 @@ const MESES={
   "2026-03":{label:"Mar 2026",lc:"Mar",ing:243352209,cos:47601092,mod:98955256,ops:283,dot:35,tc:1409.5,resUSD:68675,pe:143},
   "2026-04":{label:"Abr 2026",lc:"Abr",ing:280299356,cos:41545575,mod:126560046,ops:323,dot:34,tc:1415.8,resUSD:79244,pe:171},
   "2026-05":{label:"May 2026",lc:"May",ing:237673973,cos:43840348,mod:87683702,ops:262,dot:26,tc:1431.6,resUSD:74149,pe:119},
-  "2026-06":{label:"Jun 2026",lc:"Jun",ing:230041223,cos:10574411,mod:87683702,ops:248,dot:26,tc:1431.6,resUSD:92049,pe:127,enCurso:true},
+  "2026-06":{label:"Jun 2026",lc:"Jun",ing:270776104,cos:15588146,mod:0,ops:271,dot:26,tc:1437.0,resUSD:177584,pe:0,enCurso:true},
 };
 const MK=Object.keys(MESES);
 const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:271,May:300,Jun:289,Jul:259,Ago:282,Sep:311,Oct:271,Nov:271,Dic:279};
@@ -392,35 +389,68 @@ const TOP10={
   "2026-03":[{n:"Grupo GSB",p:24,m:58},{n:"Grupo Larocca",p:28,m:54},{n:"Cia. Arg. Aceites",p:19,m:22},{n:"Grupo Corral",p:33,m:31},{n:"Bedson S.A.",p:15,m:20},{n:"Barack Argentina",p:6,m:7},{n:"Ultralight SRL",p:5,m:7},{n:"Hogar y Tec.",p:29,m:14},{n:"Grupo Calzetta",p:16,m:14},{n:"Seis Erre Alim.",p:7,m:4}],
   "2026-04":[{n:"Grupo GSB",p:24,m:73},{n:"Grupo Larocca",p:28,m:44},{n:"Grupo Corral",p:33,m:33},{n:"Cia. Arg. Aceites",p:19,m:32},{n:"Hogar y Tec.",p:29,m:24},{n:"Grupo Calzetta",p:16,m:23},{n:"Bedson S.A.",p:15,m:20},{n:"Ultralight SRL",p:5,m:7},{n:"Barack Argentina",p:6,m:5},{n:"Seis Erre Alim.",p:7,m:3}],
   "2026-05":[{n:"Grupo GSB",p:24,m:76},{n:"Grupo Corral",p:33,m:45},{n:"Cia. Arg. Aceites",p:19,m:21},{n:"Grupo Calzetta",p:16,m:22},{n:"Grupo Larocca",p:28,m:21},{n:"Seis Erre Alim.",p:7,m:10},{n:"Hogar y Tec.",p:29,m:11},{n:"Ultralight SRL",p:5,m:8},{n:"Bedson S.A.",p:15,m:13},{n:"Barack Argentina",p:6,m:3}],
-  "2026-06":[{n:"Grupo GSB",p:24,m:44},{n:"Grupo Larocca",p:28,m:40},{n:"Cia. Arg. Aceites",p:19,m:25},{n:"Bedson S.A.",p:15,m:20},{n:"Grupo Corral",p:33,m:19},{n:"Grupo Calzetta",p:16,m:13},{n:"Ultralight SRL",p:5,m:8},{n:"Hogar y Tec.",p:29,m:8},{n:"Barack Argentina",p:6,m:7},{n:"Seis Erre Alim.",p:7,m:5}],
 };
+// OPS_CLI: Top 10 clientes 2025 (por ops) — usado en tab Comparativa 25/26
 const OPS_CLI={
-  "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45,"2026-06":19},
-  "Grupo Larocca":    {p25:39.4,"2026-01":67,"2026-02":38,"2026-03":54,"2026-04":44,"2026-05":21,"2026-06":40},
-  "Grupo GSB":        {p25:26.2,"2026-01":34,"2026-02":42,"2026-03":58,"2026-04":75,"2026-05":76,"2026-06":44},
-  "Grupo Calzetta":   {p25:16.2,"2026-01":16,"2026-02":27,"2026-03":14,"2026-04":23,"2026-05":22,"2026-06":13},
+  "Grupo Larocca":    {p25:39.4,"2026-01":67,"2026-02":38,"2026-03":54,"2026-04":44,"2026-05":21,"2026-06":52},
+  "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45,"2026-06":21},
   "Hogar y Tec.":     {p25:29.0,"2026-01":11,"2026-02":16,"2026-03":14,"2026-04":24,"2026-05":11,"2026-06":8},
-  "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13,"2026-06":20},
-  "Ultralight SRL":   {p25: 5.2,"2026-01": 5,"2026-02": 5,"2026-03": 7,"2026-04": 7,"2026-05": 8,"2026-06":8},
-  "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21,"2026-06":25},
-  "Seis Erre Alim.":  {p25: 6.8,"2026-01": 1,"2026-02": 1,"2026-03": 4,"2026-04": 3,"2026-05":10,"2026-06":5},
-  "Barack Argentina": {p25: 3.9,"2026-01": 2,"2026-02":10,"2026-03": 7,"2026-04": 5,"2026-05": 3,"2026-06":7},
+  "Grupo GSB":        {p25:24.2,"2026-01":34,"2026-02":40,"2026-03":58,"2026-04":73,"2026-05":74,"2026-06":45},
+  "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21,"2026-06":28},
+  "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13,"2026-06":23},
+  "Grupo Calzetta":   {p25: 9.1,"2026-01":15,"2026-02":18,"2026-03":10,"2026-04":14,"2026-05":19,"2026-06":14},
+  "Op. Ferroviaria":  {p25: 8.0,"2026-01": 1,"2026-02": 3,"2026-03": 0,"2026-04": 3,"2026-05": 1,"2026-06": 1},
+  "Ferreiros y Vilela":{p25:7.6,"2026-01":10,"2026-02": 5,"2026-03": 9,"2026-04":10,"2026-05": 3,"2026-06": 7},
+  "Global Tyres":     {p25: 7.1,"2026-01": 1,"2026-02": 9,"2026-03": 4,"2026-04": 9,"2026-05": 3,"2026-06": 5},
 };
 const OPS_CLI_KEYS=Object.keys(OPS_CLI);
+// OPS_2025_AVG: promedio mensual 2025 por cliente (para gráficos comparativos)
+const OPS_2025_AVG={
+  "Grupo Larocca":39.4,"Grupo Corral":38.4,"Hogar y Tec.":29.0,"Grupo GSB":24.8,
+  "Cia. Arg. Aceites":19.3,"Bedson S.A.":14.8,"Grupo Calzetta":9.1,"Op. Ferroviaria":8.0,
+  "Ferreiros y Vilela":7.6,"Global Tyres":7.1,"Seis Erre Alim.":6.8,"Start.ar":5.8,
+  "Servicios AMG":5.7,"Ultralight SRL":5.2,"Barack Argentina":3.9,"Maxtervision":3.6,
+  "Cresata S.A.":3.0,"DSK Group":2.4,
+};
 const OPS={
-  "2026-01":[{n:"Grupo Larocca",v:67},{n:"Grupo GSB",v:34},{n:"Grupo Corral",v:26},{n:"Grupo Calzetta",v:16},{n:"Cia. Arg. Aceites",v:13},{n:"Hogar y Tec.",v:11},{n:"Bedson S.A.",v:10},{n:"Ferreiros y Vilela",v:10},{n:"Servicios AMG",v:6},{n:"Maxtervision",v:5},{n:"Ultralight SRL",v:5},{n:"Beta Glass S.A.",v:2},{n:"Sailing Gear S.A.",v:2},{n:"Barack Argentina",v:2},{n:"Intermaco SRL",v:2},{n:"DSK Group",v:2},{n:"Guasoldec SRL",v:1},{n:"NEPAL OBJETOS S.R.L",v:1},{n:"Operadora Ferroviaria",v:1},{n:"GRUPRO S.A.",v:1},{n:"DESSOL INDUSTRIAL S.A.",v:1},{n:"Grupo Dateng",v:1},{n:"URBAN HUS INDUSTRY S. R. L.",v:1},{n:"Cresata S.A.",v:1},{n:"Seis Erre Alim.",v:1},{n:"New Material SAS",v:1},{n:"CTT DIGITAL S.R.L.",v:1},{n:"PINSOURCE SA",v:1},{n:"RJ INGENIERIA S.A.",v:1},{n:"BRUNO HNOS. S.A",v:1},{n:"Industrias Erpla",v:1}],
-  "2026-02":[{n:"Grupo GSB",v:42},{n:"Grupo Larocca",v:38},{n:"Grupo Calzetta",v:27},{n:"Grupo Corral",v:26},{n:"Hogar y Tec.",v:16},{n:"Bedson S.A.",v:16},{n:"Cia. Arg. Aceites",v:15},{n:"Barack Argentina",v:10},{n:"Servicios AMG",v:6},{n:"Industrias Erpla",v:5},{n:"Ferreiros y Vilela",v:5},{n:"Ultralight SRL",v:5},{n:"Operadora Ferroviaria",v:3},{n:"DSK Group",v:3},{n:"Cresata S.A.",v:3},{n:"Intermaco SRL",v:3},{n:"Maxtervision",v:3},{n:"Guasoldec SRL",v:2},{n:"PINSOURCE SA",v:2},{n:"TEODORO FUCILE TALLERES INDUSTRIALES S.A.",v:2},{n:"Seis Erre Alim.",v:1},{n:"SKUKI S.A.",v:1},{n:"Liguen Ilum.",v:1},{n:"A Y M D ESPOSITO S R L",v:1},{n:"EGA SERVICIOS S.A.S",v:1},{n:"RIO URUGUAY S.R.L. Y OTROS - UNION TRANSITORIA",v:1}],
-  "2026-03":[{n:"Grupo GSB",v:58},{n:"Grupo Larocca",v:54},{n:"Grupo Corral",v:31},{n:"Cia. Arg. Aceites",v:22},{n:"Bedson S.A.",v:20},{n:"Hogar y Tec.",v:14},{n:"Grupo Calzetta",v:14},{n:"Ferreiros y Vilela",v:9},{n:"Barack Argentina",v:7},{n:"Ultralight SRL",v:7},{n:"Servicios AMG",v:6},{n:"Liguen Ilum.",v:6},{n:"DSK Group",v:4},{n:"Seis Erre Alim.",v:4},{n:"Maxtervision",v:4},{n:"DI BAIA ALEJO CHRISTIAN",v:2},{n:"Industrias Erpla",v:2},{n:"Intermaco SRL",v:2},{n:"Sailing Gear S.A.",v:2},{n:"Defiba Servicios",v:2},{n:"TME SPORTS S.R.L.",v:2},{n:"BRUNO HNOS. S.A",v:1},{n:"Flama SRL",v:1},{n:"TEXTER FEED SRL",v:1},{n:"New Material SAS",v:1},{n:"KUPFER SRL",v:1},{n:"CTT DIGITAL S.R.L.",v:1},{n:"Cresata S.A.",v:1},{n:"Beta Glass S.A.",v:1},{n:"INDUTRA SOCIEDAD DE HECHO",v:1},{n:"Grupo Eslabón",v:1},{n:"BALENT EDUARDO OSCAR",v:1}],
-  "2026-04":[{n:"Grupo GSB",v:75},{n:"Grupo Larocca",v:44},{n:"Grupo Corral",v:33},{n:"Cia. Arg. Aceites",v:32},{n:"Hogar y Tec.",v:24},{n:"Grupo Calzetta",v:23},{n:"Bedson S.A.",v:20},{n:"Ferreiros y Vilela",v:10},{n:"Ultralight SRL",v:7},{n:"Maxtervision",v:6},{n:"Barack Argentina",v:5},{n:"Sailing Gear S.A.",v:5},{n:"DSK Group",v:4},{n:"Servicios AMG",v:4},{n:"Operadora Ferroviaria",v:3},{n:"Seis Erre Alim.",v:3},{n:"New Material SAS",v:3},{n:"Industrias Erpla",v:2},{n:"Guasoldec SRL",v:2},{n:"INDUTRA SOCIEDAD DE HECHO",v:2},{n:"PINSOURCE SA",v:2},{n:"TEXTER FEED SRL",v:2},{n:"Grupo Eslabón",v:2},{n:"RR CONSTRUCCIONES",v:1},{n:"ADRIAN CALVANI",v:1},{n:"BRUNO HNOS. S.A",v:1},{n:"VISION TECHNOLOGIES ARG.",v:1},{n:"DESSOL INDUSTRIAL S.A.",v:1},{n:"TEODORO FUCILE TALLERES",v:1},{n:"Cresata S.A.",v:1},{n:"Bioenertec S.A.",v:1},{n:"Grupo Dateng",v:1}],
-  "2026-05":[{n:"Grupo GSB",v:76},{n:"Grupo Corral",v:45},{n:"Grupo Calzetta",v:22},{n:"Grupo Larocca",v:21},{n:"Cia. Arg. Aceites",v:21},{n:"Bedson S.A.",v:13},{n:"Hogar y Tec.",v:11},{n:"Seis Erre Alim.",v:10},{n:"Ultralight SRL",v:8},{n:"Servicios AMG",v:7},{n:"Cresata S.A.",v:5},{n:"Barack Argentina",v:3},{n:"Ferreiros y Vilela",v:3},{n:"Sailing Gear S.A.",v:3},{n:"Industrias Erpla",v:2},{n:"BRUNO HNOS. S.A",v:2},{n:"DSK Group",v:2},{n:"Operadora Ferroviaria",v:1},{n:"HELI STORE S.A.",v:1},{n:"Beta Glass S.A.",v:1},{n:"New Material SAS",v:1},{n:"Flama SRL",v:1},{n:"BSC Argentina S.A.",v:1},{n:"Intermaco SRL",v:1},{n:"Grupo Eslabón",v:1}],
+  "2026-01":[{n:"Grupo Larocca",v:67},{n:"Grupo GSB",v:34},{n:"Grupo Corral",v:26},{n:"Grupo Calzetta",v:15},{n:"Cia. Arg. Aceites",v:13},{n:"Hogar y Tec.",v:11},{n:"Bedson S.A.",v:10},{n:"Ferreiros y Vilela",v:10},{n:"Servicios AMG",v:6},{n:"Maxtervision",v:5},{n:"Ultralight SRL",v:5},{n:"Barack Argentina",v:2},{n:"DSK Group",v:2},{n:"Op. Ferroviaria",v:1},{n:"Cresata S.A.",v:1},{n:"Seis Erre Alim.",v:1}],
+  "2026-02":[{n:"Grupo GSB",v:40},{n:"Grupo Larocca",v:38},{n:"Grupo Corral",v:26},{n:"Grupo Calzetta",v:18},{n:"Hogar y Tec.",v:16},{n:"Bedson S.A.",v:16},{n:"Cia. Arg. Aceites",v:15},{n:"Barack Argentina",v:10},{n:"Global Tyres",v:9},{n:"Servicios AMG",v:6},{n:"Ferreiros y Vilela",v:5},{n:"Ultralight SRL",v:5},{n:"Op. Ferroviaria",v:3},{n:"DSK Group",v:3},{n:"Cresata S.A.",v:3},{n:"Maxtervision",v:3}],
+  "2026-03":[{n:"Grupo GSB",v:58},{n:"Grupo Larocca",v:54},{n:"Grupo Corral",v:31},{n:"Cia. Arg. Aceites",v:22},{n:"Bedson S.A.",v:20},{n:"Hogar y Tec.",v:14},{n:"Grupo Calzetta",v:10},{n:"Ferreiros y Vilela",v:9},{n:"Barack Argentina",v:7},{n:"Ultralight SRL",v:7},{n:"Servicios AMG",v:6},{n:"DSK Group",v:4},{n:"Seis Erre Alim.",v:4},{n:"Global Tyres",v:4},{n:"Maxtervision",v:4}],
+  "2026-04":[{n:"Grupo GSB",v:73},{n:"Grupo Larocca",v:44},{n:"Grupo Corral",v:33},{n:"Cia. Arg. Aceites",v:32},{n:"Hogar y Tec.",v:24},{n:"Bedson S.A.",v:20},{n:"Grupo Calzetta",v:14},{n:"Ferreiros y Vilela",v:10},{n:"Global Tyres",v:9},{n:"Ultralight SRL",v:7},{n:"Maxtervision",v:6},{n:"Barack Argentina",v:5},{n:"DSK Group",v:4},{n:"Servicios AMG",v:4},{n:"Op. Ferroviaria",v:3},{n:"Seis Erre Alim.",v:3}],
+  "2026-05":[{n:"Grupo GSB",v:74},{n:"Grupo Corral",v:45},{n:"Grupo Larocca",v:21},{n:"Cia. Arg. Aceites",v:21},{n:"Grupo Calzetta",v:19},{n:"Bedson S.A.",v:13},{n:"Hogar y Tec.",v:11},{n:"Seis Erre Alim.",v:10},{n:"Ultralight SRL",v:8},{n:"Servicios AMG",v:7},{n:"Cresata S.A.",v:5},{n:"Barack Argentina",v:3},{n:"Ferreiros y Vilela",v:3},{n:"Global Tyres",v:3}],
+  "2026-06":[{n:"Grupo Larocca",v:52},{n:"Grupo GSB",v:45},{n:"Cia. Arg. Aceites",v:28},{n:"Bedson S.A.",v:23},{n:"Grupo Corral",v:21},{n:"Grupo Calzetta",v:14},{n:"Hogar y Tec.",v:8},{n:"Ultralight SRL",v:8},{n:"Barack Argentina",v:7},{n:"Servicios AMG",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Seis Erre Alim.",v:6},{n:"Cresata S.A.",v:6},{n:"Global Tyres",v:5},{n:"DSK Group",v:3},{n:"Defiba S.A.",v:3}],
 };
 const FACT={
-  "2026-01":[{n:"Grupo Larocca",u:28267},{n:"Grupo Corral",u:18159},{n:"Ultralight SRL",u:17921},{n:"Grupo GSB",u:12264},{n:"Hogar y Tec.",u:11715},{n:"Grupo Calzetta",u:11658},{n:"Bedson S.A.",u:7145},{n:"Maxtervision",u:5227},{n:"Ferreiros y Vilela",u:4913},{n:"Servicios AMG",u:3102}],
-  "2026-02":[{n:"Grupo Calzetta",u:26286},{n:"Grupo Corral",u:25070},{n:"Grupo Larocca",u:21128},{n:"Grupo GSB",u:17141},{n:"Hogar y Tec.",u:14359},{n:"Bedson S.A.",u:11523},{n:"Ultralight SRL",u:9378},{n:"Barack Argentina",u:6455},{n:"Cia. Arg. Aceites",u:3697},{n:"Servicios AMG",u:2839}],
-  "2026-03":[{n:"Grupo GSB",u:25231},{n:"Grupo Larocca",u:22546},{n:"Grupo Corral",u:22230},{n:"Bedson S.A.",u:14621},{n:"Grupo Calzetta",u:14618},{n:"Hogar y Tec.",u:11713},{n:"Cia. Arg. Aceites",u:8759},{n:"Ultralight SRL",u:8520},{n:"Barack Argentina",u:7513},{n:"Liguen Ilum.",u:5393}],
-  "2026-04":[{n:"Grupo GSB",u:24740},{n:"Grupo Larocca",u:23427},{n:"Grupo Calzetta",u:23168},{n:"Grupo Corral",u:22489},{n:"Hogar y Tec.",u:21124},{n:"Bedson S.A.",u:14913},{n:"Ultralight SRL",u:11258},{n:"Cia. Arg. Aceites",u:7160},{n:"Defiba Servicios",u:6773},{n:"Ferreiros y Vilela",u:6657}],
-  "2026-05":[{n:"Grupo Corral",u:36053},{n:"Grupo GSB",u:26566},{n:"Grupo Larocca",u:18058},{n:"Grupo Calzetta",u:16838},{n:"Bedson S.A.",u:13057},{n:"Hogar y Tec.",u:12168},{n:"Ultralight SRL",u:9949},{n:"Seis Erre Alim.",u:4877},{n:"Cia. Arg. Aceites",u:4752},{n:"New Material SAS",u:3381}],
+  "2026-01":[{n:"Grupo Calzetta",u:127066},{n:"Grupo Larocca",u:81422},{n:"B G H S A",u:76945},{n:"Grupo Corral",u:74893},{n:"Hogar y Tec.",u:30915},{n:"Grupo GSB",u:24655},{n:"Ultralight SRL",u:19098},{n:"Maxtervision",u:11204},{n:"Servicios AMG",u:9593},{n:"Bedson S.A.",u:9149},{n:"Ferreiros y Vilela",u:7898}],
+  "2026-02":[{n:"Grupo Corral",u:180785},{n:"Grupo Calzetta",u:131058},{n:"B G H S A",u:102832},{n:"Barack Argentina",u:74973},{n:"Grupo Larocca",u:67999},{n:"Hogar y Tec.",u:49001},{n:"Grupo GSB",u:39532},{n:"Servicios AMG",u:17937},{n:"Bedson S.A.",u:17749},{n:"Global Tyres",u:14138},{n:"Maxtervision",u:11038},{n:"Guasoldec S.R.L.",u:10255},{n:"Ultralight SRL",u:10214}],
+  "2026-03":[{n:"Grupo Larocca",u:107027},{n:"Grupo Corral",u:105136},{n:"Grupo Calzetta",u:74985},{n:"Grupo GSB",u:58133},{n:"Bedson S.A.",u:40061},{n:"Hogar y Tec.",u:22977},{n:"Barack Argentina",u:22499},{n:"Global Tyres",u:18043},{n:"B G H S A",u:16453},{n:"Maxtervision",u:14730},{n:"Servicios AMG",u:13841}],
+  "2026-04":[{n:"Grupo Corral",u:149454},{n:"Grupo Calzetta",u:98241},{n:"Grupo GSB",u:83748},{n:"Grupo Larocca",u:69886},{n:"B G H S A",u:63945},{n:"Hogar y Tec.",u:57138},{n:"Bedson S.A.",u:51972},{n:"Barack Argentina",u:36546},{n:"Global Tyres",u:18628},{n:"Servicios AMG",u:13700},{n:"Ultralight SRL",u:13136}],
+  "2026-05":[{n:"Grupo Corral",u:212259},{n:"Grupo Calzetta",u:150165},{n:"Grupo Larocca",u:86791},{n:"Grupo GSB",u:77797},{n:"B G H S A",u:68532},{n:"Hogar y Tec.",u:48355},{n:"Bedson S.A.",u:24682},{n:"Ultralight SRL",u:10888},{n:"Seis Erre Alim.",u:10783},{n:"Barack Argentina",u:10398},{n:"Servicios AMG",u:11924},{n:"Global Tyres",u:11343}],
+  "2026-06":[{n:"Grupo Calzetta",u:132885},{n:"Grupo Corral",u:113646},{n:"Barack Argentina",u:78640},{n:"Grupo Larocca",u:77441},{n:"B G H S A",u:48579},{n:"Grupo GSB",u:48347},{n:"Servicios AMG",u:35115},{n:"Bedson S.A.",u:24952},{n:"Hogar y Tec.",u:22058},{n:"Guasoldec S.R.L.",u:21774},{n:"Ultralight SRL",u:15742},{n:"Seis Erre Alim.",u:10692},{n:"Global Tyres",u:10346}],
 };
+// FACT_2025_AVG: promedio mensual 2025 de facturacion USD por cliente
+const FACT_2025_AVG={
+  "Grupo Corral":180799,"Grupo Larocca":144351,"Hogar y Tec.":102383,"Grupo Calzetta":85412,
+  "Grupo GSB":32579,"Servicios AMG":32329,"Global Tyres":31094,"RR Construcciones":28602,
+  "Bedson S.A.":21606,"Maxtervision":18537,"B G H S A":18202,"Guasoldec S.R.L.":15410,
+  "Barack Argentina":15407,"Seis Erre Alim.":9177,"Ultralight SRL":8903,
+  "Ferreiros y Vilela":5200,"Cia. Arg. Aceites":3800,
+};
+// FACT_CLI: Top 10 clientes 2025 (por facturacion USD) — para tab Comparativa 25/26
+const FACT_CLI={
+  "Grupo Corral":    {p25:180799,"2026-01":74893, "2026-02":180785,"2026-03":105136,"2026-04":149454,"2026-05":212259,"2026-06":113646},
+  "Grupo Larocca":   {p25:144351,"2026-01":81422, "2026-02":67999, "2026-03":107027,"2026-04":69886, "2026-05":86791, "2026-06":77441},
+  "Hogar y Tec.":    {p25:102383,"2026-01":30915, "2026-02":49001, "2026-03":22977, "2026-04":57138, "2026-05":48355, "2026-06":22058},
+  "Grupo Calzetta":  {p25:85412, "2026-01":127066,"2026-02":131058,"2026-03":74985, "2026-04":98241, "2026-05":150165,"2026-06":132885},
+  "Grupo GSB":       {p25:32579, "2026-01":24655, "2026-02":39532, "2026-03":58133, "2026-04":83748, "2026-05":77797, "2026-06":48347},
+  "Servicios AMG":   {p25:32329, "2026-01":9593,  "2026-02":17937, "2026-03":13841, "2026-04":13700, "2026-05":11924, "2026-06":35115},
+  "Global Tyres":    {p25:31094, "2026-01":4611,  "2026-02":14138, "2026-03":18043, "2026-04":18628, "2026-05":11343, "2026-06":10346},
+  "RR Construcciones":{p25:28602,"2026-01":0,     "2026-02":0,     "2026-03":0,     "2026-04":1786,  "2026-05":0,     "2026-06":0},
+  "Bedson S.A.":     {p25:21606, "2026-01":9149,  "2026-02":17749, "2026-03":40061, "2026-04":51972, "2026-05":24682, "2026-06":24952},
+  "Maxtervision":    {p25:18537, "2026-01":11204, "2026-02":11038, "2026-03":14730, "2026-04":4880,  "2026-05":2006,  "2026-06":250},
+};
+const FACT_CLI_KEYS=Object.keys(FACT_CLI);
+
 const EQUIPOS={
   labels:["Ene","Feb","Mar","Abr","May"],
   colors:["#1E2D6B","#2D47A8","#4B7BE5","#7BA3F0","#B8CEFA"],
@@ -432,23 +462,12 @@ const EQUIPOS={
     {name:"Varios",abbr:"VA",exec:"Jennifer Almendra",margen:[48.7,32.9,53.1,50.3,47.7],rev:[18025,9301,23383,22900,14814],res:[8778,3063,12405,11528,7074]},
   ]
 };
-const FACT_EV={
-  "Grupo Corral":   {"2026-01":18159,"2026-02":25070,"2026-03":22230,"2026-04":22489,"2026-05":36053},
-  "Grupo GSB":      {"2026-01":12264,"2026-02":17141,"2026-03":25231,"2026-04":24740,"2026-05":26566},
-  "Grupo Larocca":  {"2026-01":28267,"2026-02":21128,"2026-03":22546,"2026-04":23427,"2026-05":18058},
-  "Grupo Calzetta": {"2026-01":11658,"2026-02":26286,"2026-03":14618,"2026-04":23168,"2026-05":16838},
-  "Hogar y Tec.":   {"2026-01":11715,"2026-02":14359,"2026-03":11713,"2026-04":21124,"2026-05":12168},
-  "Bedson S.A.":    {"2026-01":7145,"2026-02":11523,"2026-03":14621,"2026-04":14913,"2026-05":13057},
-  "Ultralight SRL": {"2026-01":17921,"2026-02":9378,"2026-03":8520,"2026-04":11258,"2026-05":9949},
-};
-const AVG_FACT_2025={"Grupo Corral":34683,"Grupo Larocca":21157,"Hogar y Tec.":26445,"Grupo Calzetta":16450,"Bedson S.A.":11651,"Grupo GSB":9582,"Ultralight SRL":7841,"Seis Erre Alim.":4757,"Cia. Arg. Aceites":4558};
-
 const NOVEDADES={
   "2026-01":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}},
   "2026-02":{
     acciones:[
       {t:"Reestructuración Clasificación Arancelaria",d:"Se mantiene activo el proceso de reestructuración. Ya existe un potencial candidato para ingresar al área."},
-      {t:"BÁºsquedas Activas",d:"Operador de Clasificación Arancelaria."},
+      {t:"Búsquedas Activas",d:"Operador de Clasificación Arancelaria."},
       {t:"Revisión de Perfiles",d:"Se determinó el perfil de Gloria Albornoz como Analista de Comex. Se está revisando el perfil de Lorenzo Sansone como Supervisor."},
       {t:"Evaluación de Permanencia",d:"Revisión de continuidad de Darío Franco, Lucas Mingelgrün y Rocío González."}
     ],
@@ -507,7 +526,7 @@ const NOVEDADES={
     ],
     hitos:[
       {t:"Optimización de la Estructura de Aduana",d:"Se profundizaron los cambios en la estructura de Aduana, dejando al sector optimizado de cara al escenario actual."},
-      {t:"Nueva Etapa en Clasificación Arancelaria",d:"Inicio de nueva etapa buscando mayor efectividad en las clasificaciones, optimización de procesos y mejor comunicación con el Área Operativa."}
+      {t:"Nueva Etapa en Clasificación Arancelaria",d:"Inicio de nueva etapa buscando mayor efectividad en las clasificaciones, optimización de procesos y mejor comunicación con el Área Operativa."}
     ],
     desvios:[
       {t:"Incorrecta liquidación de tributos — Grupo Dateng",d:"Liquidación incorrecta de tributos en una operación del cliente Grupo Dateng.",imp:"Por determinar",sev:"neg"},
@@ -522,8 +541,8 @@ const NOVEDADES={
   },
   "2026-05":{
     acciones:[
-      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se continÁºa con la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago Antuña."},
-      {t:"Capacitaciones Semanales",d:"Se continÁºan llevando a cabo capacitaciones semanales con el equipo de Aduana."},
+      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se continúa con la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago Antuña."},
+      {t:"Capacitaciones Semanales",d:"Se continúan llevando a cabo capacitaciones semanales con el equipo de Aduana."},
       {t:"Clasificación Arancelaria — Reclasificación del Catálogo",d:"Se inició el proceso de reclasificación del catálogo actual de posiciones arancelarias."},
       {t:"Revisión de la Matriz de Puestos",d:"Se está llevando a cabo la revisión de la matriz de puestos del área."}
     ],
@@ -853,7 +872,7 @@ function renderNovedades(){
     '</div>').join('');
 
   if(ytdMode){
-    // Acciones y Oportunidades: deduplica por título. Áltimo mes CERRADO = en curso (destacado + desc), meses anteriores = solo título, muted
+    // Acciones y Oportunidades: deduplica por título. Último mes CERRADO = en curso (destacado + desc), meses anteriores = solo título, muted
     const lastClosedKey=[...keys].reverse().find(k=>!MESES[k].enCurso)||lastKey;
     const buildYtdList=(field)=>{
       const map=new Map();
@@ -969,7 +988,7 @@ function renderKpis(){
 function renderInteranual(){
   const keys=getSelKeys(),L=keys.map(k=>MESES[k].lc);
   const ops25=keys.map(k=>OPS_2025[MESES[k].lc]),ops26=keys.map(k=>MESES[k].ops);
-  document.getElementById("inter-title").textContent="Operaciones 2025 vs 2026 — "+L.join(", ");
+  document.getElementById("inter-title").textContent="Operaciones 2025 vs 2026 \u2014 "+L.join(", ");
   dc("inter-ops");
   _ch["inter-ops"]=new Chart(document.getElementById("chart-inter-ops").getContext("2d"),{type:"bar",
     data:{labels:L,datasets:[
@@ -985,21 +1004,54 @@ function renderInteranual(){
     options:{responsive:true,maintainAspectRatio:false,...DS,
       scales:{...DS.scales,y:{...DS.scales.y,ticks:{...DS.scales.y.ticks,callback:v=>v+"%"}}}}
   });
-}
 
+  // === TABLA: Top 10 2025 (ops) vs 2026 mes a mes ===
+  const avg26ops=Math.round(OPS_CLI_KEYS.reduce((s,c)=>{
+    const t=MK.reduce((ss,k)=>ss+(OPS_CLI[c][k]||0),0); return s+t/MK.length; },0)/OPS_CLI_KEYS.length*10)/10;
+  document.getElementById("inter-ops-cli-table").innerHTML=
+    '<thead><tr><th>Cliente (Top 10 / 2025)</th><th class="center">Prom.\u00a02025</th>'+
+    MK.map(k=>'<th class="center">'+MESES[k].lc+'</th>').join("")+
+    '<th class="center" style="color:var(--verde)">Prom.\u00a02026</th><th class="center">Var.</th></tr></thead><tbody>'+
+    OPS_CLI_KEYS.map(c=>{
+      const p25=OPS_CLI[c].p25;
+      const vals=MK.map(k=>OPS_CLI[c][k]||0);
+      const avg26=+(vals.reduce((s,v)=>s+v,0)/vals.length).toFixed(1);
+      return '<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
+        '<td class="center" style="color:var(--muted)">'+p25+'</td>'+
+        vals.map(v=>'<td class="center">'+v+'</td>').join("")+
+        '<td class="center bold" style="color:var(--verde)">'+avg26+'</td>'+
+        '<td class="'+vCls(avg26,p25)+'">'+vStr(avg26,p25)+'</td></tr>';
+    }).join("")+'</tbody>';
+
+  // === TABLA: Top 10 2025 (facturaci\xf3n USD) vs 2026 mes a mes ===
+  document.getElementById("inter-fact-cli-table").innerHTML=
+    '<thead><tr><th>Cliente (Top 10 / 2025)</th><th class="right">Prom.\u00a02025</th>'+
+    MK.map(k=>'<th class="right">'+MESES[k].lc+'</th>').join("")+
+    '<th class="right" style="color:var(--verde)">Prom.\u00a02026</th><th class="center">Var.</th></tr></thead><tbody>'+
+    FACT_CLI_KEYS.map(c=>{
+      const p25=FACT_CLI[c].p25;
+      const vals=MK.map(k=>FACT_CLI[c][k]||0);
+      const avg26=Math.round(vals.reduce((s,v)=>s+v,0)/vals.length);
+      return '<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
+        '<td class="right" style="color:var(--muted)">'+p25.toLocaleString("es-AR")+'</td>'+
+        vals.map(v=>'<td class="right">'+(v?v.toLocaleString("es-AR"):'<span style="color:var(--muted2)">--</span>')+'</td>').join("")+
+        '<td class="right bold" style="color:var(--verde)">'+avg26.toLocaleString("es-AR")+'</td>'+
+        '<td class="'+(avg26&&p25?vCls(avg26,p25):"")+'">'+( avg26&&p25?vStr(avg26,p25):"--")+'</td></tr>';
+    }).join("")+'</tbody>';
+}
 /* === OPERACIONES === */
 function renderOperaciones(){
   const keys=getSelKeys(),n=keys.length,sel=new Set(keys);
-  const periodLabel=keys.length===1?MESES[keys[0]].label:(ytdMode?"Año en Curso":keys.map(k=>MESES[k].lc).join(" + "));
+  const periodLabel=keys.length===1?MESES[keys[0]].label:(ytdMode?"A\xf1o en Curso":keys.map(k=>MESES[k].lc).join(" + "));
 
-  // Ranking dinámico: usa OPS (todos los clientes), agrega meses seleccionados
+  // Ranking din\xe1mico: usa OPS, agrega meses seleccionados
   const opsRD={};
   keys.forEach(m=>{(OPS[m]||[]).forEach(({n:cn,v})=>{opsRD[cn]=(opsRD[cn]||0)+v;});});
   const opsRank=Object.entries(opsRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const opsTotal=Object.values(opsRD).reduce((s,v)=>s+v,0);
 
-  document.getElementById("ops-table-title").textContent="Top 10 Operaciones — "+periodLabel;
-  document.getElementById("ops-chart-title").textContent="Top 10 — "+periodLabel;
+  document.getElementById("ops-table-title").textContent="Top 10 Operaciones \u2014 "+periodLabel;
+  document.getElementById("ops-chart-title").textContent="Top 10 vs Prom. 2025 \u2014 "+periodLabel;
 
   document.getElementById("ops-table").innerHTML=
     '<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Ops</th><th class="center">% del total</th></tr></thead><tbody>'+
@@ -1008,19 +1060,25 @@ function renderOperaciones(){
       '<td class="center bold">'+v+'</td>'+
       '<td class="center" style="color:var(--muted)">'+(v/opsTotal*100).toFixed(1)+'%</td></tr>').join("")+'</tbody>';
 
-  const rkLabels=opsRank.map(([nm])=>nm.replace("Grupo ","Gpo. ").replace(" S.A.","").replace(" SRL","").replace("Cia. Arg. ","").substring(0,12));
+  const rkLabels=opsRank.map(([nm])=>nm.replace("Grupo ","Gpo. ").replace(" S.A.","").replace(" SRL","").replace("Cia. Arg. ","").substring(0,14));
+  const avg25Data=opsRank.map(([nm])=>OPS_2025_AVG[nm]||null);
   dc("ops");
   _ch["ops"]=new Chart(document.getElementById("chart-ops").getContext("2d"),{type:"bar",
     data:{labels:rkLabels,datasets:[
-      {label:"Ops — "+periodLabel,data:opsRank.map(([,v])=>v),backgroundColor:"#1E2D6B",borderRadius:3,showLabel:true},
-    ]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,...DS}
+      {label:"Ops \u2014 "+periodLabel,data:opsRank.map(([,v])=>v),backgroundColor:"#1E2D6B",borderRadius:3,showLabel:true},
+      {label:"Prom. mensual 2025",data:avg25Data,backgroundColor:"rgba(30,45,107,0.20)",borderColor:"rgba(30,45,107,0.50)",borderWidth:1,borderRadius:3,showLabel:true},
+    ]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,...DS,
+      plugins:{...DS.plugins,legend:{labels:{color:"#5B6CA8",boxWidth:12,padding:12}}}}
   });
 
-  // Tabla evolución OPS_CLI (comparativa fija 10 clientes vs promedio 2025)
-  const evData=OPS_CLI_KEYS.map(c=>{
-    const selTotal=keys.reduce((s,k)=>s+(OPS_CLI[c][k]||0),0);
+  // Tabla de evoluci\xf3n din\xe1mica: top 10 del per\xedodo seleccionado, todos los meses 2026
+  const opsByClient={};
+  MK.forEach(p=>{(OPS[p]||[]).forEach(({n:cn,v})=>{if(!opsByClient[cn])opsByClient[cn]={};opsByClient[cn][p]=v;});});
+  const topClients=opsRank.map(([c])=>c);
+  const evData=topClients.map(c=>{
+    const selTotal=keys.reduce((s,k)=>s+(opsByClient[c]&&opsByClient[c][k]||0),0);
     const aggVal=ytdMode?+(selTotal/n).toFixed(1):selTotal;
-    return{c,vals:MK.map(k=>OPS_CLI[c][k]||0),aggVal,p25:OPS_CLI[c].p25};
+    return{c,vals:MK.map(k=>opsByClient[c]&&opsByClient[c][k]||0),aggVal,p25:OPS_2025_AVG[c]||null};
   }).sort((a,b)=>b.aggVal-a.aggVal);
 
   document.getElementById("ops-ev-table").innerHTML=
@@ -1029,72 +1087,67 @@ function renderOperaciones(){
     evData.map(({c,vals,aggVal,p25})=>'<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
       vals.map((v,i)=>'<td class="center"'+(sel.has(MK[i])?' style="font-weight:700;color:var(--text)"':'')+'>'+v+'</td>').join("")+
       '<td class="center bold" style="color:var(--acc)">'+aggVal+'</td>'+
-      '<td class="center" style="color:var(--muted)">'+p25+'</td>'+
-      '<td class="'+vCls(aggVal,p25)+'">'+vStr(aggVal,p25)+'</td></tr>').join("")+'</tbody>';
+      '<td class="center" style="color:var(--muted)">'+(p25!=null?p25:'--')+'</td>'+
+      '<td class="'+(p25!=null?vCls(aggVal,p25):"")+'">'+( p25!=null?vStr(aggVal,p25):"--")+'</td></tr>').join("")+'</tbody>';
 }
-
-
 /* === FACTURACION === */
 function renderFacturacion(){
-  const keys=getSelKeys(),sel=new Set(keys);
-  const aggMap={};
-  keys.forEach(k=>(FACT[k]||[]).forEach(c=>{aggMap[c.n]=(aggMap[c.n]||0)+c.u;}));
-  // En ytdMode dividir por n para promedios
+  const keys=getSelKeys(),n=keys.length,sel=new Set(keys);
+  const pLbl=ytdMode?"Prom. mensual (A\xf1o en Curso)":keys.map(k=>MESES[k].lc).join(" + ");
+
+  // Ranking din\xe1mico top 10 por facturaci\xf3n
+  const factRD={};
+  keys.forEach(k=>(FACT[k]||[]).forEach(({n:cn,u})=>{factRD[cn]=(factRD[cn]||0)+u;}));
   const factN=keys.length;
-  if(ytdMode)Object.keys(aggMap).forEach(k=>{aggMap[k]=Math.round(aggMap[k]/factN);});
-  const sorted=Object.entries(aggMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const total=sorted.reduce((s,[,v])=>s+v,0);
-  const pLbl=ytdMode?"Prom. mensual (Año en Curso)":keys.map(k=>MESES[k].lc).join(" + ");
+  if(ytdMode)Object.keys(factRD).forEach(k=>{factRD[k]=Math.round(factRD[k]/factN);});
+  const factRank=Object.entries(factRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const factTotal=factRank.reduce((s,[,v])=>s+v,0);
+
+  document.getElementById("fact-title").textContent="Top 10 Facturaci\xf3n \u2014 "+pLbl;
+  document.getElementById("fact-detail-title").textContent="Top 10 vs Prom. 2025 \u2014 "+pLbl;
+
   const usdColHdr=ytdMode?'USD/mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"USD";
-  const footLbl=ytdMode?"TOTAL PROM. TOP 10":"TOTAL TOP 10";
-  document.getElementById("fact-title").textContent="Top 10 — "+pLbl;
-  document.getElementById("fact-detail-title").textContent=ytdMode?"Por cliente — Promedio mensual 2026 vs Prom. 2025":"Por cliente 2026 vs Prom. 2025 — "+pLbl;
   document.getElementById("fact-table").innerHTML=
     '<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">'+usdColHdr+'</th><th class="center">%</th></tr></thead><tbody>'+
-    sorted.map(([n,u],i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+'</td><td><strong style="color:var(--text)">'+n+'</strong></td><td class="right bold">'+u.toLocaleString("es-AR")+'</td><td class="center" style="color:var(--muted)">'+(u/total*100).toFixed(1)+'%</td></tr>').join("")+
-    '</tbody><tfoot><tr><td colspan="2">'+footLbl+'</td><td class="right">'+total.toLocaleString("es-AR")+'</td><td></td></tr></tfoot>';
+    factRank.map(([cn,u],i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+'</td><td><strong style="color:var(--text)">'+cn+'</strong></td>'+
+      '<td class="right bold">'+u.toLocaleString("es-AR")+'</td><td class="center" style="color:var(--muted)">'+(u/factTotal*100).toFixed(1)+'%</td></tr>').join("")+
+    '<tfoot><tr><td colspan="2">'+(ytdMode?"TOTAL PROM. TOP 10":"TOTAL TOP 10")+'</td><td class="right">'+factTotal.toLocaleString("es-AR")+'</td><td></td></tr></tfoot>';
+
+  // Gr\xe1fico comparativo: Top 10 vs promedio 2025
+  const rkLabels=factRank.map(([cn])=>cn.replace("Grupo ","Gpo. ").replace(" S.A.","").replace(" SRL","").substring(0,14));
+  const avg25Data=factRank.map(([cn])=>FACT_2025_AVG[cn]||null);
   dc("fact-ev");
-  const cl=Object.keys(FACT_EV),mL=FACT_MESES.map(k=>MESES[k].lc);
-  _ch["fact-ev"]=new Chart(document.getElementById("chart-fact-ev").getContext("2d"),{type:"line",
-    data:{labels:mL,datasets:cl.map((c,i)=>({label:c,data:FACT_MESES.map(k=>FACT_EV[c][k]||null),
-      borderColor:FACT_COLORS[i],backgroundColor:"transparent",
-      pointRadius:FACT_MESES.map(k=>sel.has(k)?5:2),
-      pointBackgroundColor:FACT_MESES.map(k=>sel.has(k)?FACT_COLORS[i]:"#1a2a3a"),
-      tension:0.2,borderWidth:2,showLabel:false,spanGaps:false}))},
-    options:{responsive:true,maintainAspectRatio:false,...DS}
+  _ch["fact-ev"]=new Chart(document.getElementById("chart-fact-ev").getContext("2d"),{type:"bar",
+    data:{labels:rkLabels,datasets:[
+      {label:"Factur. \u2014 "+pLbl,data:factRank.map(([,v])=>v),backgroundColor:"#1E2D6B",borderRadius:3,showLabel:true},
+      {label:"Prom. mensual 2025",data:avg25Data,backgroundColor:"rgba(30,45,107,0.20)",borderColor:"rgba(30,45,107,0.50)",borderWidth:1,borderRadius:3,showLabel:true},
+    ]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,...DS,
+      plugins:{...DS.plugins,legend:{labels:{color:"#5B6CA8",boxWidth:12,padding:12}}}}
   });
-  const rows=cl.map(c=>{
-    const vals=FACT_MESES.map(k=>FACT_EV[c][k]);
-    const selVals=keys.map(k=>FACT_EV[c][k]).filter(v=>v!=null);
-    const aggVal=selVals.length?selVals.reduce((a,v)=>a+v,0):null;
-    const avg25=AVG_FACT_2025[c]||null;
-    return{c,vals,aggVal,avg25};
-  });
+
+  // Tabla de evoluci\xf3n din\xe1mica
+  const FACT_MONTHS=Object.keys(FACT);
+  const factByClient={};
+  FACT_MONTHS.forEach(p=>{(FACT[p]||[]).forEach(({n:cn,u})=>{if(!factByClient[cn])factByClient[cn]={};factByClient[cn][p]=u;});});
+  const topClients=factRank.map(([c])=>c);
+  const evData=topClients.map(c=>{
+    const selTotal=keys.reduce((s,k)=>s+(factByClient[c]&&factByClient[c][k]||0),0);
+    const aggVal=ytdMode?Math.round(selTotal/n):selTotal;
+    return{c,vals:FACT_MONTHS.map(k=>factByClient[c]&&factByClient[c][k]||0),aggVal,p25:FACT_2025_AVG[c]||null};
+  }).sort((a,b)=>b.aggVal-a.aggVal);
+
   const aggCL=ytdMode?'Prom./Mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"Total Sel.";
   document.getElementById("fact-ev-table").innerHTML=
-    '<thead><tr><th>Cliente</th>'+FACT_MESES.map(k=>'<th class="right"'+(sel.has(k)?' style="color:var(--acc)"':'')+'>'+MESES[k].lc+'</th>').join("")+
+    '<thead><tr><th>Cliente</th>'+FACT_MONTHS.map(k=>'<th class="right"'+(sel.has(k)?' style="color:var(--acc)"':'')+'>'+MESES[k].lc+'</th>').join("")+
     '<th class="right" style="color:var(--acc)">'+aggCL+'</th><th class="right">Prom. 2025</th><th class="center">Var.</th></tr></thead><tbody>'+
-    rows.map(r=>{
-      const dispAgg=ytdMode&&r.aggVal!=null?Math.round(r.aggVal/keys.length):r.aggVal;
-      return '<tr><td><strong style="color:var(--text)">'+r.c+'</strong></td>'+
-        r.vals.map((v,i)=>'<td class="right"'+(sel.has(FACT_MESES[i])?' style="font-weight:700;color:var(--text)"':'')+'>'+
-          (v!=null?v.toLocaleString("es-AR"):'<span style="color:var(--muted2)">--</span>')+'</td>').join("")+
-        '<td class="right bold" style="color:var(--acc)">'+(dispAgg!=null?dispAgg.toLocaleString("es-AR"):"--")+'</td>'+
-        '<td class="right" style="color:var(--muted)">'+(r.avg25!=null?r.avg25.toLocaleString("es-AR"):"--")+'</td>'+
-        '<td class="'+(dispAgg&&r.avg25?vCls(dispAgg,r.avg25):"")+'">'+
-          (dispAgg&&r.avg25?vStr(dispAgg,r.avg25):"--")+'</td></tr>';
-    }).join("")+
+    evData.map(({c,vals,aggVal,p25})=>'<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
+      vals.map((v,i)=>'<td class="right"'+(sel.has(FACT_MONTHS[i])?' style="font-weight:700;color:var(--text)"':'')+'>'+
+        (v?v.toLocaleString("es-AR"):'<span style="color:var(--muted2)">--</span>')+'</td>').join("")+
+      '<td class="right bold" style="color:var(--acc)">'+aggVal.toLocaleString("es-AR")+'</td>'+
+      '<td class="right" style="color:var(--muted)">'+(p25!=null?p25.toLocaleString("es-AR"):"--")+'</td>'+
+      '<td class="'+(p25&&aggVal?vCls(aggVal,p25):"")+'">'+( p25&&aggVal?vStr(aggVal,p25):"--")+'</td></tr>').join("")+
     '</tbody>';
-  // === RANKING FACT (filtro dinamico) ===
-  const fSelK=getSelKeys();
-  const fSelLabel=fSelK.length===1?MESES[fSelK[0]].label:('Acumulado '+fSelK.length+' meses');
-  document.getElementById('top-fact-label').textContent='Top 10 — '+fSelLabel;
-  const factRD={};fSelK.forEach(m=>{(FACT[m]||[]).forEach(({n,u})=>{factRD[n]=(factRD[n]||0)+u;});});
-  const factRA=Object.entries(factRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const factCol=fSelK.length===1?'USD':'USD (acum.)';
-  document.getElementById('top-fact-table').innerHTML='<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">'+factCol+'</th></tr></thead><tbody>'+factRA.map(([n,u],i)=>'<tr><td class="center">'+(i+1)+'</td><td>'+n+'</td><td class="right"><strong>'+u.toLocaleString('en-US')+'</strong></td></tr>').join('')+'</tbody>';
 }
-
 /* === RENTABILIDAD === */
 function renderRentabilidad(){
   const keys=getSelKeys(),sel=new Set(keys);
@@ -1116,7 +1169,7 @@ function renderRentabilidad(){
     {l:ytdMode?"EBITDA Prom./Mes (prom.)":"EBITDA Periodo",v:fU(ytdEBITDA),s:sub2,c:"neu"},
     {l:"Rent. / Operacion (prom.)",v:"USD "+totResOp,s:sub3,c:"neu"},
     {l:"Rent. / Empleado Prom./Mes",v:"USD "+totResEmp,s:sub4,c:"neu"},
-    {l:"Cobertura PE",v:(agg.ops/agg.pe).toFixed(1)+"x",s:ytdCovLabel,c:"pos"},
+    {l:"Cobertura PE",v:agg.pe>0?(agg.ops/agg.pe).toFixed(1)+"x":"S/D",s:ytdCovLabel,c:"pos"},
   ].map(k=>'<div class="kpi-card"><div class="kpi-label">'+k.l+'</div><div class="kpi-value">'+k.v+'</div><div class="kpi-sub kpi-'+k.c+'">'+k.s+'</div></div>').join("");
   const pLbl=ytdMode?"Año en Curso":keys.map(k=>MESES[k].lc).join(" + ");
   dc("rent-mes");
@@ -1133,7 +1186,7 @@ function renderRentabilidad(){
     '<strong>'+pLbl+':</strong> Rent./Op <strong>USD '+totResOp+'</strong>'+
     ' | Prom. 2025: <strong>USD '+RENT_2025_OP_AVG+'/op</strong> '+
     '<span style="color:var(--'+vsAnualC+')">'+vsAnual+'</span> interanual'+
-    ' | Cobertura PE: <strong>'+(agg.ops/agg.pe*n).toFixed(1)+'x</strong>'+
+    ' | Cobertura PE: <strong>'+(agg.pe>0?(agg.ops/agg.pe*n).toFixed(1)+'x':'S/D')+'</strong>'+
     (ytdMode?' | EBITDA Prom./Mes: <strong>'+fU(ytdEBITDA)+'</strong> <em style="font-size:10px;color:var(--muted)">(promedio)</em>':keys.length>1?' | EBITDA Acum.: <strong>'+fU(agg.resUSD)+'</strong>':"");
   const avgPEdisp=Math.round(agg.pe/n);
   const peAvgCard=n>1?'<div class="pe-card selected" style="grid-column:span 1;border-width:2px;">'+
@@ -1159,7 +1212,7 @@ function renderRentabilidad(){
     ]},options:{responsive:true,maintainAspectRatio:false,...DS,
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
   });
-  // === GRÁFICOS DE EQUIPOS ===
+  // === GRÁFICOS DE EQUIPOS ===
   // Peso estratégico — líneas, % de revenue por equipo sobre total, filtrado por meses
   const eqIdxMap2={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4};
   const eqSelIdx=keys.map(k=>eqIdxMap2[k]).filter(i=>i!==undefined);
@@ -1221,12 +1274,6 @@ initFilterBar();
 showView("resumen");
 
 
-
-
-  
-
-  
 </script>
-
 </body>
 </html>
