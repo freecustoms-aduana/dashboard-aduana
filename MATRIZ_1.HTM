@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ADUANA - Matriz de Perfil de Puesto</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#131D4F;
+  --card:#FFFFFF;
+  --lavanda:#E0E3FF;
+  --lavanda2:#C8CCFA;
+  --border:rgba(30,45,107,0.10);
+  --border-acc:rgba(30,45,107,0.20);
+  --text:#1E2D6B;
+  --muted:#5B6CA8;
+  --muted2:#9AA5D4;
+  --acc:#1E2D6B;
+  --verde:#059669;
+  --verde-dim:rgba(5,150,105,0.10);
+  --rojo:#DC2626;
+  --gold:#9A7209;
+  --gold-dim:rgba(184,134,11,0.12);
+  --gold-border:rgba(154,114,9,0.30);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+
+/* ══ TOPBAR ══ */
+.topbar{
+  background:#FFFFFF;
+  border-bottom:1px solid var(--border);
+  padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+  box-shadow:0 1px 6px rgba(30,45,107,0.07);
+  height:64px;
+}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.brand-badge{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--acc);color:#fff;
+  font-weight:900;font-size:13px;letter-spacing:-.5px;
+  display:inline-flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.brand-info{}
+.brand-title{font-size:15px;font-weight:800;color:var(--text);line-height:1.2;}
+.brand-sub{font-size:11px;color:var(--muted);font-weight:500;}
+
+.topbar-divider{width:1px;height:28px;background:var(--border);margin:0 4px;}
+
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.search-bar{
+  display:flex;align-items:center;gap:8px;
+  background:#F5F6FF;border:1px solid var(--border);
+  border-radius:20px;padding:7px 16px;
+  transition:border-color .2s;
+}
+.search-bar:focus-within{border-color:var(--acc);}
+.search-bar svg{color:var(--muted);flex-shrink:0;}
+.search-bar input{
+  background:none;border:none;outline:none;
+  color:var(--text);font-size:13px;width:220px;
+  font-family:'Poppins',sans-serif;
+}
+.search-bar input::placeholder{color:var(--muted2);}
+.badge{font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;}
+.badge-count{background:var(--acc);color:#fff;}
+.doc-ref{font-size:10px;color:var(--muted);text-align:right;line-height:1.8;}
+.doc-ref strong{color:var(--acc);}
+
+/* ══ CONTENT ══ */
+.content{padding:32px 40px;}
+
+/* ══ GRID ══ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;}
+
+/* ══ CARD ══ */
+.pos-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:border-color .2s,transform .18s,box-shadow .2s;
+  display:flex;flex-direction:column;
+  box-shadow:0 2px 8px rgba(30,45,107,0.06);
+}
+.pos-card:hover{
+  border-color:var(--border-acc);
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(30,45,107,0.13);
+}
+.pos-card.hidden{display:none;}
+
+.card-top-strip{height:4px;background:var(--acc);}
+
+.card-body{flex:1;padding:22px 24px 0;display:flex;flex-direction:column;gap:12px;}
+
+.card-level{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--lavanda);color:var(--acc);
+  border-radius:20px;font-size:9px;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;
+  padding:3px 10px;align-self:flex-start;
+}
+.card-name{font-size:18px;font-weight:800;color:var(--text);line-height:1.25;}
+
+.card-badges{display:flex;flex-wrap:wrap;gap:6px;min-height:24px;}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11.5px;font-weight:600;
+  padding:4px 12px;border-radius:20px;white-space:nowrap;
+}
+.pill-exp{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border);}
+.pill-lang{background:#EEF0FF;color:#1E2D6B;border:2px solid var(--lavanda2);font-size:12px;}
+.pill-lang img{width:22px;height:16px;border-radius:2px;object-fit:cover;display:inline-block;vertical-align:middle;margin-top:-1px;}
+.pill-none{background:#F5F6FF;color:var(--muted2);border:1px solid var(--border);font-style:italic;font-size:10.5px;font-weight:500;}
+
+.card-stats{
+  display:flex;
+  border-top:1px solid var(--border);
+  margin:8px -24px 0;
+  background:#F5F6FF;
+  border-radius:0 0 16px 16px;
+  overflow:hidden;
+}
+.stat-cell{flex:1;padding:13px 8px;text-align:center;border-right:1px solid var(--border);}
+.stat-cell:last-child{border-right:none;}
+.stat-n{font-size:22px;font-weight:800;color:var(--text);line-height:1;}
+.stat-l{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:3px;}
+
+/* ══ MODAL ══ */
+.overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(19,29,79,0.55);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s;
+  backdrop-filter:blur(3px);
+}
+.overlay.visible{opacity:1;pointer-events:all;}
+
+.modal{
+  background:#FFFFFF;
+  border:1px solid var(--border-acc);
+  border-radius:20px;
+  width:100%;max-width:880px;
+  max-height:88vh;
+  display:flex;flex-direction:column;
+  transform:translateY(20px) scale(.97);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+  box-shadow:0 24px 80px rgba(30,45,107,0.25);
+}
+.overlay.visible .modal{transform:translateY(0) scale(1);}
+
+.modal-top-strip{height:4px;background:var(--acc);flex-shrink:0;}
+
+.modal-head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:24px 32px 18px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;gap:16px;
+}
+.modal-head-left{display:flex;flex-direction:column;gap:10px;}
+.modal-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--lavanda);color:var(--acc);
+  border-radius:20px;font-size:9px;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;padding:3px 12px;
+  align-self:flex-start;
+}
+.modal-title{font-size:24px;font-weight:800;color:var(--text);line-height:1.2;}
+.modal-badges{display:flex;flex-wrap:wrap;gap:8px;}
+
+.modal-close{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--muted);font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s,border-color .15s;
+  font-family:'Poppins',sans-serif;
+}
+.modal-close{background:#F5F6FF;}
+.modal-close:hover{background:var(--acc);color:#fff;border-color:var(--acc);}
+
+.modal-tabs{
+  display:flex;border-bottom:1px solid var(--border);
+  flex-shrink:0;padding:0 32px;background:#fff;
+}
+.mtab{
+  padding:13px 22px;font-size:13px;font-weight:600;
+  color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .15s,border-color .15s;
+  display:flex;align-items:center;gap:7px;
+}
+.mtab:hover{color:var(--text);}
+.mtab.active{color:var(--acc);border-bottom-color:var(--acc);}
+.mtab .cnt{
+  background:var(--lavanda);color:var(--acc);
+  font-size:10px;font-weight:700;
+  padding:1px 8px;border-radius:20px;
+}
+.mtab.active .cnt{background:var(--acc);color:#fff;}
+
+.modal-body{flex:1;overflow-y:auto;padding:22px 32px 32px;background:#F5F6FF;}
+.modal-body::-webkit-scrollbar{width:4px;}
+.modal-body::-webkit-scrollbar-thumb{background:var(--lavanda2);border-radius:4px;}
+
+.mpanel{display:none;flex-direction:column;gap:8px;}
+.mpanel.active{display:flex;}
+
+.mrow{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:12px 16px;border-radius:12px;
+  background:#FFFFFF;border:1px solid var(--border);
+  transition:border-color .12s,box-shadow .12s;
+}
+.mrow:hover{border-color:var(--border-acc);box-shadow:0 2px 8px rgba(30,45,107,0.08);}
+
+.mnum{
+  min-width:26px;height:26px;border-radius:50%;
+  background:var(--lavanda);color:var(--acc);
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.mdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:8px;}
+.mdot.req{background:var(--acc);}
+.mdot.comp{background:var(--amber);}
+
+.mtext{font-size:14px;color:#2E3F80;line-height:1.65;}
+
+.no-results{text-align:center;padding:60px 0;color:var(--muted);font-size:15px;display:none;}
+
+/* ══ DIFF TAB ══ */
+.diff-rename{
+  display:flex;align-items:center;gap:10px;
+  background:#EEF0FF;border:1px solid var(--lavanda2);
+  border-radius:12px;padding:12px 16px;margin-bottom:4px;
+  font-size:13px;color:var(--acc);font-weight:600;
+}
+.diff-rename span{font-weight:400;color:var(--muted);}
+.diff-section-title{
+  font-size:10px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--muted);
+  margin:14px 0 6px;padding-left:4px;
+}
+.diff-row{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:11px 14px;border-radius:10px;
+  font-size:13.5px;line-height:1.6;
+  border:1px solid transparent;margin-bottom:4px;
+}
+.diff-row.added{background:rgba(5,150,105,0.07);border-color:rgba(5,150,105,0.20);color:#065F46;}
+.diff-row.removed{background:rgba(220,38,38,0.06);border-color:rgba(220,38,38,0.18);color:#991B1B;}
+.diff-row.changed{background:rgba(154,114,9,0.08);border-color:rgba(154,114,9,0.22);color:#78350F;}
+.diff-icon{font-size:14px;flex-shrink:0;margin-top:2px;}
+.diff-no-change{
+  text-align:center;padding:32px 0;color:var(--muted2);
+  font-size:13px;font-style:italic;
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="brand-badge">FC</div>
+    <div class="brand-info">
+      <div class="brand-title">Matriz de Perfil de Puesto — Aduana</div>
+      <div class="brand-sub">Área Aduana · Tomás Britos &nbsp;·&nbsp; Free Customs</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="search-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Buscar puesto, tarea, competencia…" oninput="doSearch()">
+    </div>
+    <span class="badge badge-count" id="count-badge">12 puestos</span>
+    <div class="doc-ref"><strong>F-REC-12</strong> · Rev. 2<br>Junio 2026</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+  <div class="grid" id="grid"></div>
+  <div class="no-results" id="no-results">Sin resultados para tu búsqueda.</div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-top-strip"></div>
+    <div class="modal-head">
+      <div class="modal-head-left">
+        <div class="modal-title" id="m-title"></div>
+        <div class="modal-badges" id="m-badges"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <div class="mtab active" id="tab-tasks" onclick="switchModal('tasks')">
+        📝 Tareas <span class="cnt" id="cnt-tasks"></span>
+      </div>
+      <div class="mtab" id="tab-reqs" onclick="switchModal('reqs')">
+        ✅ Requerimientos <span class="cnt" id="cnt-reqs"></span>
+      </div>
+      <div class="mtab" id="tab-comps" onclick="switchModal('comps')">
+        ⭐ Competencias <span class="cnt" id="cnt-comps"></span>
+      </div>
+      <div class="mtab" id="tab-diff" onclick="switchModal('diff')">
+        🔀 Cambios vs. 2025 <span class="cnt" id="cnt-diff"></span>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="mpanel active" id="mp-tasks"></div>
+      <div class="mpanel"        id="mp-reqs"></div>
+      <div class="mpanel"        id="mp-comps"></div>
+      <div class="mpanel"        id="mp-diff"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  {
+    name: "GERENTE",
+    exp: "10 años+ conducción · 5 años+ gestión",
+    lang: "Inglés intermedio/avanzado",
+    tasks: [
+      "Generar procedimientos estratégicos del área.",
+      "Gestionar acciones de la Norma ISO: no conformidades, acciones y planes de mejora.",
+      "Coordinar con los Supervisores y/o Ejecutivos la administración de los clientes.",
+      "Comunicar nuevas resoluciones al equipo de Supervisores, Ejecutivos de Cuenta y Dirección, siempre y cuando tengan impacto directo o potencial en las operaciones.",
+      "Identificar oportunidades de mejora, proponiendo e implementando soluciones innovadoras para aumentar la eficiencia, reducir costos y mejorar la calidad del servicio.",
+      "Brindar información a Gerencia de Administración para confección de cashflow.",
+      "Diseñar estrategias enfocadas en el cumplimiento de los objetivos anuales/trimestrales del sector.",
+      "Presupuestar fondos para el eficiente desarrollo del sector.",
+      "Asegurar que todas las operaciones realizadas cumplan con la legislación aduanera vigente y los procedimientos internos de la empresa.",
+      "Diseñar e implementar el plan de desarrollo profesional de los integrantes del equipo.",
+      "Asesorar en términos de procedimientos aduaneros tanto al equipo de Free Customs como a los clientes que así lo requieran.",
+      "Gestionar el equipo de Aduana, a través de informes periódicos de los supervisores y de evaluaciones de desempeño.",
+      "Realizar informes de gestión y cumplimiento de objetivos preestablecidos.",
+      "Suministrar información válida y confiable a la Dirección para la toma de decisiones.",
+      "Transmitir y comunicar la estrategia corporativa de la compañía a su equipo.",
+      "Generar alianzas con proveedores que cumplan los estándares de sustentabilidad y eficiencia de la empresa.",
+      "Realizar seguimiento mensual de indicadores de desempeño del área.",
+      "Liderar reuniones periódicas con el equipo.",
+      "Participar en reuniones de dirección para revisar resultados y desvíos.",
+      "Revisar y aprobar procedimientos, instructivos y estándares de trabajo.",
+      "Liderar la planificación operativa integral (recursos, personal) y monitorear su ejecución para minimizar desvíos y asegurar el cumplimiento de metas.",
+      "Acompañar la implementación de nuevas herramientas o sistemas logísticos.",
+      "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+    ],
+    requirements: [
+      "Despachante de Aduana Matriculado o recibido en carreras afines.",
+      "Experiencia en gestión integral del área superior a 5 años.",
+      "Experiencia en conducción de equipos de trabajo superior a 10 años.",
+      "Experiencia en análisis y reportes de gestión.",
+      "Experiencia comprobable en operaciones de diferentes industrias.",
+      "Idioma inglés intermedio o avanzado.",
+      "Edad mayor a 30 años.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+      "Conocimiento de herramientas de IA.",
+    ],
+    competencies: ["Liderazgo y comunicación efectiva","Habilidades de capacitador","Toma de decisiones","Trabajo en equipo","Atención al cliente","Capacidad para delegar eficientemente","Perfil comercial","Permeabilidad a nuevas ideas y capacidad de adaptación a nuevos escenarios","Excelentes relaciones interpersonales"],
+  },
+  {
+    name: "SUPERVISOR DE ADUANA",
+    exp: "3 años+ gestión",
+    lang: null,
+    tasks: [
+      "Resolver situaciones cotidianas analizando la mejora en el corto plazo y sus consecuencias.",
+      "Acercar propuestas de mejora que involucren procesos operativos internos o externos, y su implementación.",
+      "Acercar propuestas de mejora a los clientes.",
+      "Capacitar al personal a cargo, en todo lo referente a la operativa y normativa aduanera.",
+      "Asegurar que todas las operaciones realizadas cumplan con la legislación aduanera vigente y los procedimientos internos de la empresa.",
+      "Brindar herramientas a los integrantes de su equipo que permitan avanzar en su desarrollo profesional.",
+      "Definir estrategias de trabajo y prioridades, cuando sea necesario.",
+      "Generar procedimientos de trabajo tendientes a minimizar los errores.",
+      "Revisar periódicamente que se cumplan los procedimientos prestablecidos y levantar los desvíos a la Gerencia, en caso de corresponder.",
+      "Realizar informes de gestión y cumplimiento de objetivos preestablecidos.",
+      "Atender las necesidades del cliente y transmitirlas a la Gerencia.",
+      "Generar circuitos de trabajo eficientes.",
+      "Reportar a Gerencia cualquier desvío que se presente o se pudiera presentar, ya sea operativo como de capital humano.",
+      "3° Control de provisorios y conformidad final para oficialización.",
+      "Realizar un seguimiento periódico de las operaciones, a través de la actualización de la información en el sistema de gestión (DUX).",
+      "Realizar el control del vencimiento de los servicios extraordinarios.",
+      "Supervisar el desempeño de los Ejecutivos de Cuenta.",
+      "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+    ],
+    requirements: [
+      "Despachante de Aduana Matriculado o recibido en carreras afines.",
+      "Dominio integral de DUX o sistema de gestión utilizado en FC.",
+      "Mayor de 28 años.",
+      "Experiencia en gestión integral del área superior a 3 años.",
+      "Experiencia en conducción de equipos de trabajo.",
+      "Experiencia en análisis y reportes de gestión.",
+      "Idioma inglés intermedio (no excluyente).",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Liderazgo y comunicación efectiva","Capacidad para delegar eficientemente","Proactividad y capacidad de resolución de conflictos","Trabajo en equipo","Atención al cliente","Permeabilidad a nuevas ideas y capacidad de adaptación a nuevos escenarios","Capacidad de análisis"],
+  },
+  {
+    name: "SUPERVISOR OPERATIVO",
+    exp: "3 años mín.",
+    lang: null,
+    tasks: [
+      "Realizar el seguimiento de los SICNEA e informar a cada responsable para que tome acción.",
+      "Asesorar a potenciales clientes en relación a la operativa y a la normativa de Comercio Exterior.",
+      "Asesorar a clientes actuales de Free Customs en caso de realizar solicitudes extraordinarias.",
+      "Resolver diversos temas operativos que pudieran ser derivados por la Gerencia.",
+      "Realizar informes sobre nueva normativa aduanera y comunicarla a los clientes e integrantes del equipo Free Customs.",
+      "Reportar diariamente al Gerente de Aduana sobre el estado de avance de sus tareas pendientes.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida avanzar en su gestión.",
+      "Revisar periódicamente que se cumplan los procedimientos prestablecidos y levantar los desvíos a la Gerencia, en caso de corresponder.",
+      "3° Control de provisorios.",
+      "Atender las tareas asignadas por el Gerente, referidas a la evaluación, prueba e implementación de software, IA o similar.",
+    ],
+    requirements: [
+      "Estudiantes en curso o recibidos de carreras afines a Comercio Exterior.",
+      "3 años de experiencia mínima en Comercio Exterior.",
+      "Conocimiento comprobable de normativa aduanera.",
+      "Conocimiento general del SIM.",
+      "Dominio del sistema de gestión (DUX).",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Pensamiento crítico","Vocación de servicio","Capacidad de análisis","Atención al cliente","Compromiso","Permeabilidad a nuevas ideas y capacidad de adaptación a nuevos escenarios","Proactividad y capacidad de resolución de desvíos"],
+  },
+  {
+    name: "RESPONSABLE PUERTO/UTV",
+    exp: "5 años+ Despacho · 3 años+ Puerto",
+    lang: null,
+    tasks: [
+      "Gestionar la asignación del personal de puerto de manera eficiente y comunicarlo al equipo operativo.",
+      "Mantener comunicación constante con el personal en punto operativo para seguir la correcta liberación de las cargas.",
+      "Hacer seguimiento de los desvíos que pudieran presentarse tanto en puerto como en Aduana y UTVV, comunicarlo de manera inmediata al Ejecutivo de Cuentas y al Supervisor y/o escalarlo de ser necesario.",
+      "Planificar y proponer oportunidades de mejora a fin de evitar demoras o incumplimientos internos.",
+      "Gestionar la entrega de los legajos completos y realizar el seguimiento correspondiente (DIEN/ENDO).",
+      "Controlar que la información de las operaciones esté correctamente cargada en el sistema de gestión (DUX).",
+      "Fortalecer y optimizar la interacción con el equipo de Logística a través de la comunicación efectiva.",
+      "Gestionar la mensajería para el envío de los despachos de Ezeiza, Campana, La Plata o el Interior.",
+      "Organizar y dar seguimiento a los trámites denominados 'de calle'.",
+      "Organizar la gestión documental de las operaciones, para que puedan liberarse en tiempo y forma.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida avanzar en su gestión.",
+      "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+    ],
+    requirements: [
+      "Estudiantes o recibidos de carreras afines a Comercio Exterior.",
+      "Experiencia mínima de 3 años en gestión operativa en Puerto o Aduana.",
+      "Experiencia mínima de 5 años en trabajo en Despacho de Aduana o similar.",
+      "Experiencia en conducción de equipos de trabajo (preferentemente).",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Liderazgo y comunicación efectiva","Organización y conocimiento de los tiempos operativos","Capacidad de resolución de problemas","Trabajo en equipo","Proactividad"],
+  },
+  {
+    name: "RESPONSABLE DE CLASIFICACIÓN",
+    exp: "3 años mín.",
+    lang: "Inglés intermedio",
+    tasks: [
+      "Realizar la clasificación arancelaria de todos los ítems recibidos por el sector, de acuerdo al procedimiento vigente.",
+      "Resolver situaciones cotidianas analizando la mejora en el corto plazo y sus consecuencias.",
+      "Acercar propuestas de mejora que involucren procesos operativos internos o externos, y su implementación.",
+      "Asesorar en materia de Clasificación Arancelaria a los clientes.",
+      "Capacitar al personal a cargo, en materia de Clasificación Arancelaria.",
+      "Asegurar que todas las clasificaciones realizadas cumplan con la legislación aduanera vigente y los procedimientos internos de la empresa.",
+      "Brindar herramientas a los integrantes de su equipo que permitan avanzar en su desarrollo profesional.",
+      "Definir estrategias de trabajo y prioridades, cuando sea necesario.",
+      "Generar procedimientos de trabajo tendientes a minimizar los errores.",
+      "Revisar periódicamente que se cumplan los procedimientos prestablecidos y levantar los desvíos, en caso de corresponder.",
+      "Realizar informes de gestión y cumplimiento de objetivos preestablecidos.",
+      "Atender las necesidades del cliente y transmitirlas a la Gerencia.",
+      "Generar circuitos de trabajo eficientes.",
+      "Reportar a Gerencia cualquier desvío que se presente o se pudiera presentar, ya sea operativo como de capital humano.",
+      "Gestionar y dar seguimiento hasta su aprobación de los expedientes de Envíos Escalonados.",
+      "Presentarse en Aduana, de ser necesario, a resolver o intentar resolver las disyuntivas que pudieran surgir en materia de Clasificación Arancelaria.",
+      "Gestionar y dar seguimiento hasta su finalización de las Resoluciones Anticipadas, junto a un informe semanal.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida avanzar en su gestión.",
+      "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+    ],
+    requirements: [
+      "Estudiantes avanzados o recibidos de carreras afines a Comercio Exterior.",
+      "3 años de experiencia mínima en gestión de Clasificación Arancelaria.",
+      "Conocimiento general de normativa aduanera.",
+      "Conocimiento general del SIM.",
+      "Dominio del sistema de gestión (DUX).",
+      "Idioma inglés intermedio.",
+      "Conocimiento comprobable en intervenciones de 3ros organismos.",
+      "Experiencia comprobable en clasificación de ítems de diversos ramos.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Liderazgo y comunicación efectiva","Capacidad para delegar eficientemente","Proactividad y capacidad de resolución de conflictos","Trabajo en equipo","Atención al cliente","Permeabilidad a nuevas ideas y capacidad de adaptación a nuevos escenarios"],
+  },
+  {
+    name: "EJECUTIVO DE CUENTA ADUANA",
+    exp: "2 años mín.",
+    lang: null,
+    tasks: [
+      "Gestión integral del cliente ante todos los sectores de Free Customs, atendiendo sus necesidades y solicitudes, y escalando internamente los temas de ser necesario (fidelización).",
+      "Realizar el seguimiento de las operaciones de inicio —apertura del interno— hasta el fin —liberación de la carga—, asegurando que todos los procesos operativos se hayan cumplido exitosamente.",
+      "2° Control de provisorios.",
+      "Capacitar técnica y operativamente a los integrantes de su equipo.",
+      "Escalar —hasta donde sea necesario— los desvíos operativos que no pueda resolver y los temas relacionados con el equipo de trabajo.",
+      "Conocer a su cartera de clientes en detalle, a fin de poder tomar decisiones estratégicas o presentar oportunidades de mejora acordes.",
+      "Realizar un seguimiento exhaustivo de las operaciones, a través de la actualización de la información en el sistema de gestión (DUX).",
+      "Corroborar periódicamente que cada integrante del equipo mantenga actualizada la información en el sistema de gestión (DUX).",
+      "Planificar la organización operativa del equipo y escalar este asunto, de ser necesario.",
+      "Gestionar la efectiva resolución de las distintas problemáticas que puedan surgir en el trabajo diario, en consenso con el Supervisor.",
+      "Asegurar que todas las operaciones se realicen de acuerdo a los procedimientos internos de la empresa.",
+      "Elaborar informes periódicos sobre la actividad de las cuentas, identificando tendencias, riesgos y oportunidades de mejora.",
+      "Anticipar las necesidades del cliente, brindando asesoramiento actualizado sobre regulaciones aduaneras, cambios en normativas, optimización de costos y tiempos.",
+      "Comprender y transmitir a su equipo las responsabilidades de cada uno de sus integrantes.",
+      "Crear manuales de procedimientos para cada cliente de su cartera.",
+      "Verificar semanalmente que todas las operaciones de su cartera hayan sido liberadas y que no queden operaciones inconclusas.",
+      "Resolver situaciones cotidianas analizando la mejora en el corto plazo y sus consecuencias.",
+      "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+    ],
+    requirements: [
+      "Estudiantes avanzados o recibidos de carreras afines a Comercio Exterior.",
+      "2 años de experiencia mínima en gestión aduanera.",
+      "Conocimiento general de normativa aduanera.",
+      "Conocimiento de SIM.",
+      "Dominio del sistema de gestión (DUX).",
+      "Mayor de 25 años.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Liderazgo y comunicación efectiva","Vocación de servicio","Proactividad","Capacidad de análisis y resolución de problemas","Capacidad de planificación y organización","Resiliencia","Pensamiento crítico"],
+  },
+  {
+    name: "OPERADOR SIM",
+    exp: "6 meses mín.",
+    lang: null,
+    tasks: [
+      "Gestionar Destinaciones Aduaneras en tiempo y forma.",
+      "Seguimiento del arribo de cargas a través del sistema de gestión (DUX).",
+      "Corrección de documentación.",
+      "Generar y enviar presupuestos estimados (fondos SIM y fondos para pago de gastos).",
+      "Mantener actualizado el sistema de gestión (DUX).",
+      "Enviar a retirar la documentación necesaria para la operación.",
+      "Mantener actualizada la carpeta digital.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida la oficialización de una destinación.",
+      "Realizar el 1° control del provisorio.",
+      "Armar despachos o permisos de embarque, de ser necesario.",
+      "Para las exportaciones, realizar el seguimiento de la liberación, coordinar los turnos de ingreso a Terminal y gestionar la documentación comercial para el cliente del exterior.",
+      "Realizar el seguimiento de los tickets de clasificación en MIDLA y levantar —hasta donde sea necesario— los desvíos.",
+      "Reportar a los ejecutivos o supervisores en caso de requerir soporte operativo.",
+    ],
+    requirements: [
+      "Estudiantes o recibidos de carreras afines a Comercio Exterior.",
+      "Dominio de SIM y DUX.",
+      "6 meses de experiencia en gestión aduanera.",
+      "Conocimiento de normativa básica aduanera.",
+      "Conocimiento de documentación.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Pensamiento crítico","Vocación de servicio","Trabajo en equipo","Atención al cliente","Autonomía","Compromiso","Planificación y organización"],
+  },
+  {
+    name: "CLASIFICADOR",
+    exp: "6 meses mín.",
+    lang: null,
+    tasks: [
+      "Realizar e informar la clasificación arancelaria de los tickets asignados, de acuerdo al procedimiento establecido.",
+      "Asegurar que todas las clasificaciones realizadas cumplan con la legislación aduanera vigente y los procedimientos internos de la empresa.",
+      "Reportar al Responsable de Clasificación cualquier desvío que se presente o se pudiera presentar en el futuro.",
+      "Atender las necesidades del cliente y transmitirlas al Responsable de Clasificación.",
+      "Dar de alta los artículos en el sistema de gestión (DUX).",
+      "Reportar al Responsable de Clasificación en caso de requerir soporte operativo.",
+    ],
+    requirements: [
+      "Estudiantes en curso o recibidos de carreras afines a Comercio Exterior.",
+      "Conocimiento general de normativa aduanera.",
+      "Conocimiento general del SIM.",
+      "Dominio del sistema de gestión (DUX).",
+      "Conocimiento comprobable en intervenciones de 3ros organismos.",
+      "6 meses de experiencia mínima en gestión de Clasificación Arancelaria.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Pensamiento crítico","Vocación de servicio","Trabajo en equipo","Atención al cliente","Autonomía","Compromiso","Planificación y organización"],
+  },
+  {
+    name: "OPERADOR DE CONTROL DOCUMENTAL",
+    exp: "6 meses mín.",
+    lang: null,
+    tasks: [
+      "Realizar el control exhaustivo de los documentos comerciales de la operación, conforme la RG 2793/2010.",
+      "Gestionar con el cliente la documentación definitiva de cada operación.",
+      "Mantener actualizado el sistema de gestión (DUX).",
+      "Mantener actualizada la carpeta digital.",
+      "Seguimiento del arribo de cargas a través del sistema de gestión (DUX).",
+      "Armar despachos o permisos de embarque, de ser necesario.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida avanzar en su gestión.",
+      "Brindar asesoramiento a los clientes sobre la normativa vigente, en materia de confección de documentos.",
+      "Reportar a los ejecutivos o supervisores en caso de requerir soporte operativo.",
+    ],
+    requirements: [
+      "Estudiantes o recibidos de carreras afines a Comercio Exterior.",
+      "Dominio de SIM y DUX.",
+      "6 meses de experiencia en gestión aduanera.",
+      "Conocimiento de normativa básica aduanera.",
+      "Conocimiento de documentación.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Pensamiento crítico","Vocación de servicio","Trabajo en equipo","Atención al cliente","Autonomía","Compromiso","Planificación y organización"],
+  },
+  {
+    name: "OPERATIVO DE PUERTO/UTV",
+    exp: null,
+    lang: null,
+    tasks: [
+      "Realizar todas las gestiones inherentes a la liberación de las cargas de importación y de exportación.",
+      "Presentar las destinaciones aduaneras en el punto operativo o en la UTV.",
+      "Realizar la verificación de las cargas, en caso de corresponder.",
+      "Entregar en la oficina los OM2133 (sobres de aduana) en un plazo máximo de 3 días desde su liberación, junto a las notas de entrega firmadas conforme.",
+      "Dar aviso de inmediato al Jefe de Puerto y al Ejecutivo de Cuentas o Supervisor ante cualquier desvío que surja durante la operativa y que pudiera alterar la normal liberación de la carga.",
+      "Realizar la rendición de gastos en tiempo y forma.",
+      "Solicitar mantenimiento preventivo o dar seguimiento al estado general del vehículo, de corresponder.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida avanzar en su gestión.",
+    ],
+    requirements: [
+      "Estudiantes o recibidos de carreras afines a Comercio Exterior.",
+      "Licencia de conducir al día.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Vocación de servicio","Compromiso","Capacidad para adaptarse a los cambios","Capacidad de resolución de conflictos","Proactividad","Trabajo en equipo"],
+  },
+  {
+    name: "ASISTENTE",
+    exp: null,
+    lang: null,
+    tasks: [
+      "Armado de destinaciones aduaneras.",
+      "Mantener actualizado el sistema de gestión (DUX).",
+      "Mantener actualizada la carpeta digital.",
+      "Asistencia general con los asuntos que requiera el equipo o el área.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida avanzar en su gestión.",
+      "Reportar a los ejecutivos o supervisores en caso de requerir soporte operativo.",
+    ],
+    requirements: [
+      "Estudiantes o recibidos de carreras afines a Comercio Exterior.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Pensamiento crítico","Vocación de servicio","Trabajo en equipo","Compromiso","Proactividad"],
+  },
+  {
+    name: "CADETE",
+    exp: null,
+    lang: null,
+    tasks: [
+      "Realizar todos los trámites de calle que sean requeridos por el Responsable Puerto/UTV.",
+      "Notificar de inmediato ante cualquier desvío y aguardar resolución.",
+      "Entregar los trámites realizados a quien corresponda, de acuerdo a la solicitud.",
+      "Brindar apoyo, de ser necesario, a los operativos de Puerto/UTV.",
+      "Escalar —hasta donde sea necesario— cualquier desvío que impida avanzar en su gestión.",
+    ],
+    requirements: [
+      "Estudiantes o recibidos de carreras afines a Comercio Exterior.",
+      "Residencia en CABA o hasta 40 km (preferentemente).",
+    ],
+    competencies: ["Compromiso","Flexibilidad","Proactividad","Trabajo en equipo"],
+  },
+];
+
+// ── DIFF DATA (cambios reales respecto a 2025, sin trivialidades de puntuación) ──
+const DIFF_DATA = [
+  // 0 GERENTE
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[
+        "Gestionar acciones de la Norma ISO: no conformidades, acciones y planes de mejora (antes: solo 'Analizar').",
+        "Ahora incluye coordinación con Ejecutivos además de Supervisores.",
+        "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+      ], removed:["Gestionar íntegramente el equipo (reemplazada por tareas más específicas)."], changed:[] },
+    { label:"Requerimientos", added:["Conocimiento de herramientas de IA."], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 1 SUPERVISOR DE ADUANA
+  { renamed_from: "SUPERVISOR", sections: [
+    { label:"Tareas", added:[
+        "Supervisar el desempeño de los Ejecutivos de Cuenta.",
+        "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+      ], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 2 SUPERVISOR OPERATIVO
+  { renamed_from: "ANALISTA DE COMERCIO EXTERIOR", sections: [
+    { label:"Tareas", added:[
+        "Revisar periódicamente que se cumplan los procedimientos prestablecidos y levantar los desvíos a la Gerencia.",
+        "3° Control de provisorios.",
+        "Atender las tareas asignadas por el Gerente referidas a evaluación, prueba e implementación de software, IA o similar.",
+      ], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[
+        "Experiencia mínima reducida de 5 años a 3 años en Comercio Exterior.",
+      ] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 3 RESPONSABLE PUERTO/UTV
+  { renamed_from: "SUPERVISOR PUERTO / CALLE", sections: [
+    { label:"Tareas", added:[
+        "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+      ], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 4 RESPONSABLE DE CLASIFICACIÓN
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[
+        "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+      ], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[
+        "Experiencia mínima aumentada de 2 años a 3 años en Clasificación Arancelaria.",
+      ] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 5 EJECUTIVO DE CUENTA ADUANA
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[
+        "Resolver situaciones cotidianas analizando la mejora en el corto plazo y sus consecuencias.",
+        "Evaluar semestralmente a los integrantes de su equipo de trabajo.",
+      ], removed:[], changed:[
+        "Redacción simplificada: se eliminaron los prefijos 'Reporte y Análisis:' y 'Asesoramiento Proactivo:' de dos tareas.",
+      ] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 6 OPERADOR SIM
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 7 CLASIFICADOR
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 8 OPERADOR DE CONTROL DOCUMENTAL
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 9 OPERATIVO DE PUERTO/UTV
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+  // 10 ASISTENTE
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[], removed:[], changed:[] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[
+        "Corrección tipográfica: 'Proctividad' → 'Proactividad'.",
+      ] },
+  ]},
+  // 11 CADETE
+  { renamed_from: null, sections: [
+    { label:"Tareas", added:[], removed:[], changed:[
+        "Referencia actualizada: 'Jefe de Puerto' → 'Responsable Puerto/UTV' en 2 tareas.",
+      ] },
+    { label:"Requerimientos", added:[], removed:[], changed:[] },
+    { label:"Competencias", added:[], removed:[], changed:[] },
+  ]},
+];
+
+function buildDiffHTML(i) {
+  const d = DIFF_DATA[i];
+  let html = '';
+  if (d.renamed_from) {
+    html += `<div class="diff-rename">🔄 <strong>Renombrado</strong> <span>Nombre 2025: <em>${d.renamed_from}</em></span></div>`;
+  }
+  let totalChanges = d.renamed_from ? 1 : 0;
+  for (const sec of d.sections) {
+    const hasContent = sec.added.length || sec.removed.length || sec.changed.length;
+    if (!hasContent) continue;
+    html += `<div class="diff-section-title">${sec.label}</div>`;
+    for (const t of sec.added)   { html += `<div class="diff-row added"><span class="diff-icon">＋</span>${t}</div>`; totalChanges++; }
+    for (const t of sec.removed) { html += `<div class="diff-row removed"><span class="diff-icon">－</span>${t}</div>`; totalChanges++; }
+    for (const t of sec.changed) { html += `<div class="diff-row changed"><span class="diff-icon">✏️</span>${t}</div>`; totalChanges++; }
+  }
+  if (!html) html = '<div class="diff-no-change">Sin cambios sustantivos respecto a 2025.</div>';
+  return { html, count: totalChanges };
+}
+
+function buildCard(p, i) {
+  const search = [p.name,...p.tasks,...p.requirements,...p.competencies].join(' ').toLowerCase();
+  const badges = [
+    p.exp  ? `<span class="pill pill-exp">⏱ ${p.exp}</span>` : '',
+    p.lang ? `<span class="pill pill-lang"><img src="https://flagcdn.com/w40/gb.png" alt="UK"> ${p.lang}</span>` : '',
+  ].join('') || `<span class="pill pill-none">Sin experiencia previa requerida</span>`;
+
+  return `
+<div class="pos-card" id="card-${i}" data-search="${search}" onclick="openModal(${i})">
+  <div class="card-top-strip"></div>
+  <div class="card-body">
+    <div class="card-name">${p.name}</div>
+    <div class="card-badges">${badges}</div>
+    <div class="card-stats">
+      <div class="stat-cell"><div class="stat-n">${p.tasks.length}</div><div class="stat-l">Tareas</div></div>
+      <div class="stat-cell"><div class="stat-n">${p.requirements.length}</div><div class="stat-l">Requerimientos</div></div>
+      <div class="stat-cell"><div class="stat-n">${p.competencies.length}</div><div class="stat-l">Competencias</div></div>
+    </div>
+  </div>
+</div>`;
+}
+
+function openModal(i) {
+  const p = DATA[i];
+  document.getElementById('m-title').textContent = p.name;
+
+  const badges = [
+    p.exp  ? `<span class="pill pill-exp">⏱ ${p.exp}</span>` : '',
+    p.lang ? `<span class="pill pill-lang"><img src="https://flagcdn.com/w40/gb.png" alt="UK"> ${p.lang}</span>` : '',
+  ].join('');
+  document.getElementById('m-badges').innerHTML = badges;
+
+  document.getElementById('cnt-tasks').textContent = p.tasks.length;
+  document.getElementById('cnt-reqs').textContent  = p.requirements.length;
+  document.getElementById('cnt-comps').textContent = p.competencies.length;
+
+  document.getElementById('mp-tasks').innerHTML = p.tasks.map((t, j) =>
+    `<div class="mrow"><div class="mnum">${j+1}</div><div class="mtext">${t}</div></div>`
+  ).join('');
+  document.getElementById('mp-reqs').innerHTML = p.requirements.map(r =>
+    `<div class="mrow"><div class="mdot req"></div><div class="mtext">${r}</div></div>`
+  ).join('');
+  document.getElementById('mp-comps').innerHTML = p.competencies.map(c =>
+    `<div class="mrow"><div class="mdot comp"></div><div class="mtext">${c}</div></div>`
+  ).join('');
+
+  const diffResult = buildDiffHTML(i);
+  document.getElementById('mp-diff').innerHTML = diffResult.html;
+  document.getElementById('cnt-diff').textContent = diffResult.count || '';
+
+  switchModal('tasks');
+  document.getElementById('overlay').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('overlay')) return;
+  document.getElementById('overlay').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+function switchModal(tab) {
+  ['tasks','reqs','comps','diff'].forEach(t => {
+    document.getElementById('mp-' + t).classList.toggle('active', t === tab);
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+  });
+  document.getElementById('modal').querySelector('.modal-body').scrollTop = 0;
+}
+
+function doSearch() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  let n = 0;
+  document.querySelectorAll('.pos-card').forEach(c => {
+    const match = !q || c.dataset.search.includes(q);
+    c.classList.toggle('hidden', !match);
+    if (match) n++;
+  });
+  document.getElementById('count-badge').textContent = q ? `${n} de ${DATA.length}` : `${DATA.length} puestos`;
+  document.getElementById('no-results').style.display = n === 0 ? 'block' : 'none';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal({}); });
+
+const grid = document.getElementById('grid');
+DATA.forEach((p, i) => { grid.innerHTML += buildCard(p, i); });
+</script>
+</body>
+</html>
