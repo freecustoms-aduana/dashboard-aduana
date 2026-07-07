@@ -55,6 +55,8 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .ytd-btn{padding:4px 14px;border-radius:20px;border:1px solid var(--acc);cursor:pointer;font-size:11.5px;font-weight:700;color:var(--acc);background:transparent;transition:all .15s;font-family:'Poppins',sans-serif;}
 .ytd-btn:hover{background:var(--lavanda);}
 .ytd-btn.active{background:var(--acc);color:#fff;}
+.enc-btn{border-color:#D97706 !important;color:#D97706 !important;}
+.enc-btn.active{background:#D97706 !important;color:#fff !important;border-color:#D97706 !important;}
 .content{padding:28px 32px;}
 
 /* Analisis card */
@@ -192,7 +194,14 @@ tfoot td.right{text-align:right;}
 .obj-tip-box{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:#1a2340;border:1px solid #2e3f6e;border-radius:10px;padding:10px 13px;font-size:11px;color:#e8ecf8;white-space:nowrap;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,0.45);line-height:1.9;}
 .obj-tip-wrap:hover .obj-tip-box{display:block;}
 .obj-entregables{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
-.obj-entr{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.obj-entr{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s;}
+.obj-entr:hover{border-color:var(--acc);}
+.obj-entr-wrap{margin-bottom:8px;}
+.obj-doc-panel{display:none;border-radius:0 0 12px 12px;border:1px solid var(--acc);border-top:none;background:#fff;overflow:hidden;}
+.obj-doc-panel.open{display:block;}
+.obj-doc-panel iframe{width:100%;height:520px;border:none;display:block;}
+.obj-entr-arrow{margin-left:auto;font-size:13px;color:var(--muted2);transition:transform .2s;}
+.obj-entr-arrow.open{transform:rotate(180deg);}
 .obj-entr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .obj-entr-dot.v{background:var(--verde);}
 .obj-entr-dot.a{background:var(--amber);}
@@ -286,6 +295,9 @@ async function checkPw(){
     <div id="month-toggles" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
     <div class="filter-sep"></div>
     <button class="ytd-btn" id="ytd-btn" onclick="toggleYTD()">&#9733; Año en Curso</button>
+    <button class="ytd-btn" id="q1-btn" onclick="selectQ('Q1')">Q1 2026</button>
+    <button class="ytd-btn" id="q2-btn" onclick="selectQ('Q2')">Q2 2026</button>
+    <div style="margin-left:auto;"><button class="ytd-btn enc-btn" id="enc-btn" onclick="selectEncurso()">&#9679; Mes en Curso</button></div>
   </div>
   <div class="prov-banner" id="prov-banner">&#9888; <span>Jun 2026 — Datos provisorios al 26/06. MOD (ARS 87.683.702) y tipo de cambio (1.431,6) estimados al cierre de mayo. Se actualizan automáticamente antes del 10/07.</span></div>
   <div class="content">
@@ -368,7 +380,10 @@ const ANALISIS_DATA={
   "2026-03": '<p>Marzo 2026 marco el mayor salto operativo del año, con <b>283 operaciones</b> (+18,9% vs. febrero), superando ampliamente la marca de marzo 2025 (238 ops., <b>+18,9% interanual</b>). Sin embargo, el EBITDA evidencio una leve contraccion a <b>USD 68.675</b> (ARS ~96,8M al TC 1.410), reflejo del impacto que el crecimiento de volumen genero sobre la estructura de costos directos.</p><p>La rentabilidad por operacion descendi&oacute; de USD 298 a <b>USD 243/op</b> (-18,5%), dinamica esperable en meses de alto volumen donde el MOD se distribuye sobre mas despachos pero sin incrementarse proporcionalmente. La dotacion se ubico en 35 empleados, con una ganancia por empleado de <b>USD 1.962</b>.</p><p>El dinamismo del mes fue liderado por Grupo GSB (58 ops.) y Grupo Larocca (54 ops.), que junto a Corral y Calzetta concentraron <b>157 de las 283 operaciones (55,5%)</b>. La aceleracion de GSB y Larocca refleja el inicio de temporada alta en sus segmentos de actividad.</p><p>Con un punto de equilibrio de <b>143 operaciones</b>, el area opero <b>1,98x por encima del minimo</b>, sosteniendo la cobertura a pesar del efecto dilutivo del volumen sobre el margen unitario. El acumulado enero&ndash;marzo totalizo <b>749 operaciones</b> y un EBITDA de <b>USD 198.467</b>.</p>',
   "2026-04": '<p>Abril 2026 represento un <b>hito historico</b> para el area, con <b>323 operaciones</b> oficializadas (+14,1% vs. marzo y +18,3% vs. abril 2025), el mayor volumen mensual registrado. El EBITDA alcanzo <b>USD 79.244</b> (ARS ~112,2M al TC 1.416), tambien un maximo historico, con <b>USD 245/op</b> y <b>USD 2.331 por empleado</b>.</p><p>El resultado confirma que el area logro escalar su volumen sin deteriorar la estructura de rentabilidad. El crecimiento de ingresos a ARS 280,3M absorbio el incremento en MOD (ARS 126,6M, el mas elevado del año), manteniendo margenes consistentes y mejorando el EBITDA respecto al mes anterior en <b>+15,4%</b>.</p><p>Grupo GSB se consolido como lider operativo con <b>75 operaciones</b>, seguido por Grupo Larocca (44), Grupo Corral (33) y Cia. Argentina de Aceites (32). Los cuatro grupos estrategicos principales concentraron <b>175 de las 323 operaciones (54,2%)</b>, con GSB como traccionador clave del record mensual.</p><p>El punto de equilibrio fue el mas exigente del año: <b>171 operaciones</b>. Aun asi, el area lo supero en <b>1,89x</b>, confirmando que la expansion operativa se realizo sobre una base financiera solida. El acumulado enero&ndash;abril totalizo <b>1.072 operaciones</b> y un EBITDA de <b>USD 277.711</b>.</p>',
   "2026-05": '<p>Mayo 2026 consolido una estabilizacion saludable tras el record historico de abril, con <b>262 operaciones</b> (-18,9%) y un EBITDA de <b>USD 74.149</b> (ARS ~106,2M al TC 1.432). La reduccion de volumen no implico deterioro estructural: la rentabilidad por operacion mejoro a <b>USD 283/op</b> (+15,5% vs. abril), el mejor ratio del año.</p><p>La contraccion de la dotacion a <b>26 empleados</b> &mdash;frente a los 34 de abril&mdash; fue el principal factor en la mejora de los ratios unitarios, elevando la ganancia por empleado a <b>USD 2.852</b> (+22,4%), tambien el maximo del año. El area demostro capacidad de mantener rentabilidad con una estructura mas liviana, reflejando una gestion eficiente de los costos directos.</p><p>Grupo GSB lider&oacute; por segundo mes consecutivo con <b>76 operaciones</b>, seguido por Grupo Corral (45) &mdash;su mejor mes del ejercicio&mdash; y Grupo Calzetta (22). Los cuatro grupos estrategicos sumaron <b>164 de las 262 operaciones (62,6%)</b>. En terminos interanuales, el area registro 262 ops. frente a las 300 de mayo 2025 (<b>-12,7% interanual</b>).</p><p>Con un punto de equilibrio de <b>119 operaciones</b> y una cobertura de <b>2,2x</b>, la mayor del año, el area opero con amplio margen sobre el minimo requerido. El acumulado enero&ndash;mayo 2026 totaliza <b>1.334 operaciones</b> y un EBITDA de <b>USD 351.860</b>, con una tendencia de rentabilidad unitaria al alza que consolida el desempeño positivo del ejercicio.</p>',
-  "2026-06": '<p>Junio 2026 en curso. Datos financieros provisorios: <b>271 operaciones</b>, ingresos ARS 270,8M. MOD pendiente de cierre de n&oacute;mina. TC estimado: 1.437. Lectura gerencial disponible al cierre del mes.</p>'
+  "2026-06": '<p>Junio 2026 cerr&oacute; con <b>271 operaciones</b> (+3,4% vs. mayo), consolidando el segundo trimestre del a&ntilde;o con un volumen sostenido por encima de 260 despachos mensuales. El EBITDA alcanzo <b>USD 105.618</b> (ARS ~151,8M al TC 1.437), el segundo resultado m&aacute;s alto del ejercicio, con un incremento de <b>+42,4% respecto a mayo</b> impulsado por la baja en costos directos y la normalizaci&oacute;n del MOD.</p><p>La rentabilidad por operacion escalo a <b>USD 390/op</b> (+37,8% vs. mayo), reflejando una mejora estructural en la eficiencia del mes. El MOD represent&oacute; el <b>35,5% de los ingresos</b>, por debajo del promedio del ejercicio, lo que permiti&oacute; recuperar margen operativo respecto a meses anteriores.</p><p>Los cuatro grupos estrat&eacute;gicos &mdash;Larocca (52), GSB (45), Corral (21) y Calzetta (14)&mdash; concentraron <b>132 de las 271 operaciones (48,7%)</b>. Grupo Larocca retom&oacute; el liderazgo operativo tras meses de predominio de GSB, mientras Cia. Argentina de Aceites (28 ops.) y Bedson (23 ops.) sostuvieron su presencia en el top 5.</p><p>El punto de equilibrio se ubic&oacute; en <b>105 operaciones</b>, operando el &aacute;rea <b>2,58 veces por encima del m&iacute;nimo requerido</b>, la cobertura m&aacute;s holgada del a&ntilde;o. El acumulado enero&ndash;junio totaliza <b>1.606 operaciones</b> y un EBITDA de <b>USD 630.354</b>.</p>',
+  "Q1-2026": '<p>El primer trimestre de 2026 cerr&oacute; con <b>749 operaciones</b> (promedio 250/mes), consolidando una base operativa s&oacute;lida tras el inicio de ejercicio. El EBITDA acumulado alcanz&oacute; <b>USD 198.467</b> (promedio USD 66.156/mes), con una rentabilidad de <b>USD 265/op</b> y una cobertura del punto de equilibrio de <b>2,01x</b> sobre las 373 ops. acumuladas de PE.</p><p>El principal condicionante del trimestre fue el ratio MOD/Ingresos, que se ubic&oacute; en <b>41,5%</b> —el m&aacute;s elevado del ejercicio—, limitando la conversi&oacute;n de facturaci&oacute;n en resultado operativo. Este comportamiento es estructural del primer trimestre, donde la n&oacute;mina opera a plena capacidad frente a un volumen en proceso de aceleraci&oacute;n. La dotaci&oacute;n promedio fue de <b>35 personas</b> y el TC promedio de <b>ARS 1.433,4</b>.</p><p>El crecimiento fue progresivo: de 228 operaciones en enero a <b>283 en marzo</b> (+24% en el trimestre), con Grupo GSB y Grupo Larocca como motores operativos. Los cuatro grupos estrat&eacute;gicos concentraron m&aacute;s del 55% de las operaciones en los tres meses. Marzo marc&oacute; el primer m&aacute;ximo hist&oacute;rico del a&ntilde;o, superado al mes siguiente.</p>',
+  "Q2-2026": '<p>El segundo trimestre de 2026 represent&oacute; un salto cualitativo en todos los indicadores. Con <b>856 operaciones</b> (promedio 285/mes), el volumen creci&oacute; un <b>+14,3%</b> respecto al Q1, mientras el EBITDA escal&oacute; a <b>USD 259.011</b> (promedio USD 86.337/mes), un <b>+30,5%</b> sobre el trimestre anterior. La rentabilidad por operaci&oacute;n subi&oacute; a <b>USD 303/op</b> y la cobertura del punto de equilibrio mejor&oacute; a <b>2,17x</b>.</p><p>La mejora del margen fue impulsada por la reducci&oacute;n del ratio MOD/Ingresos a <b>39,3%</b> (2,2 puntos porcentuales menos que Q1), con junio registrando el mejor resultado unitario del ejercicio: <b>USD 390/op</b>. Abril fue el mes r&eacute;cord hist&oacute;rico con <b>323 operaciones</b>, sostenido principalmente por Grupo GSB (73 ops.) y Grupo Larocca (44 ops.). El TC promedio del trimestre fue de <b>ARS 1.428,1</b>.</p><p>Acumulado primer semestre 2026: <b>1.605 operaciones</b> y <b>USD 457.478 EBITDA</b>, con una rentabilidad promedio de <b>USD 285/op</b> y una cobertura media de PE de <b>2,09x</b>. El &aacute;rea ingres&oacute; al segundo semestre con impulso operativo, margen en recuperaci&oacute;n y los principales grupos estrat&eacute;gicos en plena actividad.</p>',
+  "2026-07": '<p>Los datos de julio 2026 están en proceso de carga. Los indicadores se actualizarán al cierre del mes.</p>'
 };
 
 Chart.defaults.color='#5B6CA8';
@@ -380,9 +395,12 @@ const MESES={
   "2026-03":{label:"Mar 2026",lc:"Mar",ing:243352209,cos:47601092,mod:98955256,ops:283,dot:35,tc:1409.5,resUSD:68675,pe:143},
   "2026-04":{label:"Abr 2026",lc:"Abr",ing:280299356,cos:41545575,mod:126560046,ops:323,dot:34,tc:1415.8,resUSD:79244,pe:171},
   "2026-05":{label:"May 2026",lc:"May",ing:237673973,cos:43840348,mod:87683702,ops:262,dot:26,tc:1431.6,resUSD:74149,pe:119},
-  "2026-06":{label:"Jun 2026",lc:"Jun",ing:270776104,cos:15588146,mod:0,ops:271,dot:26,tc:1437.0,resUSD:177584,pe:0,enCurso:true},
+  "2026-06":{label:"Jun 2026",lc:"Jun",ing:270776104,cos:22993146,mod:96010164,ops:271,dot:26,tc:1437.0,resUSD:105618,pe:105,enCurso:false},
+  "2026-07":{label:"Jul 2026",lc:"Jul",ing:0,cos:0,mod:0,ops:0,dot:34,tc:0,resUSD:0,pe:0,enCurso:true},
 };
 const MK=Object.keys(MESES);
+const MK_CLOSED=MK.filter(k=>!MESES[k].enCurso);
+const MK_ENCURSO=MK.filter(k=>MESES[k].enCurso);
 const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:271,May:300,Jun:289,Jul:259,Ago:282,Sep:311,Oct:271,Nov:271,Dic:279};
 const RENT_2025_OP_AVG=354;
 const TOP10={
@@ -419,35 +437,35 @@ const OPS={
   "2026-04":[{n:"Grupo GSB",v:73},{n:"Grupo Larocca",v:44},{n:"Grupo Corral",v:33},{n:"Cia. Arg. Aceites",v:32},{n:"Hogar y Tec.",v:24},{n:"Bedson S.A.",v:20},{n:"Grupo Calzetta",v:14},{n:"Ferreiros y Vilela",v:10},{n:"Global Tyres",v:9},{n:"Ultralight SRL",v:7},{n:"Maxtervision",v:6},{n:"Barack Argentina",v:5},{n:"DSK Group",v:4},{n:"Servicios AMG",v:4},{n:"Op. Ferroviaria",v:3},{n:"Seis Erre Alim.",v:3}],
   "2026-05":[{n:"Grupo GSB",v:74},{n:"Grupo Corral",v:45},{n:"Grupo Larocca",v:21},{n:"Cia. Arg. Aceites",v:21},{n:"Grupo Calzetta",v:19},{n:"Bedson S.A.",v:13},{n:"Hogar y Tec.",v:11},{n:"Seis Erre Alim.",v:10},{n:"Ultralight SRL",v:8},{n:"Servicios AMG",v:7},{n:"Cresata S.A.",v:5},{n:"Barack Argentina",v:3},{n:"Ferreiros y Vilela",v:3},{n:"Global Tyres",v:3}],
   "2026-06":[{n:"Grupo Larocca",v:52},{n:"Grupo GSB",v:45},{n:"Cia. Arg. Aceites",v:28},{n:"Bedson S.A.",v:23},{n:"Grupo Corral",v:21},{n:"Grupo Calzetta",v:14},{n:"Hogar y Tec.",v:8},{n:"Ultralight SRL",v:8},{n:"Barack Argentina",v:7},{n:"Servicios AMG",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Seis Erre Alim.",v:6},{n:"Cresata S.A.",v:6},{n:"Global Tyres",v:5},{n:"DSK Group",v:3},{n:"Defiba S.A.",v:3}],
+  "2026-07":[],
 };
 const FACT={
-  "2026-01":[{n:"Grupo Calzetta",u:127066},{n:"Grupo Larocca",u:81422},{n:"B G H S A",u:76945},{n:"Grupo Corral",u:74893},{n:"Hogar y Tec.",u:30915},{n:"Grupo GSB",u:24655},{n:"Ultralight SRL",u:19098},{n:"Maxtervision",u:11204},{n:"Servicios AMG",u:9593},{n:"Bedson S.A.",u:9149},{n:"Ferreiros y Vilela",u:7898}],
-  "2026-02":[{n:"Grupo Corral",u:180785},{n:"Grupo Calzetta",u:131058},{n:"B G H S A",u:102832},{n:"Barack Argentina",u:74973},{n:"Grupo Larocca",u:67999},{n:"Hogar y Tec.",u:49001},{n:"Grupo GSB",u:39532},{n:"Servicios AMG",u:17937},{n:"Bedson S.A.",u:17749},{n:"Global Tyres",u:14138},{n:"Maxtervision",u:11038},{n:"Guasoldec S.R.L.",u:10255},{n:"Ultralight SRL",u:10214}],
-  "2026-03":[{n:"Grupo Larocca",u:107027},{n:"Grupo Corral",u:105136},{n:"Grupo Calzetta",u:74985},{n:"Grupo GSB",u:58133},{n:"Bedson S.A.",u:40061},{n:"Hogar y Tec.",u:22977},{n:"Barack Argentina",u:22499},{n:"Global Tyres",u:18043},{n:"B G H S A",u:16453},{n:"Maxtervision",u:14730},{n:"Servicios AMG",u:13841}],
-  "2026-04":[{n:"Grupo Corral",u:149454},{n:"Grupo Calzetta",u:98241},{n:"Grupo GSB",u:83748},{n:"Grupo Larocca",u:69886},{n:"B G H S A",u:63945},{n:"Hogar y Tec.",u:57138},{n:"Bedson S.A.",u:51972},{n:"Barack Argentina",u:36546},{n:"Global Tyres",u:18628},{n:"Servicios AMG",u:13700},{n:"Ultralight SRL",u:13136}],
-  "2026-05":[{n:"Grupo Corral",u:212259},{n:"Grupo Calzetta",u:150165},{n:"Grupo Larocca",u:86791},{n:"Grupo GSB",u:77797},{n:"B G H S A",u:68532},{n:"Hogar y Tec.",u:48355},{n:"Bedson S.A.",u:24682},{n:"Ultralight SRL",u:10888},{n:"Seis Erre Alim.",u:10783},{n:"Barack Argentina",u:10398},{n:"Servicios AMG",u:11924},{n:"Global Tyres",u:11343}],
-  "2026-06":[{n:"Grupo Calzetta",u:132885},{n:"Grupo Corral",u:113646},{n:"Barack Argentina",u:78640},{n:"Grupo Larocca",u:77441},{n:"B G H S A",u:48579},{n:"Grupo GSB",u:48347},{n:"Servicios AMG",u:35115},{n:"Bedson S.A.",u:24952},{n:"Hogar y Tec.",u:22058},{n:"Guasoldec S.R.L.",u:21774},{n:"Ultralight SRL",u:15742},{n:"Seis Erre Alim.",u:10692},{n:"Global Tyres",u:10346}],
+  "2026-01":[{n:"Grupo Larocca",u:28267},{n:"Grupo Corral",u:18159},{n:"Ultralight SRL",u:17921},{n:"Grupo GSB",u:12264},{n:"Hogar y Tec.",u:11715},{n:"Grupo Calzetta",u:11066},{n:"Bedson S.A.",u:7145},{n:"Maxtervision",u:5227},{n:"Ferreiros y Vilela",u:4913},{n:"Servicios AMG",u:3102},{n:"Cia. Arg. Aceites",u:2484},{n:"Beta Glass S.A.",u:2454}],
+  "2026-02":[{n:"Grupo Corral",u:25070},{n:"Grupo Larocca",u:21128},{n:"Grupo Calzetta",u:19855},{n:"Grupo GSB",u:16083},{n:"Hogar y Tec.",u:14359},{n:"Bedson S.A.",u:11523},{n:"Ultralight SRL",u:9378},{n:"Barack Argentina",u:6455},{n:"Global Tyres",u:6432},{n:"Cia. Arg. Aceites",u:3697},{n:"Servicios AMG",u:2839},{n:"Intermaco SRL",u:2402}],
+  "2026-03":[{n:"Grupo GSB",u:25231},{n:"Grupo Larocca",u:22546},{n:"Grupo Corral",u:22230},{n:"Bedson S.A.",u:14621},{n:"Hogar y Tec.",u:11713},{n:"Cia. Arg. Aceites",u:8759},{n:"Ultralight SRL",u:8520},{n:"Grupo Calzetta",u:7689},{n:"Barack Argentina",u:7513},{n:"Global Tyres",u:6929},{n:"Liguén Iluminación",u:5393},{n:"Servicios AMG",u:3863}],
+  "2026-04":[{n:"Grupo GSB",u:24261},{n:"Grupo Larocca",u:23427},{n:"Grupo Corral",u:22489},{n:"Hogar y Tec.",u:21124},{n:"Bedson S.A.",u:14913},{n:"Grupo Calzetta",u:13268},{n:"Ultralight SRL",u:11258},{n:"Global Tyres",u:9900},{n:"Cia. Arg. Aceites",u:7160},{n:"Defiba Serv. Port.",u:6773},{n:"Ferreiros y Vilela",u:6657},{n:"Barack Argentina",u:4980}],
+  "2026-05":[{n:"Grupo Corral",u:36053},{n:"Grupo GSB",u:25971},{n:"Grupo Larocca",u:18058},{n:"Bedson S.A.",u:13057},{n:"Hogar y Tec.",u:12168},{n:"Grupo Calzetta",u:11370},{n:"Ultralight SRL",u:9949},{n:"Global Tyres",u:5468},{n:"Seis Erre Alim.",u:4877},{n:"Cia. Arg. Aceites",u:4752},{n:"New Material SAS",u:3381},{n:"Servicios AMG",u:3155}],
+  "2026-06":[{n:"Grupo Larocca",u:23126},{n:"Grupo Corral",u:21125},{n:"Grupo GSB",u:19025},{n:"Grupo Calzetta",u:15546},{n:"Ultralight SRL",u:14215},{n:"Bedson S.A.",u:13536},{n:"Hogar y Tec.",u:10166},{n:"Cia. Arg. Aceites",u:8892},{n:"Barack Argentina",u:7676},{n:"Cresata S.A.",u:7216},{n:"Global Tyres",u:5736},{n:"Servicios AMG",u:4665}],
+  "2026-07":[],
 };
-// FACT_2025_AVG: promedio mensual 2025 de facturacion USD por cliente
+
 const FACT_2025_AVG={
-  "Grupo Corral":180799,"Grupo Larocca":144351,"Hogar y Tec.":102383,"Grupo Calzetta":85412,
-  "Grupo GSB":32579,"Servicios AMG":32329,"Global Tyres":31094,"RR Construcciones":28602,
-  "Bedson S.A.":21606,"Maxtervision":18537,"B G H S A":18202,"Guasoldec S.R.L.":15410,
-  "Barack Argentina":15407,"Seis Erre Alim.":9177,"Ultralight SRL":8903,
-  "Ferreiros y Vilela":5200,"Cia. Arg. Aceites":3800,
+  "Grupo Corral":34683,"Hogar y Tec.":26445,"Grupo Larocca":21157,"Bedson S.A.":11651,
+  "Grupo Calzetta":9129,"Grupo GSB":8920,"Ultralight SRL":7841,"Global Tyres":7321,
+  "Seis Erre Alim.":4757,"Cia. Arg. Aceites":4558,"Loinex S.A.":3940,"Start.ar":3856,
 };
-// FACT_CLI: Top 10 clientes 2025 (por facturacion USD) — para tab Comparativa 25/26
+
 const FACT_CLI={
-  "Grupo Corral":    {p25:180799,"2026-01":74893, "2026-02":180785,"2026-03":105136,"2026-04":149454,"2026-05":212259,"2026-06":113646},
-  "Grupo Larocca":   {p25:144351,"2026-01":81422, "2026-02":67999, "2026-03":107027,"2026-04":69886, "2026-05":86791, "2026-06":77441},
-  "Hogar y Tec.":    {p25:102383,"2026-01":30915, "2026-02":49001, "2026-03":22977, "2026-04":57138, "2026-05":48355, "2026-06":22058},
-  "Grupo Calzetta":  {p25:85412, "2026-01":127066,"2026-02":131058,"2026-03":74985, "2026-04":98241, "2026-05":150165,"2026-06":132885},
-  "Grupo GSB":       {p25:32579, "2026-01":24655, "2026-02":39532, "2026-03":58133, "2026-04":83748, "2026-05":77797, "2026-06":48347},
-  "Servicios AMG":   {p25:32329, "2026-01":9593,  "2026-02":17937, "2026-03":13841, "2026-04":13700, "2026-05":11924, "2026-06":35115},
-  "Global Tyres":    {p25:31094, "2026-01":4611,  "2026-02":14138, "2026-03":18043, "2026-04":18628, "2026-05":11343, "2026-06":10346},
-  "RR Construcciones":{p25:28602,"2026-01":0,     "2026-02":0,     "2026-03":0,     "2026-04":1786,  "2026-05":0,     "2026-06":0},
-  "Bedson S.A.":     {p25:21606, "2026-01":9149,  "2026-02":17749, "2026-03":40061, "2026-04":51972, "2026-05":24682, "2026-06":24952},
-  "Maxtervision":    {p25:18537, "2026-01":11204, "2026-02":11038, "2026-03":14730, "2026-04":4880,  "2026-05":2006,  "2026-06":250},
+  "Grupo Corral":   {p25:34683, "2026-01":18159,"2026-02":25070,"2026-03":22230,"2026-04":22489,"2026-05":36053,"2026-06":21125},
+  "Hogar y Tec.":   {p25:26445, "2026-01":11715,"2026-02":14359,"2026-03":11713,"2026-04":21124,"2026-05":12168,"2026-06":10166},
+  "Grupo Larocca":  {p25:21157, "2026-01":28267,"2026-02":21128,"2026-03":22546,"2026-04":23427,"2026-05":18058,"2026-06":23126},
+  "Bedson S.A.":    {p25:11651, "2026-01":7145, "2026-02":11523,"2026-03":14621,"2026-04":14913,"2026-05":13057,"2026-06":13536},
+  "Grupo Calzetta": {p25:9129,  "2026-01":11066,"2026-02":19855,"2026-03":7689, "2026-04":13268,"2026-05":11370,"2026-06":15546},
+  "Grupo GSB":      {p25:8920,  "2026-01":12264,"2026-02":16083,"2026-03":25231,"2026-04":24261,"2026-05":25971,"2026-06":19025},
+  "Ultralight SRL": {p25:7841,  "2026-01":17921,"2026-02":9378, "2026-03":8520, "2026-04":11258,"2026-05":9949, "2026-06":14215},
+  "Global Tyres":   {p25:7321,  "2026-01":591,  "2026-02":6432, "2026-03":6929, "2026-04":9900, "2026-05":5468, "2026-06":5736},
+  "Seis Erre Alim.":{p25:4757,  "2026-01":1407, "2026-02":637,  "2026-03":635,  "2026-04":3829, "2026-05":4877, "2026-06":4409},
+  "Cia. Arg. Aceites":{p25:4558,"2026-01":2484, "2026-02":3697, "2026-03":8759, "2026-04":7160, "2026-05":4752, "2026-06":8892},
 };
 const FACT_CLI_KEYS=Object.keys(FACT_CLI);
 
@@ -555,32 +573,53 @@ const NOVEDADES={
     personal:{ing:[],desv:[],ren:[],otros:[]}
   },
   "2026-06":{
-    acciones:[],
-    oportunidades:[],
-    hitos:[],
-    desvios:[],
-    personal:{ing:[],desv:[],ren:[],otros:[]}
-  }
+    acciones:[
+      {t:"Prueba Piloto: Rol de Revisor de Despachos",d:"Se continúa con la prueba piloto del rol de 'Revisor de despachos' a cargo de Santiago Antuña."},
+      {t:"Capacitaciones Semanales",d:"Se continúan llevando a cabo capacitaciones semanales con el equipo de Aduana. Este mes comenzamos a trabajar con mayor profundidad las herramientas que brinda la IA. Se revisaron las nuevas normativas del mes (DJ-Garantía, Exportación Monitoreada). Se terminaron de armar y publicaron los instructivos de armado de destinaciones y de horarios de presentación de destinaciones."},
+      {t:"Clasificación Arancelaria",d:"Trabajando en el armado de un dashboard del sector para análisis de números, tiempos y Res. Anticipadas."},
+      {t:"Gestión Integral del Equipo",d:"Trabajando con la IA en una app para optimizar los procedimientos repetitivos del equipo (apertura de carpetas, corrección de despachos, etc)."}
+    ],
+    oportunidades:[
+      {t:"Comisionista Ezeiza",d:"Analizar el cambio del comisionista de Ezeiza por uno propio de Free Customs (Guido)."},
+      {t:"Estrategia Comercial",d:"Comenzar a trabajar de manera directa en orientar la matriz comercial hacia la industria minera, oil & gas y energía."}
+    ],
+    hitos:[
+      {t:"Unificación de instructivos generales",d:"Se unificaron los instructivos de plazos, horarios y armado de destinaciones en el área de Aduana."},
+      {t:"Adopción de To-Do en todos los equipos",d:"Se comenzó a utilizar To-Do en todos los equipos —progresivamente— a fin de optimizar el flujo de tareas y la comunicación."}
+    ],
+    desvios:[
+      {t:"Grúas San Blas — OP 26000327",d:"ZFI/ZFE oficializado con PA errónea. Derivó en una rectificación del despacho.",imp:"Sin perjuicio económico",sev:"warn"},
+      {t:"Bedson — OP 26001228",d:"Error en el control previo a la oficialización: liquidó GAEX donde no corresponde. Derivó en una rectificación del PE.",imp:"ARS 100.000",sev:"neg"},
+      {t:"Bedson — OP 26001644",d:"Error al completar el OM: el giro escrito en el sobre contenedor era T4 y correspondía TRP.",imp:"ARS 50.000",sev:"neg"},
+      {t:"Texter Feed — OP 26001294",d:"Desconocimiento sobre la gestión operativa para la liberación de la mercadería. Verificaba obligatoriamente con Senasa y el retiro fue coordinado sin contemplarlo, además de coordinar en piso cuando se debía verificar sobre camión.",imp:"USD 1.060 (Logística)",sev:"neg"},
+      {t:"BSC — OP 26001227",d:"Se utilizó una factura proforma diferente a la autorizada en la temporal.",imp:"Sin perjuicio económico",sev:"warn"},
+      {t:"Bedson — OP 26001686",d:"Se oficializó un permiso de exportación declarando que llevaba hoja de valor y completando 'NO SE ADJUNTA' en documentos a presentar.",imp:"Sin perjuicio económico",sev:"warn"}
+    ],
+    personal:{ing:[],desv:[],ren:[],otros:["Sin movimientos de personal este mes."]}
+  },
+  "2026-07":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}}
 };
-const FACT_MESES=["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
+const FACT_MESES=["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07"];
 const SEL={
   labels:["2024","2025","2026 (acum.)"],
-  verde: [48.1, 78.0, 85.5],
-  naranja:[21.1, 14.6,  7.9],
-  rojo:  [30.8,  7.4,  6.6],
+  verde: [46.1, 77.7, 84.4],
+  naranja:[21.6, 14.7,  8.8],
+  rojo:  [32.3,  7.6,  6.7],
 };
 const LIB={
   labels:["2024","2025","2026 (acum.)"],
-  b0:  [42.89,42.73,57.74],
-  b7:  [21.52,23.06,15.47],
-  b12: [8.35,7.40,2.36],
-  b16: [27.24,26.81,24.43],
+  b0:  [42.89,42.73,57.13],
+  b7:  [21.52,23.06,15.34],
+  b12: [8.35,7.40,2.51],
+  b16: [27.24,26.81,25.02],
 };
 const FACT_COLORS=["#1E2D6B","#3B4FA8","#059669","#6366F1","#7C3AED","#0891B2","#D97706","#DC2626"];
 
 /* === ESTADO === */
-let selMonths=new Set(MK);
+let selMonths=new Set(MK_CLOSED);
 let ytdMode=true;
+let selQ=null;
+let selEncurso=false;
 let currentView="resumen";
 
 function getSelKeys(){return MK.filter(k=>selMonths.has(k));}
@@ -593,37 +632,52 @@ function getAgg(keys){
   return{label:ytdMode?"Año en Curso 2026":keys.map(k=>MESES[k].lc).join(" + "),
     ops,resUSD:res,ing:ms.reduce((s,m)=>s+m.ing,0),
     cos:ms.reduce((s,m)=>s+m.cos,0),mod:ms.reduce((s,m)=>s+m.mod,0),
-    dot,tc:+(ms.reduce((s,m)=>s+m.tc,0)/n).toFixed(1),
+    dot,tc:+(()=>{const ts=ms.filter(m=>m.tc>0);return ts.length?ts.reduce((s,m)=>s+m.tc,0)/ts.length:0;})().toFixed(1),
     pe:ms.reduce((s,m)=>s+m.pe,0),_n:n};
 }
 
 /* === FILTER BAR === */
 function initFilterBar(){
   document.getElementById("month-toggles").innerHTML=MK.map(k=>{
-    const ec=MESES[k].enCurso;
-    const lbl=ec?"&#9679; "+MESES[k].label+" (en curso)":MESES[k].label;
-    return '<button class="month-toggle'+(ec?" en-curso":"")+'" data-k="'+k+'" onclick="toggleMonth(this.dataset.k)">'+lbl+'</button>';
+    return '<button class="month-toggle" data-k="'+k+'" onclick="toggleMonth(this.dataset.k)">'+MESES[k].label+'</button>';
   }).join("");
   updateFilterBar();
 }
 function updateFilterBar(){
   document.querySelectorAll(".month-toggle").forEach(b=>b.classList.toggle("active",selMonths.has(b.dataset.k)&&!ytdMode));
   document.getElementById("ytd-btn").classList.toggle("active",ytdMode);
+  document.getElementById("q1-btn").classList.toggle("active",selQ==="Q1");
+  document.getElementById("q2-btn").classList.toggle("active",selQ==="Q2");
+  document.getElementById("enc-btn").classList.toggle("active",selEncurso);
   const keys=getSelKeys();
-  document.getElementById("badge-mes").textContent=ytdMode?"Año en Curso":keys.length===1?MESES[keys[0]].label:keys.length+" meses";
+  const encLabel=MK_ENCURSO.length?MESES[MK_ENCURSO[0]].label:"En Curso";
+  const badgeTxt=ytdMode?"Año en Curso":selEncurso?encLabel:selQ?selQ+" 2026":keys.length===1?MESES[keys[0]].label:keys.length+" meses";
+  document.getElementById("badge-mes").textContent=badgeTxt;
   const hasCurso=!ytdMode&&keys.some(k=>MESES[k].enCurso);
   document.getElementById("prov-banner").classList.toggle("visible",hasCurso);
 }
 function toggleMonth(k){
+  selQ=null;selEncurso=false;
   if(ytdMode){ytdMode=false;selMonths=new Set([k]);}
   else if(selMonths.has(k)){if(selMonths.size>1)selMonths.delete(k);}
   else selMonths.add(k);
   updateFilterBar();renderCurrentView();
 }
 function toggleYTD(){
+  selQ=null;selEncurso=false;
   ytdMode=!ytdMode;
-  if(ytdMode)selMonths=new Set(MK);
-  else{ytdMode=false;selMonths=new Set(["2026-05"]);}
+  if(ytdMode)selMonths=new Set(MK_CLOSED);
+  else{ytdMode=false;selMonths=new Set(MK_CLOSED.slice(-1));}
+  updateFilterBar();renderCurrentView();
+}
+function selectQ(q){
+  const qM={Q1:["2026-01","2026-02","2026-03"],Q2:["2026-04","2026-05","2026-06"]};
+  selQ=q;selEncurso=false;ytdMode=false;selMonths=new Set(qM[q]);
+  updateFilterBar();renderCurrentView();
+}
+function selectEncurso(){
+  if(!MK_ENCURSO.length)return;
+  selEncurso=true;selQ=null;ytdMode=false;selMonths=new Set(MK_ENCURSO);
   updateFilterBar();renderCurrentView();
 }
 
@@ -659,8 +713,22 @@ function objCard({name,badge,badgeTxt,val,valSm,target,pct,barCls,auto,tipLines}
     <div class="obj-auto">&#9679; ${auto}</div>
   </div>`;
 }
-function entrItem(cls,title,desc){
-  return `<div class="obj-entr"><div class="obj-entr-dot ${cls}"></div><div class="obj-entr-body"><div class="obj-entr-title">${title}</div><div class="obj-entr-desc">${desc}</div></div></div>`;
+function entrItem(cls,title,desc,doc){
+  const id="doc-"+Math.random().toString(36).slice(2);
+  const arrow=doc?`<div class="obj-entr-arrow" id="arr-${id}">&#9660;</div>`:"";
+  const onclick=doc?`onclick="toggleDoc('${id}','${doc}')" `:"";
+  const panel=doc?`<div class="obj-doc-panel" id="${id}"></div>`:"";
+  return `<div class="obj-entr-wrap">
+    <div class="obj-entr" ${onclick}><div class="obj-entr-dot ${cls}"></div><div class="obj-entr-body"><div class="obj-entr-title">${title}</div><div class="obj-entr-desc">${desc}</div></div>${arrow}</div>
+    ${panel}
+  </div>`;
+}
+function toggleDoc(id,src){
+  const panel=document.getElementById(id);
+  const arr=document.getElementById("arr-"+id);
+  const isOpen=panel.classList.contains("open");
+  if(isOpen){panel.classList.remove("open");arr.classList.remove("open");panel.innerHTML="";}
+  else{panel.innerHTML=`<iframe src="${src}" allowfullscreen></iframe>`;panel.classList.add("open");arr.classList.add("open");}
 }
 function renderObjetivos(){
   const mks=Object.values(MESES);
@@ -692,12 +760,12 @@ function renderObjetivos(){
     </div>
     <div class="obj-section-lbl">Entregables y Reportes</div>
     <div class="obj-entregables">
-      ${entrItem("v","Presupuesto Anual","Presentado en Enero &#10003;")}
-      ${entrItem("v","Plan de Capacitaci&oacute;n","Entregado en Q1 &#10003;")}
-      ${entrItem("a","Matriz de Puestos","Q2 (en curso) y Q4 &middot; pendiente confirmaci&oacute;n")}
+      ${entrItem("v","Presupuesto Anual","Presentado en Enero &#10003;","docs/Presupuesto_Aduana_2026.html")}
+      ${entrItem("v","Plan de Capacitaci&oacute;n","Entregado en Q1 &#10003;","docs/Plan-de-Capacitacion-Aduana-2026.pdf")}
+      ${entrItem("a","Matriz de Puestos","Q2 (en curso) y Q4 &middot; pendiente confirmaci&oacute;n","docs/MATRIZ_1.HTM")}
       ${entrItem("v","Informe Mensual","Al d&iacute;a &mdash; entrega mensual activa")}
       ${entrItem("a","No Conformidades","En proceso &mdash; 100% NC cr&iacute;ticas &middot; 80% NC menores")}
-      ${entrItem("v","Esquema RACI","Entregado en Q1 &#10003;")}
+      ${entrItem("v","Esquema RACI","Entregado en Q1 &#10003;","docs/Matriz-RACI-Claridad-y-Eficiencia-en-la-Gestion-de-Proyectos.pdf")}
     </div>
     <div style="margin-top:18px;font-size:10.5px;color:var(--muted2);text-align:right;">Los campos &ldquo;Sin dato&rdquo; se actualizan inform&aacute;ndole los valores a la IA.</div>
   `;
@@ -708,8 +776,8 @@ const fU=n=>"USD "+Math.round(n).toLocaleString("es-AR");
 const pct=(a,b)=>b?((a-b)/b*100).toFixed(1):null;
 const vStr=(a,b)=>{let v=pct(a,b);return v===null?"--":(+v>=0?"+"+v+"%":v+"%");};
 const vCls=(a,b)=>b==null?"":a>=b?"pos":"neg";
-const resOp=m=>Math.round(m.resUSD/m.ops);
-const resEmp=m=>Math.round(m.resUSD/m.dot);
+const resOp=m=>m.ops>0?Math.round(m.resUSD/m.ops):0;
+const resEmp=m=>m.dot>0?Math.round(m.resUSD/m.dot):0;
 const _ch={};
 function dc(id){if(_ch[id]){_ch[id].destroy();delete _ch[id];}}
 
@@ -748,8 +816,22 @@ Chart.register({id:"lbl",afterDatasetsDraw(chart){
 function renderResumen(){
   const keys=getSelKeys();
   const single=keys.length===1&&!ytdMode;
-  document.getElementById("analisis-wrap").style.display=single?"block":"none";
-  if(single){
+  const qMode=selQ!==null;
+  document.getElementById("analisis-wrap").style.display=(single||qMode)?"block":"none";
+  if(qMode){
+    const agg=getAgg(keys);
+    const rentOp=agg.ops>0?Math.round(agg.resUSD/agg.ops):0;
+    const rentMes=Math.round(agg.resUSD/keys.length);
+    const opsMes=Math.round(agg.ops/keys.length);
+    document.getElementById("analisis-mes-label").textContent=selQ+" 2026";
+    document.getElementById("analisis-txt").innerHTML=ANALISIS_DATA[selQ+"-2026"]||"";
+    document.getElementById("kpi-grid").innerHTML=[
+      {l:"Operaciones",v:agg.ops.toLocaleString("es-AR"),s:"Prom. "+opsMes+" ops/mes",c:"neu"},
+      {l:"EBITDA USD",v:fU(agg.resUSD),s:"Prom. "+fU(rentMes)+"/mes",c:"neu"},
+      {l:"Rent. / Operación",v:"USD "+rentOp,s:"Acum. "+selQ,c:"neu"},
+      {l:"Punto de Equilibrio",v:agg.pe>0?(agg.ops/agg.pe).toFixed(1)+"x":"S/D",s:agg.pe>0?agg.pe+" ops PE acum.":"-",c:"neu"},
+    ].map(k=>`<div class="kpi-card"><div class="kpi-label">${k.l}</div><div class="kpi-val">${k.v}</div><div class="kpi-sub ${k.c}">${k.s}</div></div>`).join("");
+  } else if(single){
     const m=MESES[keys[0]],idx=MK.indexOf(keys[0]),ant=idx>0?MESES[MK[idx-1]]:null;
     document.getElementById("analisis-mes-label").textContent=m.label;
     document.getElementById("analisis-txt").innerHTML=ANALISIS_DATA[keys[0]]||"";
@@ -839,6 +921,7 @@ function renderResumen(){
 /* === EVOLUCION (siempre todos los meses, destaca seleccionados) === */
 function renderEvolucion(){
   const T=MK.map(k=>MESES[k]),L=T.map(m=>m.lc),sel=new Set(getSelKeys());
+  const T_C=MK_CLOSED.map(k=>MESES[k]),L_C=T_C.map(m=>m.lc);
   const hi=k=>sel.has(k),dhi=k=>sel.has(k)?1:0.28;
   dc("ev-ops");
   _ch["ev-ops"]=new Chart(document.getElementById("chart-ev-ops").getContext("2d"),{type:"line",
@@ -848,11 +931,11 @@ function renderEvolucion(){
   });
   dc("ev-rent");
   _ch["ev-rent"]=new Chart(document.getElementById("chart-ev-rent").getContext("2d"),{type:"line",
-    data:{labels:L,datasets:[
-      {label:"Rent./Op (USD)",data:T.map(m=>resOp(m)),borderColor:"#D97706",backgroundColor:"rgba(217,119,6,0.10)",fill:true,tension:0.3,
-        pointRadius:MK.map(k=>hi(k)?6:3),pointBackgroundColor:MK.map(k=>hi(k)?"#D97706":"#5a3a00"),showLabel:false},
-      {label:"Rent./Emp (USD)",data:T.map(m=>resEmp(m)),borderColor:"#059669",tension:0.3,
-        pointRadius:MK.map(k=>hi(k)?6:3),pointBackgroundColor:MK.map(k=>hi(k)?"#059669":"#1a4a2a"),yAxisID:"yE",showLabel:false},
+    data:{labels:L_C,datasets:[
+      {label:"Rent./Op (USD)",data:T_C.map(m=>resOp(m)),borderColor:"#D97706",backgroundColor:"rgba(217,119,6,0.10)",fill:true,tension:0.3,
+        pointRadius:MK_CLOSED.map(k=>hi(k)?6:3),pointBackgroundColor:MK_CLOSED.map(k=>hi(k)?"#D97706":"#5a3a00"),showLabel:false},
+      {label:"Rent./Emp (USD)",data:T_C.map(m=>resEmp(m)),borderColor:"#059669",tension:0.3,
+        pointRadius:MK_CLOSED.map(k=>hi(k)?6:3),pointBackgroundColor:MK_CLOSED.map(k=>hi(k)?"#059669":"#1a4a2a"),yAxisID:"yE",showLabel:false},
     ]},options:{responsive:true,maintainAspectRatio:false,...DS,
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
   });
@@ -927,8 +1010,9 @@ function renderNovedades(){
     document.getElementById('nov-desvios').innerHTML=mkCards(nd.desvios,'Sin desv\xedos registrados este mes.');
   }
 
-  // Movimientos de personal — siempre muestra todos los meses disponibles
-  const movMonths=["2026-02","2026-03","2026-04","2026-05"];
+  // Movimientos de personal — YTD: todos los meses; por mes: solo el mes seleccionado
+  const allMovMonths=["2026-02","2026-03","2026-04","2026-05","2026-06"];
+  const movMonths=ytdMode?allMovMonths:[lastKey];
   document.getElementById('nov-personal').innerHTML=movMonths.map(k=>{
     const mn=(NOVEDADES[k]&&NOVEDADES[k].personal)||{ing:[],desv:[],ren:[],otros:[]};
     const isSel=sel.has(k);
@@ -1007,14 +1091,14 @@ function renderInteranual(){
 
   // === TABLA: Top 10 2025 (ops) vs 2026 mes a mes ===
   const avg26ops=Math.round(OPS_CLI_KEYS.reduce((s,c)=>{
-    const t=MK.reduce((ss,k)=>ss+(OPS_CLI[c][k]||0),0); return s+t/MK.length; },0)/OPS_CLI_KEYS.length*10)/10;
+    const t=MK_CLOSED.reduce((ss,k)=>ss+(OPS_CLI[c][k]||0),0); return s+t/MK_CLOSED.length; },0)/OPS_CLI_KEYS.length*10)/10;
   document.getElementById("inter-ops-cli-table").innerHTML=
     '<thead><tr><th>Cliente (Top 10 / 2025)</th><th class="center">Prom.\u00a02025</th>'+
-    MK.map(k=>'<th class="center">'+MESES[k].lc+'</th>').join("")+
+    MK_CLOSED.map(k=>'<th class="center">'+MESES[k].lc+'</th>').join("")+
     '<th class="center" style="color:var(--verde)">Prom.\u00a02026</th><th class="center">Var.</th></tr></thead><tbody>'+
     OPS_CLI_KEYS.map(c=>{
       const p25=OPS_CLI[c].p25;
-      const vals=MK.map(k=>OPS_CLI[c][k]||0);
+      const vals=MK_CLOSED.map(k=>OPS_CLI[c][k]||0);
       const avg26=+(vals.reduce((s,v)=>s+v,0)/vals.length).toFixed(1);
       return '<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
         '<td class="center" style="color:var(--muted)">'+p25+'</td>'+
@@ -1026,11 +1110,11 @@ function renderInteranual(){
   // === TABLA: Top 10 2025 (facturaci\xf3n USD) vs 2026 mes a mes ===
   document.getElementById("inter-fact-cli-table").innerHTML=
     '<thead><tr><th>Cliente (Top 10 / 2025)</th><th class="right">Prom.\u00a02025</th>'+
-    MK.map(k=>'<th class="right">'+MESES[k].lc+'</th>').join("")+
+    MK_CLOSED.map(k=>'<th class="right">'+MESES[k].lc+'</th>').join("")+
     '<th class="right" style="color:var(--verde)">Prom.\u00a02026</th><th class="center">Var.</th></tr></thead><tbody>'+
     FACT_CLI_KEYS.map(c=>{
       const p25=FACT_CLI[c].p25;
-      const vals=MK.map(k=>FACT_CLI[c][k]||0);
+      const vals=MK_CLOSED.map(k=>FACT_CLI[c][k]||0);
       const avg26=Math.round(vals.reduce((s,v)=>s+v,0)/vals.length);
       return '<tr><td><strong style="color:var(--text)">'+c+'</strong></td>'+
         '<td class="right" style="color:var(--muted)">'+p25.toLocaleString("es-AR")+'</td>'+
@@ -1047,14 +1131,16 @@ function renderOperaciones(){
   // Ranking din\xe1mico: usa OPS, agrega meses seleccionados
   const opsRD={};
   keys.forEach(m=>{(OPS[m]||[]).forEach(({n:cn,v})=>{opsRD[cn]=(opsRD[cn]||0)+v;});});
+  if(n>1)Object.keys(opsRD).forEach(k=>{opsRD[k]=+(opsRD[k]/n).toFixed(1);});
   const opsRank=Object.entries(opsRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const opsTotal=Object.values(opsRD).reduce((s,v)=>s+v,0);
+  const opsColHdr=n>1?'Ops/mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"Ops";
 
   document.getElementById("ops-table-title").textContent="Top 10 Operaciones \u2014 "+periodLabel;
   document.getElementById("ops-chart-title").textContent="Top 10 vs Prom. 2025 \u2014 "+periodLabel;
 
   document.getElementById("ops-table").innerHTML=
-    '<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">Ops</th><th class="center">% del total</th></tr></thead><tbody>'+
+    '<thead><tr><th class="center">#</th><th>Cliente</th><th class="center">'+opsColHdr+'</th><th class="center">% del total</th></tr></thead><tbody>'+
     opsRank.map(([nm,v],i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+
       '</td><td><strong style="color:var(--text)">'+nm+'</strong></td>'+
       '<td class="center bold">'+v+'</td>'+
@@ -1077,7 +1163,7 @@ function renderOperaciones(){
   const topClients=opsRank.map(([c])=>c);
   const evData=topClients.map(c=>{
     const selTotal=keys.reduce((s,k)=>s+(opsByClient[c]&&opsByClient[c][k]||0),0);
-    const aggVal=ytdMode?+(selTotal/n).toFixed(1):selTotal;
+    const aggVal=n>1?+(selTotal/n).toFixed(1):selTotal;
     return{c,vals:MK.map(k=>opsByClient[c]&&opsByClient[c][k]||0),aggVal,p25:OPS_2025_AVG[c]||null};
   }).sort((a,b)=>b.aggVal-a.aggVal);
 
@@ -1093,20 +1179,20 @@ function renderOperaciones(){
 /* === FACTURACION === */
 function renderFacturacion(){
   const keys=getSelKeys(),n=keys.length,sel=new Set(keys);
-  const pLbl=ytdMode?"Prom. mensual (A\xf1o en Curso)":keys.map(k=>MESES[k].lc).join(" + ");
+  const pLbl=ytdMode?"Prom. mensual (A\xf1o en Curso)":n>1?keys.map(k=>MESES[k].lc).join("+")+", prom./mes":keys.map(k=>MESES[k].lc).join(" + ");
 
   // Ranking din\xe1mico top 10 por facturaci\xf3n
   const factRD={};
   keys.forEach(k=>(FACT[k]||[]).forEach(({n:cn,u})=>{factRD[cn]=(factRD[cn]||0)+u;}));
   const factN=keys.length;
-  if(ytdMode)Object.keys(factRD).forEach(k=>{factRD[k]=Math.round(factRD[k]/factN);});
+  if(n>1)Object.keys(factRD).forEach(k=>{factRD[k]=Math.round(factRD[k]/factN);});
   const factRank=Object.entries(factRD).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const factTotal=factRank.reduce((s,[,v])=>s+v,0);
 
   document.getElementById("fact-title").textContent="Top 10 Facturaci\xf3n \u2014 "+pLbl;
   document.getElementById("fact-detail-title").textContent="Top 10 vs Prom. 2025 \u2014 "+pLbl;
 
-  const usdColHdr=ytdMode?'USD/mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"USD";
+  const usdColHdr=n>1?'USD/mes <span style="font-size:9px;opacity:.6">(prom.)</span>':"USD";
   document.getElementById("fact-table").innerHTML=
     '<thead><tr><th class="center">#</th><th>Cliente</th><th class="right">'+usdColHdr+'</th><th class="center">%</th></tr></thead><tbody>'+
     factRank.map(([cn,u],i)=>'<tr><td class="center" style="color:var(--muted2)">'+(i+1)+'</td><td><strong style="color:var(--text)">'+cn+'</strong></td>'+
@@ -1152,6 +1238,7 @@ function renderFacturacion(){
 function renderRentabilidad(){
   const keys=getSelKeys(),sel=new Set(keys);
   const T=MK.map(k=>MESES[k]),selMs=keys.map(k=>MESES[k]);
+  const T_C=MK_CLOSED.map(k=>MESES[k]);
   const agg=getAgg(keys),n=keys.length;
   const totResOp=Math.round(agg.resUSD/agg.ops);
   const totResEmp=Math.round(agg.resUSD/(agg.dot*n));
@@ -1191,8 +1278,8 @@ function renderRentabilidad(){
   const avgPEdisp=Math.round(agg.pe/n);
   const peAvgCard=n>1?'<div class="pe-card selected" style="grid-column:span 1;border-width:2px;">'+
     '<div class="pe-mes">PROMEDIO</div><div class="pe-val">'+avgPEdisp+'</div><div class="pe-label">ops min. prom.</div></div>':""; 
-  document.getElementById("pe-grid").innerHTML=peAvgCard+T.map((m,i)=>{
-    const k=MK[i],s=sel.has(k);
+  document.getElementById("pe-grid").innerHTML=peAvgCard+T_C.map((m,i)=>{
+    const k=MK_CLOSED[i],s=sel.has(k);
     return '<div class="pe-card'+(s?" selected":"")+'">'+'<div class="pe-mes">'+m.lc+'</div><div class="pe-val">'+m.pe+'</div><div class="pe-label">ops min.</div></div>';
   }).join("");
   dc("pe");
@@ -1204,11 +1291,11 @@ function renderRentabilidad(){
   });
   dc("rent-ev");
   _ch["rent-ev"]=new Chart(document.getElementById("chart-rent-ev").getContext("2d"),{type:"line",
-    data:{labels:T.map(m=>m.lc),datasets:[
-      {label:"Rent./Op (USD)",data:T.map(m=>resOp(m)),borderColor:"#1E2D6B",backgroundColor:"rgba(30,45,107,0.10)",fill:true,tension:0.3,
-        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#1E2D6B":"#0A1233"),showLabel:false},
-      {label:"Rent./Emp (USD)",data:T.map(m=>resEmp(m)),borderColor:"#A5B4FC",tension:0.3,
-        pointRadius:MK.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK.map(k=>sel.has(k)?"#A5B4FC":"#6474CC"),yAxisID:"yE",showLabel:false},
+    data:{labels:T_C.map(m=>m.lc),datasets:[
+      {label:"Rent./Op (USD)",data:T_C.map(m=>resOp(m)),borderColor:"#1E2D6B",backgroundColor:"rgba(30,45,107,0.10)",fill:true,tension:0.3,
+        pointRadius:MK_CLOSED.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK_CLOSED.map(k=>sel.has(k)?"#1E2D6B":"#0A1233"),showLabel:false},
+      {label:"Rent./Emp (USD)",data:T_C.map(m=>resEmp(m)),borderColor:"#A5B4FC",tension:0.3,
+        pointRadius:MK_CLOSED.map(k=>sel.has(k)?6:3),pointBackgroundColor:MK_CLOSED.map(k=>sel.has(k)?"#A5B4FC":"#6474CC"),yAxisID:"yE",showLabel:false},
     ]},options:{responsive:true,maintainAspectRatio:false,...DS,
       scales:{...DS.scales,yE:{type:"linear",position:"right",ticks:{color:"#5B6CA8"},grid:{drawOnChartArea:false}}}}
   });
