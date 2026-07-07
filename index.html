@@ -196,12 +196,7 @@ tfoot td.right{text-align:right;}
 .obj-entregables{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
 .obj-entr{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s;}
 .obj-entr:hover{border-color:var(--acc);}
-.obj-entr-wrap{margin-bottom:8px;}
-.obj-doc-panel{display:none;border-radius:0 0 12px 12px;border:1px solid var(--acc);border-top:none;background:#fff;overflow:hidden;}
-.obj-doc-panel.open{display:block;}
-.obj-doc-panel iframe{width:100%;height:520px;border:none;display:block;}
-.obj-entr-arrow{margin-left:auto;font-size:13px;color:var(--muted2);transition:transform .2s;}
-.obj-entr-arrow.open{transform:rotate(180deg);}
+.obj-entr-link{margin-left:auto;font-size:11px;color:var(--acc);font-weight:600;white-space:nowrap;}
 .obj-entr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .obj-entr-dot.v{background:var(--verde);}
 .obj-entr-dot.a{background:var(--amber);}
@@ -714,21 +709,9 @@ function objCard({name,badge,badgeTxt,val,valSm,target,pct,barCls,auto,tipLines}
   </div>`;
 }
 function entrItem(cls,title,desc,doc){
-  const id="doc-"+Math.random().toString(36).slice(2);
-  const arrow=doc?`<div class="obj-entr-arrow" id="arr-${id}">&#9660;</div>`:"";
-  const onclick=doc?`onclick="toggleDoc('${id}','${doc}')" `:"";
-  const panel=doc?`<div class="obj-doc-panel" id="${id}"></div>`:"";
-  return `<div class="obj-entr-wrap">
-    <div class="obj-entr" ${onclick}><div class="obj-entr-dot ${cls}"></div><div class="obj-entr-body"><div class="obj-entr-title">${title}</div><div class="obj-entr-desc">${desc}</div></div>${arrow}</div>
-    ${panel}
-  </div>`;
-}
-function toggleDoc(id,src){
-  const panel=document.getElementById(id);
-  const arr=document.getElementById("arr-"+id);
-  const isOpen=panel.classList.contains("open");
-  if(isOpen){panel.classList.remove("open");arr.classList.remove("open");panel.innerHTML="";}
-  else{panel.innerHTML=`<iframe src="${src}" allowfullscreen></iframe>`;panel.classList.add("open");arr.classList.add("open");}
+  const onclick=doc?`onclick="window.open('${doc}','_blank')" style="cursor:pointer"`:"";
+  const link=doc?`<div class="obj-entr-link">&#8599; Ver</div>`:"";
+  return `<div class="obj-entr" ${onclick}><div class="obj-entr-dot ${cls}"></div><div class="obj-entr-body"><div class="obj-entr-title">${title}</div><div class="obj-entr-desc">${desc}</div></div>${link}</div>`;
 }
 function renderObjetivos(){
   const mks=Object.values(MESES);
