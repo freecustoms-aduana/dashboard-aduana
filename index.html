@@ -633,7 +633,7 @@ function getAgg(keys){
 
 /* === FILTER BAR === */
 function initFilterBar(){
-  document.getElementById("month-toggles").innerHTML=MK.map(k=>{
+  document.getElementById("month-toggles").innerHTML=MK_CLOSED.map(k=>{
     return '<button class="month-toggle" data-k="'+k+'" onclick="toggleMonth(this.dataset.k)">'+MESES[k].label+'</button>';
   }).join("");
   updateFilterBar();
