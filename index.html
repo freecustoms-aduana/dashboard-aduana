@@ -465,14 +465,14 @@ const FACT_CLI={
 const FACT_CLI_KEYS=Object.keys(FACT_CLI);
 
 const EQUIPOS={
-  labels:["Ene","Feb","Mar","Abr","May"],
+  labels:["Ene","Feb","Mar","Abr","May","Jun"],
   colors:["#1E2D6B","#2D47A8","#4B7BE5","#7BA3F0","#B8CEFA"],
   teams:[
-    {name:"Neum\xe1ticos",abbr:"NE",exec:"Mauro Pescio",margen:[47.4,59.5,45.3,45.8,53.4],rev:[58084,72485,59394,69085,70949],res:[27546,43104,26899,31672,37886]},
-    {name:"L\xednea Blanca",abbr:"LB",exec:"Nicol\xe1s G\xf3mez",margen:[47.9,47.2,36.0,38.0,33.9],rev:[35606,35675,32219,38494,24408],res:[17054,16842,11599,14609,8271]},
-    {name:"Maquinaria",abbr:"MA",exec:"Andrea Pacheco",margen:[30.4,28.2,34.9,35.9,43.1],rev:[16437,21498,29642,34291,30596],res:[4994,6055,10335,12325,13192]},
-    {name:"Alimentos y Qu\xedmicos",abbr:"AQ",exec:"Daira Juarez",margen:[2.3,10.5,26.6,27.4,30.6],rev:[16185,18643,28016,33210,25256],res:[369,1949,7439,9110,7728]},
-    {name:"Varios",abbr:"VA",exec:"Jennifer Almendra",margen:[48.7,32.9,53.1,50.3,47.7],rev:[18025,9301,23383,22900,14814],res:[8778,3063,12405,11528,7074]},
+    {name:"Neum\xe1ticos",abbr:"NE",exec:"Mauro Pescio",margen:[42.2,58.7,43.7,46.3,56.1,59.7],rev:[58084,72485,59394,69085,70949,66967],res:[24491,42513,25954,32005,39775,39958]},
+    {name:"L\xednea Blanca",abbr:"LB",exec:"Nicol\xe1s G\xf3mez",margen:[61.5,49.8,45.0,46.4,41.1,62.8],rev:[35039,33274,30680,38215,23875,42079],res:[21546,16559,13801,17716,9822,26439]},
+    {name:"Maquinaria",abbr:"MA",exec:"Andrea Pacheco",margen:[15.6,15.6,26.6,26.5,27.7,40.7],rev:[16437,19199,29642,33412,30000,26476],res:[2558,3003,7892,8861,8314,10772]},
+    {name:"Alimentos y Qu\xedmicos",abbr:"AQ",exec:"Daira Juarez",margen:[-0.9,9.6,22.6,23.9,27.6,40.0],rev:[16185,18643,28016,33210,25256,30414],res:[-144,1799,6334,7949,6965,12163]},
+    {name:"Varios",abbr:"VA",exec:"Jennifer Almendra",margen:[55.3,51.0,59.0,52.8,58.2,56.7],rev:[18592,14001,24922,24059,15943,14330],res:[10288,7138,14696,12713,9274,8121]},
   ]
 };
 const NOVEDADES={
@@ -1284,7 +1284,7 @@ function renderRentabilidad(){
   });
   // === GRÁFICOS DE EQUIPOS ===
   // Peso estratégico — líneas, % de revenue por equipo sobre total, filtrado por meses
-  const eqIdxMap2={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4};
+  const eqIdxMap2={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4,"2026-06":5};
   const eqSelIdx=keys.map(k=>eqIdxMap2[k]).filter(i=>i!==undefined);
   const eqSelLbls=eqSelIdx.map(i=>EQUIPOS.labels[i]);
   const revTotals=EQUIPOS.labels.map((_,mi)=>EQUIPOS.teams.reduce((s,t)=>s+t.rev[mi],0));
