@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguimiento de Resoluciones Anticipadas — Clasificación Arancelaria</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --azul:#1e40af; --azul-osc:#1e3a8a; --fondo:#f1f5f9; --blanco:#fff;
+    --gris:#64748b; --gris-claro:#e2e8f0; --texto:#0f172a; --rojo:#dc2626;
+    --verde:#16a34a; --ambar:#d97706; --radius:10px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+  body{background:var(--fondo);color:var(--texto);min-height:100vh}
+
+  header{background:linear-gradient(135deg,var(--azul-osc),var(--azul));color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  header h1{font-size:1.25rem;font-weight:600}
+  header .sub{font-size:.8rem;opacity:.85;margin-top:2px}
+  .badge-rol{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:4px 12px;border-radius:20px;font-size:.75rem}
+
+  .tabs{display:flex;gap:4px;background:var(--blanco);padding:0 28px;border-bottom:1px solid var(--gris-claro)}
+  .tab{padding:13px 22px;cursor:pointer;font-size:.9rem;font-weight:500;color:var(--gris);border-bottom:3px solid transparent}
+  .tab.activa{color:var(--azul);border-bottom-color:var(--azul)}
+  .tab:hover{color:var(--azul)}
+
+  main{padding:22px 28px;max-width:1420px;margin:0 auto}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+  .toolbar input[type=text],.toolbar select{padding:9px 12px;border:1px solid var(--gris-claro);border-radius:var(--radius);font-size:.85rem;background:#fff}
+  .toolbar input[type=text]{flex:1;min-width:200px}
+  .btn{padding:9px 16px;border:none;border-radius:var(--radius);font-size:.85rem;font-weight:500;cursor:pointer;background:var(--gris-claro);color:var(--texto);white-space:nowrap}
+  .btn:hover{filter:brightness(.95)}
+  .btn-primario{background:var(--azul);color:#fff}
+  .btn-peligro{background:#fee2e2;color:var(--rojo)}
+  .btn-chico{padding:5px 10px;font-size:.75rem}
+
+  .tarjeta{background:var(--blanco);border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th{text-align:left;padding:12px 14px;background:#f8fafc;color:var(--gris);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--gris-claro);cursor:pointer;user-select:none;white-space:nowrap}
+  td{padding:11px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:#f8fafc}
+  .estado{display:inline-block;padding:3px 11px;border-radius:20px;font-size:.72rem;font-weight:600;color:#fff;white-space:nowrap}
+  .dias-alerta{color:var(--rojo);font-weight:700}
+  .dias-atencion{color:var(--ambar);font-weight:600}
+  .dias-negrita{color:var(--texto);font-weight:700}
+  .sin-datos{padding:40px;text-align:center;color:var(--gris)}
+  .mono{font-family:Consolas,monospace;font-size:.8rem}
+  .recorte{max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#475569;font-size:.78rem}
+  .contador{font-size:.78rem;color:var(--gris);margin:0 2px 10px}
+
+  /* Grupos por estado */
+  tr.grupo td{background:#e8edf5;font-weight:700;font-size:.8rem;color:var(--azul-osc);cursor:pointer;padding:11px 14px;user-select:none;border-bottom:1px solid var(--gris-claro)}
+  tr.grupo .flecha{display:inline-block;transition:transform .15s;margin-right:8px;font-size:.7rem}
+  tr.grupo.abierto .flecha{transform:rotate(90deg)}
+  tr.grupo .cant{font-weight:500;color:var(--gris);margin-left:6px}
+  tr.fila-detalle{cursor:default}
+  tr.fila-detalle td{background:#f8fafc;padding:16px 22px;border-bottom:2px solid var(--gris-claro)}
+  .det-inline{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .det-acciones{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin-bottom:20px}
+  .kpi{background:var(--blanco);border-radius:var(--radius);padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .kpi .valor{font-size:1.8rem;font-weight:700;color:var(--azul)}
+  .kpi .etiqueta{font-size:.75rem;color:var(--gris);margin-top:3px}
+  .kpi.alerta .valor{color:var(--rojo)}
+  .kpi.ok .valor{color:var(--verde)}
+
+  .graficos{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:16px}
+  .grafico{background:var(--blanco);border-radius:var(--radius);padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .grafico h3{font-size:.9rem;margin-bottom:12px;color:var(--texto)}
+  .grafico .contenedor{position:relative;height:280px}
+
+  /* Modal */
+  .modal-fondo{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:50;overflow-y:auto}
+  .modal-fondo.abierto{display:flex}
+  .modal{background:#fff;border-radius:var(--radius);width:100%;max-width:700px;padding:24px}
+  .modal h2{font-size:1.05rem;margin-bottom:16px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .campo{display:flex;flex-direction:column;gap:4px}
+  .campo.ancho{grid-column:1/-1}
+  .campo label{font-size:.75rem;font-weight:600;color:var(--gris)}
+  .campo input,.campo select,.campo textarea{padding:8px 10px;border:1px solid var(--gris-claro);border-radius:8px;font-size:.85rem}
+  .campo textarea{resize:vertical;min-height:56px}
+  .modal-acciones{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
+
+  /* Detalle */
+  .detalle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+  .dato .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.4px;color:var(--gris);font-weight:600}
+  .dato .v{font-size:.88rem;margin-top:2px;white-space:pre-line}
+  .timeline{margin-top:6px;border-left:2px solid var(--gris-claro);padding-left:18px}
+  .mov{position:relative;padding-bottom:16px}
+  .mov::before{content:'';position:absolute;left:-24px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--azul)}
+  .mov .fecha{font-size:.72rem;color:var(--gris);font-weight:600}
+  .mov .tipo{font-size:.85rem;font-weight:600}
+  .mov .detalle-txt{font-size:.82rem;color:#334155;margin-top:2px}
+  .mov .quitar{position:absolute;right:0;top:0}
+  .seccion-titulo{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--gris-claro)}
+  .seccion-titulo h3{font-size:.9rem}
+
+  .aviso{background:#fef9c3;border:1px solid #fde047;color:#854d0e;padding:8px 14px;border-radius:var(--radius);font-size:.78rem;margin-bottom:14px;display:none}
+  @media(max-width:640px){.form-grid{grid-template-columns:1fr}main{padding:14px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Resoluciones Anticipadas — Clasificación Arancelaria</h1>
+    <div class="sub">Seguimiento de solicitudes SITA · Free Customs · Equipo de Aduana</div>
+  </div>
+  <span class="badge-rol" id="badgeRol">Modo edición</span>
+</header>
+
+<div class="tabs">
+  <div class="tab activa" data-tab="expedientes" onclick="cambiarTab('expedientes')">Expedientes</div>
+  <div class="tab" data-tab="estadisticas" onclick="cambiarTab('estadisticas')">Estadísticas</div>
+</div>
+
+<main>
+  <div class="aviso" id="avisoLectura">Estás en modo solo lectura: podés consultar pero no modificar los datos.</div>
+
+  <!-- TAB EXPEDIENTES -->
+  <section id="tab-expedientes">
+    <div class="toolbar">
+      <input type="text" id="buscador" placeholder="Buscar por N° SITA, cliente, producto, PA o última acción…" oninput="renderTabla()">
+      <select id="filtroEstado" onchange="renderTabla()"><option value="">Todos los estados</option></select>
+      <select id="filtroCliente" onchange="renderTabla()"><option value="">Todos los clientes</option></select>
+      <button class="btn btn-primario solo-editor" onclick="abrirFormExpediente()">+ Nuevo expediente</button>
+      <button class="btn" onclick="exportarJSON()">Exportar JSON</button>
+      <button class="btn" onclick="exportarCSV()">Exportar CSV</button>
+      <button class="btn solo-editor" onclick="document.getElementById('inputImportar').click()">Importar JSON</button>
+      <input type="file" id="inputImportar" accept=".json" style="display:none" onchange="importarJSON(event)">
+    </div>
+    <div class="contador" id="contador"></div>
+    <div class="tarjeta">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="ordenarPor('nroSita')">N° SITA</th>
+            <th onclick="ordenarPor('estado')">Estado</th>
+            <th onclick="ordenarPor('cliente')">Cliente</th>
+            <th onclick="ordenarPor('producto')">Producto</th>
+            <th onclick="ordenarPor('fechaInicio')">Fecha pres.</th>
+            <th onclick="ordenarPor('fUltEstado')">Fecha últ. estado</th>
+            <th onclick="ordenarPor('dias')" title="Días hábiles desde la fecha de último estado hasta hoy. En RESUELTA: días corridos que restan hasta el vencimiento (3 años).">Días transc. / venc.</th>
+            <th onclick="ordenarPor('paFree')">PA Free Customs</th>
+            <th onclick="ordenarPor('paAduana')">PA Aduana</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoTabla"></tbody>
+      </table>
+      <div class="sin-datos" id="sinDatos" style="display:none">No hay expedientes que coincidan con la búsqueda.</div>
+    </div>
+  </section>
+
+  <!-- TAB ESTADÍSTICAS -->
+  <section id="tab-estadisticas" style="display:none">
+    <div class="kpis" id="kpis"></div>
+    <div class="graficos">
+      <div class="grafico"><h3>Expedientes por estado</h3><div class="contenedor"><canvas id="chartEstados"></canvas></div></div>
+      <div class="grafico"><h3>Coincidencia PA Free vs. PA Aduana (resueltos)</h3><div class="contenedor"><canvas id="chartCoincidencia"></canvas></div></div>
+      <div class="grafico"><h3>Expedientes por cliente (top 12)</h3><div class="contenedor"><canvas id="chartClientes"></canvas></div></div>
+      <div class="grafico"><h3>Días en trámite (top 12)</h3><div class="contenedor"><canvas id="chartDias"></canvas></div></div>
+      <div class="grafico"><h3>Presentaciones por mes</h3><div class="contenedor"><canvas id="chartMeses"></canvas></div></div>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL: formulario expediente -->
+<div class="modal-fondo" id="modalExpediente">
+  <div class="modal">
+    <h2 id="tituloFormExp">Nuevo expediente</h2>
+    <div class="form-grid">
+      <div class="campo"><label>Cliente</label><select id="f_cliente"></select></div>
+      <div class="campo"><label>Producto</label><input id="f_producto"></div>
+      <div class="campo"><label>N° SITA</label><input id="f_nroSita" placeholder="26000SITA000000X"></div>
+      <div class="campo"><label>Estado</label><select id="f_estado"></select></div>
+      <div class="campo"><label>Fecha de presentación</label><input type="date" id="f_fechaInicio"></div>
+      <div class="campo"><label>Fecha recibido / pedido doc.</label><input type="date" id="f_fechaRecibido"></div>
+      <div class="campo"><label>Fecha de último estado (manual)</label><input type="date" id="f_fechaUltimoEstado"></div>
+      <div class="campo"><label>PA Free</label><input id="f_paFree" placeholder="0000.00.00.000X"></div>
+      <div class="campo"><label>PA Aduana</label><input id="f_paAduana"></div>
+      <div class="campo"><label>Tributos Free</label><textarea id="f_tributosFree" placeholder="DE: %&#10;TE: %&#10;IVA: %"></textarea></div>
+      <div class="campo"><label>Tributos Aduana</label><textarea id="f_tributosAduana"></textarea></div>
+      <div class="campo"><label>Responsable última acción</label>
+        <select id="f_responsable"><option value="">—</option><option>ADUANA</option><option>CLIENTE</option><option>FREE CUSTOMS</option></select>
+      </div>
+      <div class="campo"><label>Detalle de observaciones</label><input id="f_ultimaAccion"></div>
+      <div class="campo ancho"><label>Observaciones</label><textarea id="f_observaciones"></textarea></div>
+    </div>
+    <div class="modal-acciones">
+      <button class="btn" onclick="cerrarModal('modalExpediente')">Cancelar</button>
+      <button class="btn btn-primario" onclick="guardarExpediente()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: detalle expediente -->
+<div class="modal-fondo" id="modalDetalle">
+  <div class="modal" style="max-width:780px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <h2 id="detTitulo" class="mono"></h2>
+      <span class="estado" id="detEstado"></span>
+    </div>
+    <div class="detalle-grid" id="detDatos"></div>
+    <div class="seccion-titulo">
+      <h3>Movimientos del expediente</h3>
+      <button class="btn btn-chico btn-primario solo-editor" onclick="abrirFormMovimiento()">+ Agregar movimiento</button>
+    </div>
+    <div class="timeline" id="detMovimientos" style="margin-top:12px"></div>
+    <div class="modal-acciones">
+      <button class="btn btn-peligro solo-editor" onclick="eliminarExpediente()">Eliminar expediente</button>
+      <button class="btn solo-editor" onclick="editarDesdeDetalle()">Editar</button>
+      <button class="btn" onclick="cerrarModal('modalDetalle')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: nuevo movimiento -->
+<div class="modal-fondo" id="modalMovimiento">
+  <div class="modal" style="max-width:520px">
+    <h2>Nuevo movimiento</h2>
+    <div class="form-grid">
+      <div class="campo"><label>Fecha</label><input type="date" id="m_fecha"></div>
+      <div class="campo"><label>Tipo de movimiento</label>
+        <select id="m_tipo">
+          <option>Presentación</option><option>Pedido de documentación</option><option>Presentación de muestra</option>
+          <option>Requerimiento de Aduana</option><option>Respuesta a requerimiento</option>
+          <option>Resolución recibida</option><option>Rechazo notificado</option><option>Anulación</option>
+          <option>Consulta al cliente</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="campo"><label>Nuevo estado del expediente (opcional)</label><select id="m_estado"><option value="">— Sin cambio —</option></select></div>
+      <div class="campo ancho"><label>Detalle / información del movimiento</label><textarea id="m_detalle"></textarea></div>
+    </div>
+    <div class="modal-acciones">
+      <button class="btn" onclick="cerrarModal('modalMovimiento')">Cancelar</button>
+      <button class="btn btn-primario" onclick="guardarMovimiento()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN — estados, umbrales, modo lectura y clientes
+   ============================================================ */
+const MODO_SOLO_LECTURA = false; // true = oculta toda edición (nivel "visualizador")
+
+const ESTADOS = {
+  "PRESENTADA": {color:"#2563eb", final:false},
+  "RESUELTA":   {color:"#16a34a", final:true},
+  "RECHAZADA":  {color:"#dc2626", final:true},
+  "ANULADA":    {color:"#64748b", final:true}
+};
+const ORDEN_ESTADOS = ["PRESENTADA","RESUELTA","RECHAZADA","ANULADA"];
+
+/* Umbral en días HÁBILES desde la fecha de último estado (plazo SITA) */
+const DIAS_HABILES_LIMITE   = 30;  // rojo
+const DIAS_HABILES_ATENCION = 20;  // amarillo
+
+/* Vigencia de las RESUELTAS: 3 años desde la fecha de último estado (aprobación).
+   Se muestran los días que restan: VALIDEZ_DIAS - días corridos transcurridos.
+   Se pinta en rojo cuando restan menos de DIAS_VENCIMIENTO_ALERTA días
+   (91 días ≈ plazo para gestionar la renovación antes del vencimiento). */
+const VALIDEZ_DIAS = 1090;
+const DIAS_VENCIMIENTO_ALERTA = 91;
+
+/* Feriados nacionales (no se cuentan como hábiles). Agregar los que falten
+   (feriados puente / trasladables) con formato "AAAA-MM-DD". */
+const FERIADOS = [
+  "2026-01-01","2026-02-16","2026-02-17","2026-03-24","2026-04-02","2026-04-03",
+  "2026-05-01","2026-05-25","2026-06-20","2026-07-09","2026-12-08","2026-12-25"
+];
+
+/* Umbrales en días corridos usados solo en el gráfico "Días en trámite" */
+const DIAS_ATENCION = 60;
+const DIAS_ALERTA   = 120;
+
+/* Lista de clientes para el desplegable de alta.
+   PENDIENTE: reemplazar por el listado oficial de clientes cuando esté disponible. */
+const CLIENTES = ["A Y M D ESPOSITO S R L", "ABACOS S.R.L.", "ABRANTES SA", "ADRIAN CALVANI", "AGRI CHECK SRL", "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LTDA", "AGRO RIOS & TIERI SRL", "AGROTOLHUIN SRL", "ALE HEAVYLIFT AUSTRAL S.A", "ALFANO ANIBAL OSCAR", "ALFREDO IGNACIO CORRAL S.A.", "AMBIENTES Y PROYECTOS S.A.", "AMOBLAMIENTOS AS S.R.L.", "APACHE SOLUTIONS S.A.S.", "APILAB S.R.L.", "ARESIL S.A.", "ARTEC INGENIERIA SA", "ARTICULOS PROMOCIONALES S.A.", "ARTROTEK SRL", "ARTURI RAUL", "ASERRADERO VAGOL SRL", "ASOCIACION DE COOPERATIVAS ARGENTINAS COOP LTDA", "ASTILLEROS PATAGONICOS INTEGRADOS S.A.", "AV TECH S.A.", "AYRE LIBRE SA", "BAIRES HARBOUR S.R.L.", "BALIARDA SOCIEDAD ANONIMA", "BARACK ARGENTINA S.R.L.", "BATBAIK S.A.", "BATISTA DOMINGUEZ ROBERTO CARLOS", "BATTAGLINO FRANCISCA MAGDALENA", "BAYRES INSUMOS S.A.S.", "BEDSON S.A", "BEJARANO TOMAS ESTANISLAO", "BELLINI FILIPPINI ALBERTO MARCOS", "BGS COMERCIAL SRL", "BIG LOGISTIC S.R.L.", "BIG PARENTS", "BILBAO LEMA GUSTAVO", "BLUELINE SEA CARGO SERVICES CO. L.L.C.", "BOSAN SA", "BRUNO HNOS. S.A", "BSC ARGENTINA S A", "BUNGE ARGENTINA S A", "CALZADOS CABURE SRL", "CALZETTA NEUMATICOS SOCIEDAD ANONIMA", "CANDY ELECTRODOMESTICOS ARGENTINA SA", "CANGA RODRIGO CARLOS", "CAPUTO LUCIANO MARCELO", "CARDIOPACK", "CARLOS MÜLLER", "CDM GROUP S.A.", "CEPINDUS S.A.", "CERAMICOS SPEGAZZINI SA", "CETROGAR SA", "CHAMP S.A", "CLADD INDUSTRIA TEXTIL ARGENTINA", "COLFAR SOCIEDAD ANONIMA", "COMPAÑIA ARGENTINA DE ACEITES S.A.", "COMVEN BERNAL S.A", "COOPERATIVA DE PRODUCTORES TABACALEROS DE SALTA LTDA", "COOPERATIVA DE TABACALEROS DE JUJUY LTDA", "COPSA COMBUSTIBLES, QUIMICOS Y ESPECIALIDADES S.A.", "CORRAL JOSE MARIA", "CORTEVA AGRISCIENCE ARGENTINA SRL", "COTTI DE LA LASTRA JULIO CESAR", "CRESATA S.A", "CRISTALES ARTESANALES S. A.", "CTT DIGITAL S.R.L.", "CUATRO ASES S.A.", "DAEMAR S.A", "DASS ARGENTINA S.R.L", "DASS ARGENTINA S.R.L. - DESTINO SUAREZ", "DASS ELDORADO S.R.L.", "DASS SUAREZ S.A.", "DEFIBA SERVICIOS PORTUARIOS SA", "DEFIBE S.A.", "DENTISTRY4ALL S.A.S", "DEPOSITOS MOREIRO HNOS. S.R.L", "DESSOL INDUSTRIAL S.A.", "DI BAIA ALEJO CHRISTIAN", "DIAVAMEDIC SOCIEDAD ANONIMA INDUSTRIAL Y COMERCIAL", "DIESEL FRENOS SRL", "DIESEL TELLIER S.R.L", "DISTRIBUIDORA DMC SA", "DOWELL FARMACEUTICA SRL", "DROGUERIA LIBERTAD SA", "DSK GROUP SRL", "DULCOR S.A.", "DYNAMIC PROYECT SA", "DyR SERVICIOS SRL", "ECOTUBOS S.A.", "EGA SERVICIOS S.A.S", "EME ESTRUCTURAS S.A", "ENERGIA POSITIVA", "ENRIQUE M BAYA CASAL S A", "ESTRELLA SERVICIOS PETROLEROS S.A.", "EXANET S.A", "EXPRESO TRONADOR SA", "Estudio blanco", "FAMIGLIETTI, DIEGO JULIAN", "FAMILIA DE EMPRENDEDORES S.A.", "FANTON MATIAS EZEQUIEL", "FARMCHEM SA", "FENDA S.A.", "FERLA NICOLAS", "FERNANDO MULLER", "FERNANDO NAVEIRAS", "FERREIROS Y VILELA", "FLUX ARGENTINA SRL", "FNL CARE SRL", "FREE CUSTOMS", "Fernando Viqueira", "GIVAUDAN ARGENTINA S.A.", "GLEBA S A", "GLOBAL TYRES S.A.", "GLOSS SRL", "GOLES Y GAMBETAS S.R.L", "GPS MUNDO", "GRANET S.A.", "GRUAS SAN BLAS S.A", "GRUPO ESLABON", "GRUPO MAGMA Y ASOCIADOS S.A.S", "GRUPO R Y A S.R.L.", "GRUPO RAMOS MEJIA S.A.", "GRUPO RECIMET Y CIA SRL", "GRUPRO S.A.", "GSB SERVICIOS ESPECIALES S.A", "GSJ S.A.", "GUALA SD", "GUASOLDEC S.R.L.", "HAGEDORN HERNAN CLAUS", "HEROVIAL SRL", "HI-TECH SPORTS S.A.S.", "HOGAR Y TECNOLOGÍA S.A.", "IGNOTO EDUARDO JORGE", "IMPORTCARGO DO BRASIL AGENCIAMENTO DE CARGAS LTDA.", "IMPORTCARGO MEXICO S.A. DE CV", "IMPORTVOS S.A", "INDUSTRIAS ERPLA SA", "INDUSTRIAS PLEXI S.R.L", "INDUTRA SH", "INTERMACO SRL", "INTERMEPRO S.A.", "INVERSIONES BERNAL S A", "INVET SRL", "IRMANI SRL", "ITA BKNS. SOCIEDAD LEY 19550 CAPITULO I SECCION IV", "Imexxur", "JESSICA SÁNCHEZ", "JJ DESPACHO ADUANERO", "JUANA SANTIAGO", "JUANLENOI SRL", "Juan Lechardoy", "KUCHEN BASZAR SRL", "KUCHENMEISTER GUILLERMO ORLANDO Y FERRARI MARIA ROSA S.H.", "KUPFER SRL", "LABORATORIOS PEYTE S.A", "LAROCCA MINERIA S.A.", "LAROCCA NEUMATICOS S.A.", "LAROCCA SALTA NEUMATICOS S.A.", "LIGUEN ILUMINACION SRL", "LINO DEL BIANCO E HIJO S.A.", "LOCALES DEL PARAISO S.A", "LUMAR VIAL SRL", "Lucio Andersson", "M.CASSAB ARGENTINA S A", "M/S MANGHANMAL CHATLANI KUNAL", "MAXTERVISION TEAM S.R.L.", "MEGAMAQ S.A.", "MISHI INTERNATIONAL", "MOLE LA TERRA LUCIANO NICOLAS", "MORMAQ SERVICIOS VIALES S.R.L.", "MOUNTAIN MACHINERY S. R. L", "MULLER CRISTIAN", "MULLER GERMAN", "MULTITRANS ISRAEL - -", "NALDO LOMBARDI S A", "NATION SA", "NEPAL OBJETOS S.R.L", "NEUMASUR S.A.", "NEUMATICOS CORRAL S.A.", "NEUMATICOS ROSMI S R L", "NEW MATERIAL SAS", "NIKE ARGENTINA S.R.L.", "NUNIVAK S.R.L.", "NUÑEZ SEBASTIAN URIEL", "OMNICHANNEL SA", "OMNILIFE DE ARGENTINA S.A.", "OMNIPRINT SA", "OPERADORA FERROVIARIA S.A. -", "PALACIOS CINTIA SOLEDAD", "PHARMA EXPRESS SA", "PINSOURCE SA", "PLAQUIMET", "PLAYA ROSA", "PMX", "POWER SYSTEMS ARGETINA SA", "PRO - HUNTER S.A.", "PRO FLIGHT ACADEMY S.R.L.", "PROCHEM BIO SA.", "PTP WARRANT S.A.", "PUERTO BERNAL SRL", "PUNTO Y COMA PUBLICIDAD INTEGRAL S.A.", "QUALITY FREIGHT", "RED 35 S.A.", "REY DEL BOSQUE JUNIOR S.A.", "RODAPAL SRL", "RODASER RODAMIENTOS S.R.L.", "RR CONSTRUCCIONES", "RUTA SUR TRUCKS S.A.", "RYA MAQUINARIAS", "S C JOHNSON & SON DE ARGENTINA SOCIEDAD ANONIMA INDUSTRIAL COMERCIAL", "SAILING GEAR S.A", "SANTANA TEXTIL CHACO S.A.", "SANTILLI NEUMATICOS SOCIEDAD ANONIMA", "SEIS ERRE ALIMENTOS S.A.", "SERVICIOS AMG VIAL SOCIEDAD ANONIMA", "SILVETEX S A", "SKUKI S.A.", "SLG LOGISTICA", "SOL NACIENTE COMERCIAL S.R.L.", "SOUTHAMERICAN TRENDY S.A", "START.AR S. A.", "STUFF SHOP ARGENTINA", "T-LINE SRL", "TECHNOLOGY LINE S.R.L", "TECNORTH S.A", "TELEXTORAGE S A", "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "TEXTER FEED SRL", "TME SPORTS S.R.L.", "TOCAI SRL", "TRANSPACK ARGENTINA S.A.", "TRANSPORTES AUTOMOTORES PLUSMAR SA", "TRAPALCO S.A.", "ULTRALIGHT SRL", "UNITS SUDAMERICANA", "URBAN HUS INDUSTRY S. R. L.", "VAMELI S.R.L.", "VERTISOLES S.R.L", "VISION TECHNOLOGIES ARGENTINA S.R.L.", "VISION TECHNOLOGIES CHILE SPA", "WDM WATER SYSTEMS S.A.", "WILDONA SRL", "WINTER ZERO S.A.", "WORLD GLOBAL LOGISTIC", "ZANET S A", "ZUBILLAGA RODRIGO"];
+
+/* ============================================================
+   DATOS INICIALES (importados de RESUMEN_RESOLUCIONES_GENERAL.xlsx)
+   ============================================================ */
+const DATOS_INICIALES = [{"id": 1, "cliente": "GRUAS SAN BLAS S.A", "producto": "BOBCAT S570", "nroSita": "26000SITA022816J", "fechaInicio": "2026-07-02", "fechaRecibido": "", "paFree": "8429.51.92.000P", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "ADUANA", "ultimaAccion": "LA ANULAMOS PORQUE ESTAMOS A LA ESPERA DE NUEVA INFORMACION DESDE FABRICA", "observaciones": "", "movimientos": [{"fecha": "2026-07-02", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA022816J"}]}, {"id": 2, "cliente": "IRMANI SRL", "producto": "ESTACION DRON", "nroSita": "25000SITA008330D", "fechaInicio": "2025-03-17", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-03-17", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA008330D"}]}, {"id": 3, "cliente": "IRMANI SRL", "producto": "PIZARRA INTERACTIVA", "nroSita": "25000SITA008591M", "fechaInicio": "2025-03-19", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2025-03-19", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA008591M"}]}, {"id": 4, "cliente": "BEDSON S.A", "producto": "FOSBAC", "nroSita": "25000SITA014258J", "fechaInicio": "2025-05-05", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-05-05", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA014258J"}]}, {"id": 5, "cliente": "BEDSON S.A", "producto": "BEDGEN 40 AQUA", "nroSita": "25000SITA014264G", "fechaInicio": "2025-05-05", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-05-05", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA014264G"}]}, {"id": 6, "cliente": "HOGAR Y TECNOLOGÍA S.A.", "producto": "SET DE CUCHILLO", "nroSita": "25000SITA027747Z", "fechaInicio": "2025-07-31", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2025-07-31", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA027747Z"}]}, {"id": 7, "cliente": "BEDSON S.A", "producto": "FOSBAC F200", "nroSita": "25000SITA030981K", "fechaInicio": "2025-08-27", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-08-27", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA030981K"}]}, {"id": 8, "cliente": "BEDSON S.A", "producto": "BEDGEN 40 PREMIX", "nroSita": "25000SITA030983M", "fechaInicio": "2025-08-27", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-08-27", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA030983M"}]}, {"id": 9, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "CONTROLADOR ( MCTRL4K )", "nroSita": "25000SITA017766Z", "fechaInicio": "2025-05-26", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-05-26", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA017766Z"}]}, {"id": 10, "cliente": "LAROCCA NEUMATICOS S.A.", "producto": "NEUMATICO INDUSTRIAL", "nroSita": "25000SITA026956R", "fechaInicio": "2025-07-28", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "ADUANA", "ultimaAccion": "ANULADO POR LA ADUANA SIN MOTIVO", "observaciones": "", "movimientos": [{"fecha": "2025-07-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA026956R"}]}, {"id": 11, "cliente": "BARACK ARGENTINA S.R.L.", "producto": "RECIPIENTE DE GAS LIQUIDO", "nroSita": "25000SITA027640X", "fechaInicio": "2025-07-30", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-07-30", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA027640X"}]}, {"id": 12, "cliente": "INDUTRA SH", "producto": "6ES72141AG400XB0", "nroSita": "25000SITA032142B", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032142B"}]}, {"id": 13, "cliente": "INDUTRA SH", "producto": "6ES71936BP000DA0", "nroSita": "25000SITA032143C", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE PRESENTO DOCUMENTACION ADICIONAL", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032143C"}]}, {"id": 14, "cliente": "INDUTRA SH", "producto": "6ES71326BH010BA0", "nroSita": "25000SITA032146F", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032146F"}]}, {"id": 15, "cliente": "INDUTRA SH", "producto": "6ES7131-6BH01-0BA0", "nroSita": "25000SITA032147G", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032147G"}]}, {"id": 16, "cliente": "INDUTRA SH", "producto": "6AV21232GB030AX0", "nroSita": "25000SITA032148H", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032148H"}]}, {"id": 17, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "PANTALLA LED", "nroSita": "25000SITA033537K", "fechaInicio": "2025-09-12", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-12", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA033537K"}]}, {"id": 18, "cliente": "BEDSON S.A", "producto": "BEDGEN 40 AQUA", "nroSita": "25000SITA030593J", "fechaInicio": "2025-07-24", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-07-24", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA030593J"}]}, {"id": 19, "cliente": "BEDSON S.A", "producto": "FOSBAC F200", "nroSita": "25000SITA030981K", "fechaInicio": "2025-07-24", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "ADUANA", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-07-24", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA030981K"}]}, {"id": 20, "cliente": "INDUTRA SH", "producto": "6ES72411CH301XB0", "nroSita": "25000SITA032345G", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "", "ultimaAccion": "SE PRESENTO DOCUMENTACION ADICIONAL", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032345G"}]}, {"id": 21, "cliente": "INDUTRA SH", "producto": "TM SIWAREX WP321 ST", "nroSita": "25000SITA032133B", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032133B"}]}, {"id": 22, "cliente": "INDUTRA SH", "producto": "IM 155-6 PN BA", "nroSita": "25000SITA032135D", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032135D"}]}, {"id": 23, "cliente": "INDUTRA SH", "producto": "7MH49602AA01", "nroSita": "25000SITA032136E", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032136E"}]}, {"id": 24, "cliente": "INDUTRA SH", "producto": "6ES72231BL320XB0", "nroSita": "25000SITA032139H", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "ANULADA", "responsable": "", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032139H"}]}, {"id": 25, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "TU15-PRO", "nroSita": "26000SITA006566N", "fechaInicio": "2026-03-03", "fechaRecibido": "", "paFree": "8543.70.39.900L", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "PRESENTADA", "responsable": "ADUANA", "ultimaAccion": "Se adjunto la informacion tecnica adicional", "observaciones": "", "movimientos": [{"fecha": "2026-03-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA006566N"}]}, {"id": 26, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "TU20-PRO", "nroSita": "26000SITA006568P", "fechaInicio": "2026-03-03", "fechaRecibido": "", "paFree": "8543.70.39.900L", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "PRESENTADA", "responsable": "ADUANA", "ultimaAccion": "Se adjunto la informacion tecnica adicional", "observaciones": "", "movimientos": [{"fecha": "2026-03-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA006568P"}]}, {"id": 27, "cliente": "ULTRALIGHT SRL", "producto": "R50", "nroSita": "26000SITA006635K", "fechaInicio": "2026-03-04", "fechaRecibido": "", "paFree": "9031.80.99.990G", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "PRESENTADA", "responsable": "ADUANA", "ultimaAccion": "Se adjunto ficha tecnica", "observaciones": "", "movimientos": [{"fecha": "2026-03-04", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA006635K"}]}, {"id": 28, "cliente": "GLOBAL TYRES S.A.", "producto": "225/75R16C 118/116R VANCAP VanContact AP 10PR", "nroSita": "26000SITA015645L", "fechaInicio": "2026-05-13", "fechaRecibido": "", "paFree": "4011.10.00.743W", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "PRESENTADA", "responsable": "ADUANA", "ultimaAccion": "SE ADJUNTO INFORMACION SOLICITADA EL DIA DE HOY 26/05/2026", "observaciones": "", "movimientos": [{"fecha": "2026-05-13", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA015645L"}]}, {"id": 29, "cliente": "GLOBAL TYRES S.A.", "producto": "195/75R16C 107/105R VANCAP VanContact AP 8PR", "nroSita": "26000SITA015655M", "fechaInicio": "2026-05-13", "fechaRecibido": "", "paFree": "4011.10.00.712J", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "PRESENTADA", "responsable": "ADUANA", "ultimaAccion": "SE ADJUNTO INFORMACION SOLICITADA EL DIA DE HOY 26/05/2026", "observaciones": "", "movimientos": [{"fecha": "2026-05-13", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA015655M"}]}, {"id": 30, "cliente": "ULTRALIGHT SRL", "producto": "INSTA360 FLOW 2 PRO", "nroSita": "26000SITA017996W", "fechaInicio": "2026-05-28", "fechaRecibido": "", "paFree": "9620.00.00.000J", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "PRESENTADA", "responsable": "ADUANA", "ultimaAccion": "PIDIERON MUESTRA DEL PRODCUTO HOY 9/6/2026", "observaciones": "", "movimientos": [{"fecha": "2026-05-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA017996W"}]}, {"id": 31, "cliente": "OMNICHANNEL SA", "producto": "AURICULARES BT", "nroSita": "24000SITA011014S", "fechaInicio": "2024-03-04", "fechaRecibido": "", "paFree": "8518.30.00.100U", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "NO SE PRESENTO MUESTRA / HAY RESOLUCIONES DE AURICULARES", "observaciones": "", "movimientos": [{"fecha": "2024-03-04", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA011014S"}]}, {"id": 32, "cliente": "GUASOLDEC S.R.L.", "producto": "LOSETA PET MARBLE SHEET", "nroSita": "24000SITA008168L", "fechaInicio": "2024-02-14", "fechaRecibido": "", "paFree": "3925.90.90.990M", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "RECHAZADO POR PRESENTAR PROFORMA / ESPERANDO FACTURA", "observaciones": "", "movimientos": [{"fecha": "2024-02-14", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA008168L"}]}, {"id": 33, "cliente": "GUASOLDEC S.R.L.", "producto": "LOSETA WALLPANEL FOLLED", "nroSita": "24000SITA008170E", "fechaInicio": "2024-02-14", "fechaRecibido": "", "paFree": "3925.90.90.990M", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "RECHAZADO POR PRESENTAR PROFORMA / ESPERANDO FACTURA", "observaciones": "", "movimientos": [{"fecha": "2024-02-14", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA008170E"}]}, {"id": 34, "cliente": "ULTRALIGHT SRL", "producto": "AEROFIT", "nroSita": "24000SITA047398T", "fechaInicio": "2024-10-07", "fechaRecibido": "", "paFree": "9019.20.90.100M", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2024-10-07", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA047398T"}]}, {"id": 35, "cliente": "ULTRALIGHT SRL", "producto": "PROYECTOR YABER", "nroSita": "24000SITA029258Y", "fechaInicio": "2024-06-26", "fechaRecibido": "", "paFree": "8528.62.00.000A", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2024-06-26", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA029258Y"}]}, {"id": 36, "cliente": "RR CONSTRUCCIONES", "producto": "PLACAS DE POLICARBONATO", "nroSita": "24000SITA029325J", "fechaInicio": "2024-06-26", "fechaRecibido": "", "paFree": "9406.90.90.900E", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "RECHAZADO PORQUE DEBE CLASIFICARSE TODO POR SEPARADO", "observaciones": "", "movimientos": [{"fecha": "2024-06-26", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA029325J"}]}, {"id": 37, "cliente": "INTERMACO SRL", "producto": "REGULADOR DE VOLTAJE", "nroSita": "24000SITA029775S", "fechaInicio": "2024-06-28", "fechaRecibido": "", "paFree": "9032.89.11.900P", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2024-06-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA029775S"}]}, {"id": 38, "cliente": "ULTRALIGHT SRL", "producto": "SMARTWATCH CON ESIM", "nroSita": "24000SITA031664X", "fechaInicio": "2024-07-08", "fechaRecibido": "", "paFree": "8517.13.00.000C", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2024-07-08", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA031664X"}]}, {"id": 39, "cliente": "ALFREDO IGNACIO CORRAL S.A.", "producto": "NEUMATICO INDUSTRIAL CON FLAP", "nroSita": "24000SITA032063C", "fechaInicio": "2024-07-11", "fechaRecibido": "", "paFree": "4011.80.90.100F", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "RECHAZADO PORQUE DEBE CLASIFICARSE TODO POR SEPARADO", "observaciones": "", "movimientos": [{"fecha": "2024-07-11", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA032063C"}]}, {"id": 40, "cliente": "ALFREDO IGNACIO CORRAL S.A.", "producto": "NEUMATICO AGRICOLA CON FLAP", "nroSita": "24000SITA032065E", "fechaInicio": "2024-07-11", "fechaRecibido": "", "paFree": "4011.70.10.270R", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "RECHAZADO PORQUE DEBE CLASIFICARSE TODO POR SEPARADO", "observaciones": "", "movimientos": [{"fecha": "2024-07-11", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA032065E"}]}, {"id": 41, "cliente": "HOGAR Y TECNOLOGÍA S.A.", "producto": "HORNO Y ANAFE", "nroSita": "24000SITA032533E", "fechaInicio": "2024-07-15", "fechaRecibido": "", "paFree": "8516.60.00.300K", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "RECHAZADO PORQUE DEBE CLASIFICARSE TODO POR SEPARADO", "observaciones": "", "movimientos": [{"fecha": "2024-07-15", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA032533E"}]}, {"id": 42, "cliente": "WILDONA SRL", "producto": "DUMMY - GPS", "nroSita": "24000SITA033165G", "fechaInicio": "2024-07-17", "fechaRecibido": "", "paFree": "3926.90.90.999A", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "NO SE CLASIFICAN PORQUE TIENE NCM PROPIA", "observaciones": "", "movimientos": [{"fecha": "2024-07-17", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA033165G"}]}, {"id": 43, "cliente": "OMNICHANNEL SA", "producto": "PSVR2 - KIT PLAYSTATION", "nroSita": "24000SITA034671J", "fechaInicio": "2024-07-25", "fechaRecibido": "", "paFree": "9504.50.00.919C", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "RECHAZADO POR CLASIFICARSE TODO POR SEPARADO", "observaciones": "", "movimientos": [{"fecha": "2024-07-25", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA034671J"}]}, {"id": 44, "cliente": "ULTRALIGHT SRL", "producto": "BOQUILLA AIROFIT", "nroSita": "24000SITA035125E", "fechaInicio": "2024-07-29", "fechaRecibido": "", "paFree": "9019.20.90.900F", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2024-07-29", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA035125E"}]}, {"id": 45, "cliente": "START.AR S. A.", "producto": "DISCO SSD M2", "nroSita": "24000SITA034987T", "fechaInicio": "2024-07-29", "fechaRecibido": "", "paFree": "8471.70.40.900W", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "EL CLIENTE NO PRESENTO UNA MUESTRA", "observaciones": "", "movimientos": [{"fecha": "2024-07-29", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA034987T"}]}, {"id": 46, "cliente": "GRUAS SAN BLAS S.A", "producto": "SM4256 TRACTOR", "nroSita": "24000SITA036223E", "fechaInicio": "2024-08-05", "fechaRecibido": "", "paFree": "8701.94.90.100C", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "FREE CUSTOMS", "ultimaAccion": "LA ADUANA PIDIO HOJA SELLADA", "observaciones": "", "movimientos": [{"fecha": "2024-08-05", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA036223E"}]}, {"id": 47, "cliente": "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "producto": "PAITING ROOM", "nroSita": "24000SITA035811G", "fechaInicio": "2024-08-01", "fechaRecibido": "", "paFree": "9406.90.90.990E", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-08-01", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA035811G"}]}, {"id": 48, "cliente": "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "producto": "MAQUINA PARA HACER BAJANTES", "nroSita": "24000SITA047297R", "fechaInicio": "2024-10-07", "fechaRecibido": "", "paFree": "8462.25.00.000V", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-10-07", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA047297R"}]}, {"id": 49, "cliente": "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "producto": "MÁQUINA DE SOLDAR", "nroSita": "24000SITA035835M", "fechaInicio": "2024-08-01", "fechaRecibido": "", "paFree": "8515.31.10.000E", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-08-01", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA035835M"}]}, {"id": 50, "cliente": "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "producto": "MÁQUINA DE COSER", "nroSita": "24000SITA047296Z", "fechaInicio": "2024-10-07", "fechaRecibido": "", "paFree": "8479.89.99.900H", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-10-07", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA047296Z"}]}, {"id": 51, "cliente": "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "producto": "LINEA DE PRODUCCIÓN HORIZONTAL", "nroSita": "24000SITA035841J", "fechaInicio": "2024-08-01", "fechaRecibido": "", "paFree": "8479.89.99.900H", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-08-01", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA035841J"}]}, {"id": 52, "cliente": "RR CONSTRUCCIONES", "producto": "INDUSTRIAL DOOR OPERATOR.", "nroSita": "24000SITA035752K", "fechaInicio": "2024-08-01", "fechaRecibido": "", "paFree": "7308.30.00.100B", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-08-01", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA035752K"}]}, {"id": 53, "cliente": "RR CONSTRUCCIONES", "producto": "INDUSTRIAL DOOR OPERATOR.", "nroSita": "24000SITA040482G", "fechaInicio": "2024-08-28", "fechaRecibido": "", "paFree": "7308.30.00.100B", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-08-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA040482G"}]}, {"id": 54, "cliente": "GUASOLDEC S.R.L.", "producto": "TOTEM", "nroSita": "24000SITA041514D", "fechaInicio": "2024-09-04", "fechaRecibido": "", "paFree": "8528.59.00.900U", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-09-04", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA041514D"}]}, {"id": 55, "cliente": "BIONERTEC SA", "producto": "PACK CIRUGIA", "nroSita": "24000SITA046484Y", "fechaInicio": "2024-10-02", "fechaRecibido": "", "paFree": "6210.10.00.111L", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-10-02", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA046484Y"}]}, {"id": 56, "cliente": "UNITS SUDAMERICANA", "producto": "OXIDO DE MAGNESIO", "nroSita": "24000SITA046511F", "fechaInicio": "2024-10-02", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-10-02", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA046511F"}]}, {"id": 57, "cliente": "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "producto": "MOTOR AC800", "nroSita": "24000SITA048478T", "fechaInicio": "2024-10-15", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-10-15", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA048478T"}]}, {"id": 58, "cliente": "TEODORO FUCILE TALLERES INDUSTRIALES S.A.", "producto": "UPS", "nroSita": "24000SITA048480M", "fechaInicio": "2024-10-15", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "NO SE CLASIFICA PORQUE TIENE NCM PROPIA", "observaciones": "", "movimientos": [{"fecha": "2024-10-15", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA048480M"}]}, {"id": 59, "cliente": "HIKVISION", "producto": "STORAGE", "nroSita": "24000SITA056227K", "fechaInicio": "2024-12-18", "fechaRecibido": "", "paFree": "8471.70.90.000W", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2024-12-18", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA056227K"}]}, {"id": 60, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "MODULO", "nroSita": "25000SITA008686R", "fechaInicio": "2025-03-19", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "FALTA FACTURA COMERCIAL", "observaciones": "", "movimientos": [{"fecha": "2025-03-19", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA008686R"}]}, {"id": 61, "cliente": "BEDSON S.A", "producto": "APIREX NF = SALICIREX-C", "nroSita": "25000SITA014266X", "fechaInicio": "2025-05-05", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-05-05", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA014266X"}]}, {"id": 62, "cliente": "INDUTRA SH", "producto": "6ES71936BP000BA0", "nroSita": "25000SITA032145E", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032145E"}]}, {"id": 63, "cliente": "BEDSON S.A", "producto": "BEDGEN 40 PREMIX", "nroSita": "25000SITA030983M", "fechaInicio": "2025-07-24", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "SE SOLICITÓ INFORMACIÓN ADICIONAL AL CLIENTE Y NO HUBO RESPUESTA", "observaciones": "", "movimientos": [{"fecha": "2025-07-24", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA030983M"}]}, {"id": 64, "cliente": "INDUTRA SH", "producto": "6ES72411CH301XB0", "nroSita": "25000SITA032137F", "fechaInicio": "2025-09-03", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "", "ultimaAccion": "INVESTIGANDO EL MOTIVO DEL RECHAZO", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032137F"}]}, {"id": 65, "cliente": "GRUAS SAN BLAS S.A", "producto": "BOBCAT S570", "nroSita": "25000SITA043657Y", "fechaInicio": "2025-11-06", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "RECHAZADO PORQUE SEGUN ADUANA YA CUENTA CON CLASIFICACION DE LA OMA", "observaciones": "", "movimientos": [{"fecha": "2025-11-06", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA043657Y"}]}, {"id": 66, "cliente": "GRUAS SAN BLAS S.A", "producto": "BOBCAT S570", "nroSita": "25000SITA044582M", "fechaInicio": "2025-11-14", "fechaRecibido": "", "paFree": "", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "FREE CUSTOMS", "ultimaAccion": "ADUANA PIDE LAS FOTOGRAFIAS QUE ILUSTREN COMO SE PRESENTA LA MERCADERIA A DESPACHO", "observaciones": "", "movimientos": [{"fecha": "2025-11-14", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA044582M"}]}, {"id": 67, "cliente": "BARACK ARGENTINA S.R.L.", "producto": "RECIPIENTE DE GAS LIQUIDO", "nroSita": "26000SITA002656J", "fechaInicio": "2026-01-26", "fechaRecibido": "", "paFree": "3926.30.10.000J", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "SE RECHAZO POR INCORRECTA PRESENTACION", "observaciones": "", "movimientos": [{"fecha": "2026-01-26", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA002656J"}]}, {"id": 68, "cliente": "ULTRALIGHT SRL", "producto": "BLAZE", "nroSita": "26000SITA002873K", "fechaInicio": "2026-01-27", "fechaRecibido": "", "paFree": "8517.62.77.000H", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "SE RECHAZO POR FALTA DE MODELO Y MARCA EN FC Y FORMULARIO", "observaciones": "", "movimientos": [{"fecha": "2026-01-27", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA002873K"}]}, {"id": 69, "cliente": "ULTRALIGHT SRL", "producto": "MANDO VISTA PREVIA INSTA 360", "nroSita": "26000SITA018001A", "fechaInicio": "2026-05-28", "fechaRecibido": "", "paFree": "8526.92.00.000F", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "CLIENTE", "ultimaAccion": "NO SE PRESENTO  MUESTRA NI MAS INFORMACION POR PARTE DEL CLIENTE", "observaciones": "", "movimientos": [{"fecha": "2026-05-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA018001A"}]}, {"id": 70, "cliente": "ULTRALIGHT SRL", "producto": "SOPORTE PARA CAMARA INSTA360", "nroSita": "26000SITA018009X", "fechaInicio": "2026-05-28", "fechaRecibido": "", "paFree": "8529.90.90.000A", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "LA PRESENTACION NO SE AJUSTA A LO NORMADO POR LA RESOLUCION GENERAL N5473/2023 AFIP", "observaciones": "", "movimientos": [{"fecha": "2026-05-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA018009X"}]}, {"id": 71, "cliente": "ULTRALIGHT SRL", "producto": "ALTAVOCES MARINOS JL", "nroSita": "26000SITA018030C", "fechaInicio": "2026-05-28", "fechaRecibido": "", "paFree": "8518.21.00.900K", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "LA PRESENTACION NO SE AJUSTA A LO NORMADO POR LA RESOLUCION GENERAL N5473/2023 AFIP", "observaciones": "", "movimientos": [{"fecha": "2026-05-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA018030C"}]}, {"id": 72, "cliente": "FLUX ARGENTINA SRL", "producto": "CHROMECAST", "nroSita": "24000SITA008772M", "fechaInicio": "2024-02-19", "fechaRecibido": "2024-04-19", "paFree": "8528.62.00.000A", "tributosFree": "DE: 0%\n TE: 0%\n IVA: 10,5%", "paAduana": "8528.71.90.000Q", "tributosAduana": "DE: 20%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-02-19", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA008772M"}, {"fecha": "2024-04-19", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 73, "cliente": "ULTRALIGHT SRL", "producto": "ANTIPARRAS", "nroSita": "24000SITA009560X", "fechaInicio": "2024-02-22", "fechaRecibido": "2024-04-09", "paFree": "8517.62.72.900U", "tributosFree": "DE: 0%\n TE: 0%\n IVA: 10,5%", "paAduana": "9004.90.90.900R", "tributosAduana": "DE: 18%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-02-22", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA009560X"}, {"fecha": "2024-04-09", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 74, "cliente": "ONMILIFE", "producto": "SHAKE SUPLEMENTO", "nroSita": "24000SITA007424F", "fechaInicio": "2024-02-22", "fechaRecibido": "2024-03-25", "paFree": "1806.90.00.990C", "tributosFree": "DE: 20%\n TE: 3%\n IVA: 21%", "paAduana": "1806.90.00.990C", "tributosAduana": "DE: 20%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-02-22", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA007424F"}, {"fecha": "2024-03-25", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 75, "cliente": "GRUAS SAN BLAS S.A", "producto": "PLATAFORMA AUTOMOTRIZ 180 ATJ", "nroSita": "24000SITA010078E", "fechaInicio": "2024-02-26", "fechaRecibido": "2024-04-12", "paFree": "8426.41.90.000E", "tributosFree": "DE: 2%\n TE: 0%\n IVA: 10,5%", "paAduana": "8427.20.90.190T", "tributosAduana": "DE: 12,6%\n TE: 0%\n IVA: 10,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-02-26", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA010078E"}, {"fecha": "2024-04-12", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 76, "cliente": "GRUAS SAN BLAS S.A", "producto": "MT732", "nroSita": "24000SITA010157C", "fechaInicio": "2024-02-27", "fechaRecibido": "2024-04-09", "paFree": "8426.41.90.000E", "tributosFree": "DE: 2%\n TE: 0%\n IVA: 10,5%", "paAduana": "8427.20.90.390D", "tributosAduana": "DE: 12,6%\n TE: 0%\n IVA: 10,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-02-27", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA010157C"}, {"fecha": "2024-04-09", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 77, "cliente": "ALFREDO IGNACIO CORRAL S.A.", "producto": "NEUMATICO CAMARA PEGADA", "nroSita": "24000SITA020826G", "fechaInicio": "2024-05-03", "fechaRecibido": "2024-05-13", "paFree": "4011.20.90.450D", "tributosFree": "DE: 16%\n TE: 3%\n IVA: 21%", "paAduana": "4011.20.90.450D", "tributosAduana": "DE: 16%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-05-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA020826G"}, {"fecha": "2024-05-13", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 78, "cliente": "ULTRALIGHT SRL", "producto": "PEDAL CON SENSOR", "nroSita": "24000SITA022861H", "fechaInicio": "2024-05-16", "fechaRecibido": "2024-06-16", "paFree": "9031.80.99.990G", "tributosFree": "DE: 12,6%\n TE: 0%\n IVA: 10,5%", "paAduana": "8714.96.90.000X", "tributosAduana": "DE: 16%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-05-16", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA022861H"}, {"fecha": "2024-06-16", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 79, "cliente": "INTERMACO SRL", "producto": "QNAP", "nroSita": "24000SITA030929L", "fechaInicio": "2024-07-04", "fechaRecibido": "2024-08-07", "paFree": "8471.50.90.000T", "tributosFree": "DE: 0%\n TE: 10,5%\n IVA: 10%", "paAduana": "8471.50.90.000T", "tributosAduana": "DE: 0%\n TE: 10,5%\n IVA: 10%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-07-04", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA030929L"}, {"fecha": "2024-08-07", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 80, "cliente": "INTERMACO SRL", "producto": "DISCO EXTERNO SSD", "nroSita": "24000SITA033782L", "fechaInicio": "2024-07-22", "fechaRecibido": "2024-10-04", "paFree": "8471.70.40.900W", "tributosFree": "DE: 0%\n TE: 0%\n IVA: 10,5%", "paAduana": "8523.51.90.000V", "tributosAduana": "DE: 35%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-07-22", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA033782L"}, {"fecha": "2024-10-04", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 81, "cliente": "ULTRALIGHT SRL", "producto": "ROBOT MIKO IA", "nroSita": "24000SITA034364X", "fechaInicio": "2024-07-24", "fechaRecibido": "2024-10-01", "paFree": "9503.00.97.990L", "tributosFree": "DE: 20%\n TE: 3%\n IVA: 21%", "paAduana": "9503.00.39.919L", "tributosAduana": "DE: 20%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-07-24", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA034364X"}, {"fecha": "2024-10-01", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 82, "cliente": "GRUAS SAN BLAS S.A", "producto": "SM4206 TRACTOR", "nroSita": "24000SITA036224F", "fechaInicio": "2024-08-05", "fechaRecibido": "2024-09-10", "paFree": "8701.94.90.100C", "tributosFree": "DE: 14%\n TE: 0%\n IVA: 10,5%", "paAduana": "8701.94.90.100C", "tributosAduana": "DE: 14%\n TE: 0%\n IVA: 10,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-08-05", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA036224F"}, {"fecha": "2024-09-10", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 83, "cliente": "OMNICHANNEL SA", "producto": "MONITOR PORTATIL", "nroSita": "24000SITA037273K", "fechaInicio": "2024-08-12", "fechaRecibido": "2024-09-23", "paFree": "8528.59.00.900U", "tributosFree": "DE: 20%\n TE: 3%\n IVA: 21%", "paAduana": "8528.59.00.900U", "tributosAduana": "DE: 20%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2024-08-12", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 24000SITA037273K"}, {"fecha": "2024-09-23", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 84, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "CONTROLADOR MCTRL4K", "nroSita": "26000SITA000101P", "fechaInicio": "2025-01-02", "fechaRecibido": "2026-05-11", "paFree": "8543.70.39.900L", "tributosFree": "DE: 0%\n TE: 10,5%\n IVA: 10%", "paAduana": "8517.62.59.000D", "tributosAduana": "DE: 0%\n TE: 10,5%\n IVA: 10%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-01-02", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA000101P"}, {"fecha": "2026-05-11", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 85, "cliente": "GRUAS SAN BLAS S.A", "producto": "TRACTOR ELECTRICO AEROPUERTO", "nroSita": "25000SITA000837H", "fechaInicio": "2025-01-09", "fechaRecibido": "2025-03-31", "paFree": "8709.11.00.000H", "tributosFree": "DE: 2%\n TE: 0%\n IVA: 10,5%", "paAduana": "8709.11.00.000H", "tributosAduana": "DE: 2%\n TE: 0%\n IVA: 10,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-01-09", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA000837H"}, {"fecha": "2025-03-31", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 86, "cliente": "LAROCCA NEUMATICOS S.A.", "producto": "LAVADORA DE AUTOS AUTOMATICA", "nroSita": "25000SITA008339M", "fechaInicio": "2025-03-17", "fechaRecibido": "2025-06-26", "paFree": "8424.89.90.900U", "tributosFree": "DE: 12,6%\n TE: 0%\n IVA: 10,5%", "paAduana": "8479.89.99.900H", "tributosAduana": "DE: 12,6%\n TE: 0%\n IVA: 10,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-03-17", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA008339M"}, {"fecha": "2025-06-26", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 87, "cliente": "AKRIBIS S.R.L.", "producto": "MAQUINA DE HUMEDAD", "nroSita": "25000SITA012928L", "fechaInicio": "2025-04-23", "fechaRecibido": "2025-08-13", "paFree": "8479.89.99.900H", "tributosFree": "DE: 12,6%\n TE: 0%\n IVA: 10,5%", "paAduana": "8479.89.99.900H", "tributosAduana": "DE: 12,6%\n TE: 0%\n IVA: 10,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-04-23", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA012928L"}, {"fecha": "2025-08-13", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 88, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "TU15-PRO", "nroSita": "26000SITA003510W", "fechaInicio": "2026-02-02", "fechaRecibido": "", "paFree": "8543.70.39.900L", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "ADUANA MENCIONA INCONSISTENCIAS EN LA INFORMACION BRINDADA", "observaciones": "", "movimientos": [{"fecha": "2026-02-02", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA003510W"}]}, {"id": 89, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "TU20-PRO", "nroSita": "26000SITA003518H", "fechaInicio": "2026-02-02", "fechaRecibido": "", "paFree": "8543.70.39.900L", "tributosFree": "", "paAduana": "", "tributosAduana": "", "estado": "RECHAZADA", "responsable": "ADUANA", "ultimaAccion": "ADUANA MENCIONA INCONSISTENCIAS EN LA INFORMACION BRINDADA", "observaciones": "", "movimientos": [{"fecha": "2026-02-02", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA003518H"}]}, {"id": 90, "cliente": "BEDSON S.A", "producto": "FOSBAC PLUS T", "nroSita": "25000SITA013528X", "fechaInicio": "2025-04-28", "fechaRecibido": "2025-06-24", "paFree": "3004.20.29.900Q", "tributosFree": "DE: 7,2%\n TE: 3%\n IVA: 21%", "paAduana": "3004.20.99.900J", "tributosAduana": "DE: 7,2%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-04-28", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA013528X"}, {"fecha": "2025-06-24", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 91, "cliente": "BEDSON S.A", "producto": "BEDGEN 40 SFA CONCENTRADO", "nroSita": "25000SITA014261D", "fechaInicio": "2025-05-05", "fechaRecibido": "2025-09-24", "paFree": "2309.90.90.991Z", "tributosFree": "DE: 20%\n TE: 3%\n IVA: 21%", "paAduana": "2309.90.90.999R", "tributosAduana": "DE: 20%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-05-05", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA014261D"}, {"fecha": "2025-09-24", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 92, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "MODULOS", "nroSita": "25000SITA016185K", "fechaInicio": "2025-05-15", "fechaRecibido": "2025-11-17", "paFree": "8528.59.00.900U", "tributosFree": "DE: 20%\n TE: 3%\n IVA: 21%", "paAduana": "8524.99.00.000C", "tributosAduana": "DE: 0%\n TE: 0%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-05-15", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA016185K"}, {"fecha": "2025-11-17", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 93, "cliente": "BEDSON S.A", "producto": "BEDGEN 40 SFA CONCENTRADO", "nroSita": "25000SITA014261D", "fechaInicio": "2025-07-24", "fechaRecibido": "2025-09-24", "paFree": "2309.90.90.991Z", "tributosFree": "DE: 20%\n TE: 3%\n IVA: 21%", "paAduana": "2309.90.90.999R", "tributosAduana": "DE: 20%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-07-24", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA014261D"}, {"fecha": "2025-09-24", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 94, "cliente": "INDUTRA SH", "producto": "TURBINA REGENERATIVA", "nroSita": "25000SITA031976P", "fechaInicio": "2025-09-03", "fechaRecibido": "2025-11-14", "paFree": "8414.59.90.900F", "tributosFree": "DE: 12,6%\n TE: 0%\n IVA: 21%", "paAduana": "8414.59.90.900F", "tributosAduana": "DE: 12,6%\n TE: 0%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA031976P"}, {"fecha": "2025-11-14", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 95, "cliente": "INTERMACO SRL", "producto": "MONITOR PC", "nroSita": "25000SITA032018D", "fechaInicio": "2025-09-03", "fechaRecibido": "2025-10-21", "paFree": "8528.52.00.200X", "tributosFree": "DE: 0%\n TE: 0%\n IVA: 21%", "paAduana": "8528.59.00.390Q", "tributosAduana": "DE: 20%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-09-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA032018D"}, {"fecha": "2025-10-21", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 96, "cliente": "LAROCCA NEUMATICOS S.A.", "producto": "NEUMATICO MIX", "nroSita": "25000SITA038961Z", "fechaInicio": "2025-10-14", "fechaRecibido": "2025-11-18", "paFree": "4011.80.90.900Z", "tributosFree": "DE: 16%\n TE: 3%\n IVA: 21%", "paAduana": "4011.20.90.722P", "tributosAduana": "DE: 16%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-10-14", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA038961Z"}, {"fecha": "2025-11-18", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 97, "cliente": "SEIS ERRE ALIMENTOS S.A.", "producto": "PIMIENTA NEGRA ROTA", "nroSita": "25000SITA044807M", "fechaInicio": "2025-11-14", "fechaRecibido": "2025-12-22", "paFree": "0904.11.00.100P", "tributosFree": "DE: 9%\n TE: 3%\n IVA: 21%", "paAduana": "0904.11.00.100P", "tributosAduana": "DE: 9%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2025-11-14", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 25000SITA044807M"}, {"fecha": "2025-12-22", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 98, "cliente": "ULTRALIGHT SRL", "producto": "BLAZE", "nroSita": "26000SITA003358J", "fechaInicio": "2026-01-30", "fechaRecibido": "2026-07-10", "paFree": "8517.62.77.000H", "tributosFree": "DIE:0%\nTE:0%\nIVA:10,5%\nIVA ADIC:10%\nGanancias:6%\nIngresos Brutos:2,5%", "paAduana": "8517.62.72.900U", "tributosAduana": "DIE:0%\nTE:0%\nIVA:10,5%\nIVA ADIC:10%\nGanancias:6%\nIngresos Brutos:2,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2026-01-30", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA003358J"}, {"fecha": "2026-07-10", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 99, "cliente": "GUASOLDEC S.R.L.", "producto": "LWSTO01", "nroSita": "26000SITA004656L", "fechaInicio": "2026-02-12", "fechaRecibido": "2026-03-17", "paFree": "3918.10.00.110B", "tributosFree": "DE: 16%\n TE: 3%\n IVA: 21%", "paAduana": "3918.10.00.200D", "tributosAduana": "DE: 16%\n TE: 3%\n IVA: 21%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2026-02-12", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA004656L"}, {"fecha": "2026-03-17", "tipo": "Resolución recibida", "detalle": ""}]}, {"id": 100, "cliente": "MAXTERVISION TEAM S.R.L.", "producto": "MCTRL300", "nroSita": "26000SITA006602E", "fechaInicio": "2026-03-03", "fechaRecibido": "2026-06-29", "paFree": "8517.62.59.000D", "tributosFree": "DIE:0%\nTE:0%\nIVA:10,5%\nIVA ADIC:10%\nGanancias:6%\nIngresos Brutos:2,5%", "paAduana": "8517.62.59.000D", "tributosAduana": "DIE:0%\nTE:0%\nIVA:10,5%\nIVA ADIC:10%\nGanancias:6%\nIngresos Brutos:2,5%", "estado": "RESUELTA", "responsable": "", "ultimaAccion": "", "observaciones": "", "movimientos": [{"fecha": "2026-03-03", "tipo": "Presentación", "detalle": "Presentación de solicitud SITA 26000SITA006602E"}, {"fecha": "2026-06-29", "tipo": "Resolución recibida", "detalle": ""}]}];
+
+/* ============================================================
+   ESTADO DE LA APLICACIÓN
+   ============================================================ */
+const CLAVE_LS = "ra_sita_expedientes_v4";
+let expedientes = cargarDatos();
+let orden = {campo:"fechaInicio", asc:false};
+let detalleActual = null;
+let editandoId = null;
+let charts = {};
+let filaExpandida = null;
+let gruposAbiertos = {"PRESENTADA":true,"RESUELTA":false,"RECHAZADA":false,"ANULADA":false};
+
+/* Convierte estados en masculino (versiones anteriores / JSON viejos) al femenino */
+const MIGRA_ESTADOS = {"PRESENTADO":"PRESENTADA","RESUELTO":"RESUELTA","RECHAZADO":"RECHAZADA","ANULADO":"ANULADA"};
+function normalizarEstados(arr){
+  arr.forEach(e=>{ if(MIGRA_ESTADOS[e.estado]) e.estado = MIGRA_ESTADOS[e.estado]; });
+  return arr;
+}
+
+function cargarDatos(){
+  try{
+    const guardado = localStorage.getItem(CLAVE_LS);
+    if(guardado) return normalizarEstados(JSON.parse(guardado));
+  }catch(e){}
+  return JSON.parse(JSON.stringify(DATOS_INICIALES));
+}
+function persistir(){
+  try{ localStorage.setItem(CLAVE_LS, JSON.stringify(expedientes)); }catch(e){}
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function hoyISO(){ return new Date().toISOString().slice(0,10); }
+function fmtFecha(iso){
+  if(!iso) return "—";
+  const [a,m,d] = iso.split("-");
+  return `${d}/${m}/${a}`;
+}
+function diasTramite(e){
+  if(!e.fechaInicio) return null;
+  const esFinal = (ESTADOS[e.estado]||{}).final;
+  let fin;
+  if(esFinal){
+    if(e.fechaRecibido) fin = e.fechaRecibido;
+    else{
+      const movsFin = (e.movimientos||[]).filter(m=>m.fecha && m.tipo!=="Presentación").map(m=>m.fecha).sort();
+      fin = movsFin.length ? movsFin[movsFin.length-1] : null;
+    }
+    if(!fin) return null; // finalizado sin fecha de cierre conocida
+  }else{
+    fin = hoyISO();
+  }
+  return Math.max(0, Math.round((new Date(fin) - new Date(e.fechaInicio)) / 86400000));
+}
+/* Fecha de último estado: dato manual; si no existe y el estado es PRESENTADO,
+   se toma la fecha de presentación. Para estados finales sin dato manual,
+   se usa la fecha de recibido si existe. */
+function fechaUltimoEstado(e){
+  if(e.fechaUltimoEstado) return e.fechaUltimoEstado;
+  if(e.estado==="PRESENTADA") return e.fechaInicio || "";
+  return e.fechaRecibido || "";
+}
+
+/* Días hábiles (lun-vie, sin feriados de FERIADOS) desde una fecha hasta hoy */
+function diasHabilesDesde(desdeISO){
+  if(!desdeISO) return null;
+  const hoy = hoyISO();
+  if(desdeISO >= hoy) return 0;
+  let n = 0;
+  const d = new Date(desdeISO+"T12:00:00");
+  const fin = new Date(hoy+"T12:00:00");
+  while(d < fin){
+    d.setDate(d.getDate()+1);
+    const dow = d.getDay();
+    const iso = d.toISOString().slice(0,10);
+    if(dow!==0 && dow!==6 && !FERIADOS.includes(iso)) n++;
+  }
+  return n;
+}
+
+function ultimoMovimiento(e){
+  if(!e.movimientos || !e.movimientos.length) return null;
+  return [...e.movimientos].sort((a,b)=> (a.fecha<b.fecha?1:-1))[0];
+}
+function esc(t){
+  return String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function badgeEstado(estado){
+  const color = (ESTADOS[estado]||{}).color || "#64748b";
+  return `<span class="estado" style="background:${color}">${esc(estado)}</span>`;
+}
+
+/* ============================================================
+   TABS Y ROLES
+   ============================================================ */
+function cambiarTab(nombre){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("activa", t.dataset.tab===nombre));
+  document.getElementById("tab-expedientes").style.display = nombre==="expedientes" ? "" : "none";
+  document.getElementById("tab-estadisticas").style.display = nombre==="estadisticas" ? "" : "none";
+  if(nombre==="estadisticas") renderEstadisticas();
+}
+function aplicarRol(){
+  if(MODO_SOLO_LECTURA){
+    document.querySelectorAll(".solo-editor").forEach(el=>el.style.display="none");
+    document.getElementById("badgeRol").textContent = "Solo lectura";
+    document.getElementById("avisoLectura").style.display = "block";
+  }
+}
+
+/* ============================================================
+   TABLA
+   ============================================================ */
+function poblarFiltros(){
+  const selE = document.getElementById("filtroEstado");
+  const valE = selE.value;
+  selE.innerHTML = '<option value="">Todos los estados</option>' +
+    Object.keys(ESTADOS).map(e=>`<option>${esc(e)}</option>`).join("");
+  selE.value = valE;
+
+  const selC = document.getElementById("filtroCliente");
+  const valC = selC.value;
+  const clientesData = [...new Set(expedientes.map(e=>e.cliente).filter(Boolean))].sort();
+  selC.innerHTML = '<option value="">Todos los clientes</option>' +
+    clientesData.map(c=>`<option>${esc(c)}</option>`).join("");
+  selC.value = valC;
+
+  // selects de formularios
+  const opcionesEstados = Object.keys(ESTADOS).map(e=>`<option>${esc(e)}</option>`).join("");
+  document.getElementById("f_estado").innerHTML = opcionesEstados;
+  document.getElementById("m_estado").innerHTML = '<option value="">— Sin cambio —</option>' + opcionesEstados;
+
+  // desplegable de clientes del alta: listado oficial + los ya cargados
+  const todosClientes = [...new Set([...CLIENTES, ...clientesData])].sort();
+  document.getElementById("f_cliente").innerHTML = '<option value="">— Seleccionar cliente —</option>' +
+    todosClientes.map(c=>`<option>${esc(c)}</option>`).join("");
+}
+
+function expedientesFiltrados(){
+  const q = document.getElementById("buscador").value.toLowerCase().trim();
+  const fe = document.getElementById("filtroEstado").value;
+  const fc = document.getElementById("filtroCliente").value;
+  return expedientes.filter(e=>{
+    if(fe && e.estado!==fe) return false;
+    if(fc && e.cliente!==fc) return false;
+    if(!q) return true;
+    return [e.nroSita,e.cliente,e.producto,e.paFree,e.paAduana,e.ultimaAccion,e.responsable,e.observaciones]
+      .some(v => String(v??"").toLowerCase().includes(q));
+  });
+}
+
+let ordenManual = false; // pasa a true cuando el usuario elige una columna
+function ordenarPor(campo){
+  if(orden.campo===campo) orden.asc = !orden.asc;
+  else orden = {campo, asc:true};
+  ordenManual = true;
+  renderTabla();
+}
+
+/* Orden por defecto del grupo RESUELTA: aprobaciones más antiguas primero */
+function comparadorResuelta(a,b){
+  const fa = fechaUltimoEstado(a) || "9999";
+  const fb = fechaUltimoEstado(b) || "9999";
+  return fa<fb ? -1 : fa>fb ? 1 : 0;
+}
+
+/* Días corridos desde una fecha hasta hoy */
+function diasCorridosDesde(desdeISO){
+  if(!desdeISO) return null;
+  return Math.round((new Date(hoyISO()+"T12:00:00") - new Date(desdeISO+"T12:00:00")) / 86400000);
+}
+
+/* Valor de la columna "Días": hábiles transcurridos, salvo RESUELTA,
+   donde son los días que restan hasta el vencimiento (3 años). */
+function valorDias(e){
+  const f = fechaUltimoEstado(e);
+  if(!f) return null;
+  if(e.estado==="RESUELTA") return VALIDEZ_DIAS - diasCorridosDesde(f);
+  return diasHabilesDesde(f);
+}
+
+/* Valor mostrado: en RESUELTA es cuenta regresiva (con signo negativo delante;
+   pasa a positivo una vez vencida) */
+function valorDiasMostrar(e){
+  const v = valorDias(e);
+  if(v===null) return null;
+  return e.estado==="RESUELTA" ? -v : v;
+}
+
+function toggleGrupo(estado){
+  gruposAbiertos[estado] = !gruposAbiertos[estado];
+  renderTabla();
+}
+function toggleFila(id){
+  filaExpandida = (filaExpandida===id) ? null : id;
+  renderTabla();
+}
+
+function comparador(a,b){
+  let va, vb;
+  if(orden.campo==="dias"){ va = valorDias(a) ?? -99999; vb = valorDias(b) ?? -99999; }
+  else if(orden.campo==="fUltEstado"){ va = fechaUltimoEstado(a); vb = fechaUltimoEstado(b); }
+  else { va = String(a[orden.campo]??"").toLowerCase(); vb = String(b[orden.campo]??"").toLowerCase(); }
+  if(va<vb) return orden.asc?-1:1;
+  if(va>vb) return orden.asc?1:-1;
+  return 0;
+}
+
+function filaHTML(e){
+  const fUlt = fechaUltimoEstado(e);
+  const d = valorDias(e);
+  const dMostrar = valorDiasMostrar(e);
+  let claseDias = "";
+  if(d!==null){
+    if(e.estado==="PRESENTADA"){
+      claseDias = "dias-negrita";
+    }else if(e.estado==="RESUELTA" && d<DIAS_VENCIMIENTO_ALERTA){
+      claseDias = "dias-alerta";
+    }
+  }
+  return `<tr onclick="toggleFila(${e.id})">
+    <td class="mono">${esc(e.nroSita)||"—"}</td>
+    <td>${badgeEstado(e.estado)}</td>
+    <td>${esc(e.cliente)}</td>
+    <td>${esc(e.producto)}</td>
+    <td>${fmtFecha(e.fechaInicio)}</td>
+    <td>${fmtFecha(fUlt)}</td>
+    <td class="${claseDias}">${dMostrar===null?"—":dMostrar}</td>
+    <td class="mono">${esc(e.paFree)||"—"}</td>
+    <td class="mono">${esc(e.paAduana)||"—"}</td>
+  </tr>`;
+}
+
+function detalleInlineHTML(e){
+  return `<tr class="fila-detalle"><td colspan="9">
+    <div class="det-inline">
+      <div class="dato"><div class="k">Tributos PA Free</div><div class="v">${esc(e.tributosFree)||"—"}</div></div>
+      <div class="dato"><div class="k">Tributos Aduana</div><div class="v">${esc(e.tributosAduana)||"—"}</div></div>
+      <div class="dato"><div class="k">Observaciones</div><div class="v">${esc(e.observaciones)||"—"}</div></div>
+      <div class="dato"><div class="k">Detalle de observaciones</div><div class="v">${esc(e.ultimaAccion)||"—"}</div></div>
+    </div>
+    <div class="det-acciones">
+      <button class="btn btn-chico" onclick="abrirDetalle(${e.id});event.stopPropagation()">Ficha completa y movimientos</button>
+      <button class="btn btn-chico solo-editor" onclick="detalleActual=${e.id};editarDesdeDetalle();event.stopPropagation()">Editar</button>
+      <button class="btn btn-chico btn-peligro solo-editor" onclick="detalleActual=${e.id};eliminarExpediente();event.stopPropagation()">Eliminar</button>
+    </div>
+  </td></tr>`;
+}
+
+function renderTabla(){
+  const filtrados = expedientesFiltrados();
+  document.getElementById("contador").textContent = filtrados.length + " de " + expedientes.length + " expedientes";
+  document.getElementById("sinDatos").style.display = filtrados.length ? "none" : "block";
+
+  let html = "";
+  const gruposConocidos = ORDEN_ESTADOS;
+  const otros = [...new Set(filtrados.map(e=>e.estado).filter(s=>!gruposConocidos.includes(s)))];
+  [...gruposConocidos, ...otros].forEach(est=>{
+    const grupo = filtrados.filter(e=>e.estado===est)
+      .sort(est==="RESUELTA" && !ordenManual ? comparadorResuelta : comparador);
+    if(!grupo.length) return;
+    const abierto = gruposAbiertos[est] ?? false;
+    html += `<tr class="grupo ${abierto?"abierto":""}" onclick="toggleGrupo('${esc(est)}')">
+      <td colspan="9"><span class="flecha">▶</span>${esc(est)}<span class="cant">— ${grupo.length} expediente${grupo.length!==1?"s":""}</span></td>
+    </tr>`;
+    if(abierto) grupo.forEach(e=>{
+      html += filaHTML(e);
+      if(filaExpandida===e.id) html += detalleInlineHTML(e);
+    });
+  });
+  document.getElementById("cuerpoTabla").innerHTML = html;
+  aplicarRol();
+}
+
+/* ============================================================
+   DETALLE
+   ============================================================ */
+function abrirDetalle(id){
+  const e = expedientes.find(x=>x.id===id);
+  if(!e) return;
+  detalleActual = id;
+  document.getElementById("detTitulo").textContent = e.nroSita || "(sin N° SITA)";
+  document.getElementById("detEstado").outerHTML = badgeEstado(e.estado).replace('class="estado"','class="estado" id="detEstado"');
+  const d = diasTramite(e);
+  const coincide = (e.estado==="RESUELTA" && e.paFree && e.paAduana)
+    ? (e.paFree===e.paAduana ? "Sí ✓" : "No ✗") : "—";
+  const vD = valorDias(e);
+  const etiquetaDias = e.estado==="RESUELTA" ? "Días hasta el vencimiento (3 años)" : "Días transcurridos (hábiles)";
+  const textoDias = vD===null ? "—" : (e.estado==="RESUELTA" ? (vD<0 ? "VENCIDA hace "+(-vD)+" días" : vD+" días restantes") : vD+" días háb.");
+  document.getElementById("detDatos").innerHTML = [
+    ["Cliente", e.cliente],
+    ["Producto", e.producto],
+    ["Fecha de presentación", fmtFecha(e.fechaInicio)],
+    ["Fecha recibido / pedido doc.", fmtFecha(e.fechaRecibido)],
+    ["Fecha de último estado", fmtFecha(fechaUltimoEstado(e))],
+    [etiquetaDias, textoDias],
+    ["PA Free Customs", e.paFree||"—"],
+    ["PA Aduana", e.paAduana||"—"],
+    ["Tributos PA Free", e.tributosFree||"—"],
+    ["Tributos Aduana", e.tributosAduana||"—"],
+    ["Días en trámite (corridos)", d===null?"—":d+" días"],
+    ["Coincidencia de criterio", coincide],
+    ["Responsable última acción", e.responsable||"—"],
+    ["Detalle de observaciones", e.ultimaAccion||"—"],
+    ["Observaciones", e.observaciones||"—"]
+  ].map(([k,v])=>`<div class="dato"><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`).join("");
+
+  const movs = (e.movimientos||[]).slice().sort((a,b)=> a.fecha<b.fecha?1:-1);
+  document.getElementById("detMovimientos").innerHTML = movs.length ? movs.map((m,i)=>`
+    <div class="mov">
+      <div class="fecha">${fmtFecha(m.fecha)}</div>
+      <div class="tipo">${esc(m.tipo)}</div>
+      <div class="detalle-txt">${esc(m.detalle)}</div>
+      <button class="btn btn-chico btn-peligro quitar solo-editor" onclick="eliminarMovimiento(${i});event.stopPropagation()">Quitar</button>
+    </div>`).join("")
+    : '<div style="color:var(--gris);font-size:.82rem;padding:6px 0">Sin movimientos registrados.</div>';
+
+  abrirModal("modalDetalle");
+  aplicarRol();
+}
+
+function eliminarMovimiento(indiceOrdenado){
+  const e = expedientes.find(x=>x.id===detalleActual);
+  if(!e || !confirm("¿Eliminar este movimiento?")) return;
+  const ordenados = (e.movimientos||[]).slice().sort((a,b)=> a.fecha<b.fecha?1:-1);
+  const mov = ordenados[indiceOrdenado];
+  e.movimientos = e.movimientos.filter(m=>m!==mov);
+  persistir(); renderTabla(); abrirDetalle(detalleActual);
+}
+
+function eliminarExpediente(){
+  if(!confirm("¿Eliminar el expediente completo? Esta acción no se puede deshacer.")) return;
+  expedientes = expedientes.filter(x=>x.id!==detalleActual);
+  persistir(); poblarFiltros(); renderTabla(); cerrarModal("modalDetalle");
+}
+
+/* ============================================================
+   FORMULARIOS
+   ============================================================ */
+function abrirModal(id){ document.getElementById(id).classList.add("abierto"); }
+function cerrarModal(id){ document.getElementById(id).classList.remove("abierto"); }
+
+const CAMPOS_FORM = ["cliente","producto","nroSita","estado","fechaInicio","fechaRecibido","fechaUltimoEstado","paFree","paAduana","tributosFree","tributosAduana","responsable","ultimaAccion","observaciones"];
+function idCampo(c){ return "f_" + c; }
+
+function abrirFormExpediente(){
+  editandoId = null;
+  document.getElementById("tituloFormExp").textContent = "Nuevo expediente";
+  CAMPOS_FORM.forEach(c=>document.getElementById(idCampo(c)).value="");
+  document.getElementById("f_fechaInicio").value = hoyISO();
+  document.getElementById("f_estado").value = "PRESENTADA";
+  abrirModal("modalExpediente");
+}
+
+function editarDesdeDetalle(){
+  const e = expedientes.find(x=>x.id===detalleActual);
+  if(!e) return;
+  editandoId = e.id;
+  document.getElementById("tituloFormExp").textContent = "Editar expediente";
+  CAMPOS_FORM.forEach(c=>{ document.getElementById(idCampo(c)).value = e[c] ?? ""; });
+  // si el cliente histórico no está en el desplegable, agregarlo
+  const sel = document.getElementById("f_cliente");
+  if(e.cliente && ![...sel.options].some(o=>o.value===e.cliente)){
+    sel.insertAdjacentHTML("beforeend", `<option>${esc(e.cliente)}</option>`);
+  }
+  sel.value = e.cliente ?? "";
+  cerrarModal("modalDetalle");
+  abrirModal("modalExpediente");
+}
+
+function guardarExpediente(){
+  const datos = {};
+  CAMPOS_FORM.forEach(c=>{ datos[c] = document.getElementById(idCampo(c)).value.trim(); });
+  if(!datos.cliente || !datos.producto){
+    alert("Completá al menos Cliente y Producto.");
+    return;
+  }
+  if(editandoId!==null){
+    const e = expedientes.find(x=>x.id===editandoId);
+    Object.assign(e, datos);
+  }else{
+    const nuevoId = expedientes.length ? Math.max(...expedientes.map(x=>x.id))+1 : 1;
+    const movs = datos.fechaInicio ? [{fecha:datos.fechaInicio, tipo:"Presentación", detalle:"Presentación de solicitud SITA "+(datos.nroSita||"s/n")}] : [];
+    expedientes.push({id:nuevoId, movimientos:movs, ...datos});
+  }
+  persistir(); poblarFiltros(); renderTabla(); cerrarModal("modalExpediente");
+}
+
+function abrirFormMovimiento(){
+  document.getElementById("m_fecha").value = hoyISO();
+  document.getElementById("m_tipo").value = "Pedido de documentación";
+  document.getElementById("m_estado").value = "";
+  document.getElementById("m_detalle").value = "";
+  abrirModal("modalMovimiento");
+}
+
+function guardarMovimiento(){
+  const e = expedientes.find(x=>x.id===detalleActual);
+  if(!e) return;
+  const fecha = document.getElementById("m_fecha").value;
+  const tipo = document.getElementById("m_tipo").value;
+  const detalle = document.getElementById("m_detalle").value.trim();
+  const nuevoEstado = document.getElementById("m_estado").value;
+  if(!fecha){ alert("Indicá la fecha del movimiento."); return; }
+  e.movimientos = e.movimientos || [];
+  e.movimientos.push({fecha, tipo, detalle});
+  e.ultimaAccion = detalle || tipo;
+  if(nuevoEstado){
+    e.estado = nuevoEstado;
+    e.fechaUltimoEstado = fecha; // el cambio de estado actualiza la fecha de último estado
+    if((ESTADOS[nuevoEstado]||{}).final && !e.fechaRecibido) e.fechaRecibido = fecha;
+  }
+  persistir(); renderTabla(); cerrarModal("modalMovimiento"); abrirDetalle(e.id);
+}
+
+/* ============================================================
+   IMPORTAR / EXPORTAR
+   ============================================================ */
+function descargar(nombre, contenido, tipo){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([contenido], {type:tipo}));
+  a.download = nombre;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function exportarJSON(){
+  descargar("resoluciones_anticipadas_"+hoyISO()+".json", JSON.stringify(expedientes,null,2), "application/json");
+}
+function exportarCSV(){
+  const cab = ["N SITA","Estado","Cliente","Producto","Fecha pres","Fecha ultimo estado","Dias transc hab / restantes venc","PA Free","Tributos Free","PA Aduana","Tributos Aduana","Fecha recibido","Responsable","Detalle de observaciones","Observaciones"];
+  const filas = expedientes.map(e=>[
+    e.nroSita,e.estado,e.cliente,e.producto,e.fechaInicio,fechaUltimoEstado(e),valorDiasMostrar(e)??"",e.paFree,e.tributosFree,e.paAduana,e.tributosAduana,e.fechaRecibido,e.responsable,e.ultimaAccion,e.observaciones
+  ].map(v=>'"'+String(v??"").replace(/"/g,'""').replace(/\n/g," | ")+'"').join(";"));
+  descargar("resoluciones_anticipadas_"+hoyISO()+".csv", "﻿"+cab.join(";")+"\n"+filas.join("\n"), "text/csv;charset=utf-8");
+}
+function importarJSON(ev){
+  const archivo = ev.target.files[0];
+  if(!archivo) return;
+  const lector = new FileReader();
+  lector.onload = () => {
+    try{
+      const datos = JSON.parse(lector.result);
+      if(!Array.isArray(datos)) throw new Error();
+      expedientes = normalizarEstados(datos.map((e,i)=>({movimientos:[], ...e, id: e.id ?? i+1})));
+      persistir(); poblarFiltros(); renderTabla();
+      alert("Datos importados: "+expedientes.length+" expedientes.");
+    }catch(err){ alert("El archivo no tiene un formato JSON válido."); }
+  };
+  lector.readAsText(archivo);
+  ev.target.value = "";
+}
+
+/* ============================================================
+   ESTADÍSTICAS
+   ============================================================ */
+function renderEstadisticas(){
+  const porEstado = s => expedientes.filter(e=>e.estado===s);
+  const enCurso = expedientes.filter(e=>!(ESTADOS[e.estado]||{}).final);
+  const resueltos = porEstado("RESUELTA");
+  const diasRes = resueltos.map(diasTramite).filter(d=>d!==null);
+  const promedio = diasRes.length ? Math.round(diasRes.reduce((a,b)=>a+b,0)/diasRes.length) : 0;
+  const demorados = enCurso.filter(e=>{ const d=diasHabilesDesde(fechaUltimoEstado(e)); return d!==null && d>=DIAS_HABILES_LIMITE; }).length;
+  const conPA = resueltos.filter(e=>e.paFree && e.paAduana);
+  const coinciden = conPA.filter(e=>e.paFree===e.paAduana).length;
+  const pctCoinc = conPA.length ? Math.round(coinciden/conPA.length*100) : 0;
+  const porVencer = resueltos.filter(e=>{ const v=valorDias(e); return v!==null && v<DIAS_VENCIMIENTO_ALERTA; }).length;
+
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi"><div class="valor">${expedientes.length}</div><div class="etiqueta">Expedientes totales</div></div>
+    <div class="kpi"><div class="valor">${enCurso.length}</div><div class="etiqueta">En trámite (presentadas)</div></div>
+    <div class="kpi ok"><div class="valor">${resueltos.length}</div><div class="etiqueta">Resueltas</div></div>
+    <div class="kpi alerta"><div class="valor">${porEstado("RECHAZADA").length}</div><div class="etiqueta">Rechazadas</div></div>
+    <div class="kpi"><div class="valor">${porEstado("ANULADA").length}</div><div class="etiqueta">Anuladas</div></div>
+    <div class="kpi"><div class="valor">${promedio}</div><div class="etiqueta">Días promedio (resueltas)</div></div>
+    <div class="kpi ${demorados?"alerta":""}"><div class="valor">${demorados}</div><div class="etiqueta">Presentadas ≥${DIAS_HABILES_LIMITE} días háb.</div></div>
+    <div class="kpi ${porVencer?"alerta":""}"><div class="valor">${porVencer}</div><div class="etiqueta">Resueltas por vencer (<${DIAS_VENCIMIENTO_ALERTA} días)</div></div>
+    <div class="kpi ${pctCoinc>=50?"ok":""}"><div class="valor">${pctCoinc}%</div><div class="etiqueta">Coincidencia PA Free/Aduana</div></div>`;
+
+  const crear = (id, config) => {
+    if(charts[id]) charts[id].destroy();
+    charts[id] = new Chart(document.getElementById(id), config);
+  };
+
+  // Por estado
+  const estados = Object.keys(ESTADOS).filter(s=>porEstado(s).length);
+  crear("chartEstados", {
+    type:"doughnut",
+    data:{labels:estados, datasets:[{data:estados.map(s=>porEstado(s).length), backgroundColor:estados.map(s=>ESTADOS[s].color)}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:"right"}}}
+  });
+
+  // Coincidencia PA
+  crear("chartCoincidencia", {
+    type:"doughnut",
+    data:{labels:["Coincide","Difiere"], datasets:[{data:[coinciden, conPA.length-coinciden], backgroundColor:["#16a34a","#d97706"]}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:"right"}}}
+  });
+
+  // Por cliente (top 12)
+  const conteoClientes = {};
+  expedientes.forEach(e=>{ if(e.cliente) conteoClientes[e.cliente]=(conteoClientes[e.cliente]||0)+1; });
+  const topClientes = Object.keys(conteoClientes).sort((a,b)=>conteoClientes[b]-conteoClientes[a]).slice(0,12);
+  crear("chartClientes", {
+    type:"bar",
+    data:{labels:topClientes, datasets: Object.keys(ESTADOS).map(s=>({
+      label:s, backgroundColor:ESTADOS[s].color,
+      data:topClientes.map(c=>expedientes.filter(e=>e.cliente===c && e.estado===s).length)
+    }))},
+    options:{indexAxis:"y", responsive:true, maintainAspectRatio:false,
+      scales:{x:{stacked:true,ticks:{precision:0}},y:{stacked:true}},
+      plugins:{legend:{position:"bottom"}}}
+  });
+
+  // Días por expediente (top 12)
+  const conDias = expedientes.filter(e=>diasTramite(e)!==null).sort((a,b)=>diasTramite(b)-diasTramite(a)).slice(0,12);
+  crear("chartDias", {
+    type:"bar",
+    data:{labels:conDias.map(e=>{
+        const et = e.producto + " (" + e.cliente + ")";
+        return et.length>38 ? et.slice(0,38)+"…" : et;
+      }),
+      datasets:[{label:"Días en trámite", data:conDias.map(diasTramite),
+        backgroundColor:conDias.map(e=>{
+          const d=diasTramite(e), fin=(ESTADOS[e.estado]||{}).final;
+          if(fin) return "#94a3b8";
+          return d>=DIAS_ALERTA ? "#dc2626" : d>=DIAS_ATENCION ? "#d97706" : "#2563eb";
+        })}]},
+    options:{indexAxis:"y", responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+  });
+
+  // Presentaciones por mes
+  const meses = {};
+  expedientes.forEach(e=>{ if(e.fechaInicio){ const m=e.fechaInicio.slice(0,7); meses[m]=(meses[m]||0)+1; } });
+  const clavesMes = Object.keys(meses).sort();
+  crear("chartMeses", {
+    type:"bar",
+    data:{labels:clavesMes.map(m=>{const [a,mm]=m.split("-");return mm+"/"+a;}),
+      datasets:[{label:"Presentaciones", data:clavesMes.map(m=>meses[m]), backgroundColor:"#1e40af"}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{precision:0}}}}
+  });
+}
+
+/* ============================================================
+   INICIO
+   ============================================================ */
+document.querySelectorAll(".modal-fondo").forEach(m=>{
+  m.addEventListener("click", ev=>{ if(ev.target===m) m.classList.remove("abierto"); });
+});
+poblarFiltros();
+renderTabla();
+aplicarRol();
+/* fin */
+</script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

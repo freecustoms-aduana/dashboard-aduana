@@ -380,16 +380,11 @@ async function checkPw(){
     <div class="view" id="view-clasi">
       <div id="clasi-content"></div>
     </div>
-    <div class="view" id="view-resant">
-      <div id="resant-content">
-        <div class="section" style="margin:28px 32px;">
-          <div class="section-header">
-            <div class="section-chip">Próximamente</div>
-            <div class="section-title">Resoluciones Anticipadas</div>
-          </div>
-          <p style="color:var(--muted);font-size:13px;padding:24px 0;">Esta sección está en desarrollo. Aquí se mostrará el seguimiento de resoluciones anticipadas de clasificación arancelaria.</p>
-        </div>
-      </div>
+    <div class="view" id="view-resant" style="padding:0;overflow:hidden;">
+      <iframe src="seguimiento_resoluciones_anticipadas.html"
+              style="width:100%;height:calc(100vh - 53px);border:none;display:block;"
+              id="resant-iframe">
+      </iframe>
     </div>
   </div>
 </main>
