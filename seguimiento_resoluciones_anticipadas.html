@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seguimiento de Resoluciones Anticipadas — Clasificación Arancelaria</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <style>
   :root{
     --azul:#1e40af; --azul-osc:#1e3a8a; --fondo:#f1f5f9; --blanco:#fff;
@@ -102,6 +105,9 @@
 
   .aviso{background:#fef9c3;border:1px solid #fde047;color:#854d0e;padding:8px 14px;border-radius:var(--radius);font-size:.78rem;margin-bottom:14px;display:none}
   @media(max-width:640px){.form-grid{grid-template-columns:1fr}main{padding:14px}}
+
+  /* ── LOGIN OVERLAY ── */
+
 </style>
 </head>
 <body>
@@ -111,7 +117,11 @@
     <h1>Resoluciones Anticipadas — Clasificación Arancelaria</h1>
     <div class="sub">Seguimiento de solicitudes SITA · Free Customs · Equipo de Aduana</div>
   </div>
-  <span class="badge-rol" id="badgeRol">Modo edición</span>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span class="badge-rol" id="badgeRol">Solo lectura</span>
+    <button class="badge-rol" id="btnLogin" style="cursor:pointer" onclick="abrirModal('modalLogin')">Iniciar sesión</button>
+    <button class="badge-rol" id="btnLogout" style="display:none;cursor:pointer" onclick="raLogout()">Cerrar sesión</button>
+  </div>
 </header>
 
 <div class="tabs">
@@ -219,6 +229,22 @@
   </div>
 </div>
 
+<!-- MODAL: login de editor -->
+<div class="modal-fondo" id="modalLogin">
+  <div class="modal" style="max-width:400px">
+    <h2>Ingreso de editor</h2>
+    <div class="form-grid" style="grid-template-columns:1fr">
+      <div class="campo"><label>Email</label><input type="text" id="ra-login-email" autocomplete="username"></div>
+      <div class="campo"><label>Contraseña</label><input type="password" id="ra-login-pw-editor" autocomplete="current-password" onkeydown="if(event.key==='Enter')raLoginEditor()"></div>
+    </div>
+    <div id="ra-login-error" style="color:var(--rojo);font-size:.8rem;margin-top:10px;min-height:16px"></div>
+    <div class="modal-acciones">
+      <button class="btn" onclick="cerrarModal('modalLogin')">Cancelar</button>
+      <button class="btn btn-primario" onclick="raLoginEditor()">Ingresar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: nuevo movimiento -->
 <div class="modal-fondo" id="modalMovimiento">
   <div class="modal" style="max-width:520px">
@@ -247,7 +273,31 @@
 /* ============================================================
    CONFIGURACIÓN — estados, umbrales, modo lectura y clientes
    ============================================================ */
-const MODO_SOLO_LECTURA = false; // true = oculta toda edición (nivel "visualizador")
+/* Cualquiera con el link entra como visualizador (solo lectura). Los EDITORES
+   inician sesión con email/contraseña creados en Firebase Authentication;
+   la protección real de escritura la dan las reglas de Firebase. */
+let raRole = "viewer"; // "viewer" | "editor"
+
+function mostrarErrorLogin(msg){ document.getElementById("ra-login-error").textContent = msg; }
+
+function raLoginEditor(){
+  const email = document.getElementById("ra-login-email").value.trim();
+  const pw = document.getElementById("ra-login-pw-editor").value;
+  if(!email || !pw){ mostrarErrorLogin("Completá email y contraseña de editor."); return; }
+  mostrarErrorLogin("");
+  firebase.auth().signInWithEmailAndPassword(email, pw)
+    .then(() => {
+      cerrarModal("modalLogin");
+      document.getElementById("ra-login-pw-editor").value = "";
+      mostrarErrorLogin("");
+    })
+    .catch(err => {
+      const cred = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"].includes(err.code);
+      mostrarErrorLogin(cred ? "Email o contraseña de editor incorrectos." : "Error: " + err.message);
+    });
+}
+
+function raLogout(){ firebase.auth().signOut(); }
 
 const ESTADOS = {
   "PRESENTADA": {color:"#2563eb", final:false},
@@ -291,32 +341,66 @@ const DATOS_INICIALES = [{"id": 1, "cliente": "GRUAS SAN BLAS S.A", "producto": 
 /* ============================================================
    ESTADO DE LA APLICACIÓN
    ============================================================ */
-const CLAVE_LS = "ra_sita_expedientes_v4";
-let expedientes = cargarDatos();
+/* ── FIREBASE ── */
+const firebaseConfig = {
+  apiKey: "AIzaSyDonoZm4jXlmRnnvCSalIzwoR1SgzrD9iY",
+  authDomain: "freecustoms-clasificacion.firebaseapp.com",
+  databaseURL: "https://freecustoms-clasificacion-default-rtdb.firebaseio.com",
+  projectId: "freecustoms-clasificacion",
+  storageBucket: "freecustoms-clasificacion.firebasestorage.app",
+  messagingSenderId: "902940369603",
+  appId: "1:902940369603:web:7a343d8d7883fd82c5b876"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const auth = firebase.auth();
+const dbRef = db.ref("resoluciones-anticipadas/expedientes");
+
+/* La sesión de editor persiste entre visitas: si hay usuario, entra directo. */
+auth.onAuthStateChanged(user => {
+  raRole = user ? "editor" : "viewer";
+  aplicarRol();
+});
+
+let expedientes = [];
 let orden = {campo:"fechaInicio", asc:false};
 let detalleActual = null;
 let editandoId = null;
 let charts = {};
 let filaExpandida = null;
 let gruposAbiertos = {"PRESENTADA":true,"RESUELTA":false,"RECHAZADA":false,"ANULADA":false};
+let fbIniciado = false;
 
-/* Convierte estados en masculino (versiones anteriores / JSON viejos) al femenino */
 const MIGRA_ESTADOS = {"PRESENTADO":"PRESENTADA","RESUELTO":"RESUELTA","RECHAZADO":"RECHAZADA","ANULADO":"ANULADA"};
 function normalizarEstados(arr){
   arr.forEach(e=>{ if(MIGRA_ESTADOS[e.estado]) e.estado = MIGRA_ESTADOS[e.estado]; });
   return arr;
 }
 
-function cargarDatos(){
-  try{
-    const guardado = localStorage.getItem(CLAVE_LS);
-    if(guardado) return normalizarEstados(JSON.parse(guardado));
-  }catch(e){}
-  return JSON.parse(JSON.stringify(DATOS_INICIALES));
-}
 function persistir(){
-  try{ localStorage.setItem(CLAVE_LS, JSON.stringify(expedientes)); }catch(e){}
+  const obj = {};
+  expedientes.forEach(e => { obj[e.id] = e; });
+  dbRef.set(obj).catch(err => console.error("Firebase write error:", err));
 }
+
+/* Escucha cambios en tiempo real */
+dbRef.on("value", snapshot => {
+  const val = snapshot.val();
+  if(val){
+    const arr = Object.values(val).filter(Boolean); // Firebase puede convertir a array con huecos null
+    expedientes = normalizarEstados(arr);
+  } else if(!fbIniciado) {
+    /* Primera vez: sembrar datos iniciales */
+    expedientes = JSON.parse(JSON.stringify(DATOS_INICIALES));
+    persistir();
+  } else {
+    expedientes = [];
+  }
+  fbIniciado = true;
+  poblarFiltros();
+  renderTabla();
+  if(currentTab === "estadisticas") renderEstadisticas();
+});
 
 /* ============================================================
    UTILIDADES
@@ -384,18 +468,22 @@ function badgeEstado(estado){
 /* ============================================================
    TABS Y ROLES
    ============================================================ */
+let currentTab = "expedientes";
 function cambiarTab(nombre){
+  currentTab = nombre;
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("activa", t.dataset.tab===nombre));
   document.getElementById("tab-expedientes").style.display = nombre==="expedientes" ? "" : "none";
   document.getElementById("tab-estadisticas").style.display = nombre==="estadisticas" ? "" : "none";
   if(nombre==="estadisticas") renderEstadisticas();
 }
 function aplicarRol(){
-  if(MODO_SOLO_LECTURA){
-    document.querySelectorAll(".solo-editor").forEach(el=>el.style.display="none");
-    document.getElementById("badgeRol").textContent = "Solo lectura";
-    document.getElementById("avisoLectura").style.display = "block";
-  }
+  const editor = (raRole === "editor");
+  document.querySelectorAll(".solo-editor").forEach(el => el.style.display = editor ? "" : "none");
+  const u = firebase.auth().currentUser;
+  document.getElementById("badgeRol").textContent = editor ? ("Modo edición" + (u && u.email ? " — " + u.email : "")) : "Solo lectura";
+  document.getElementById("avisoLectura").style.display = editor ? "none" : "block";
+  document.getElementById("btnLogin").style.display = editor ? "none" : "";
+  document.getElementById("btnLogout").style.display = editor ? "" : "none";
 }
 
 /* ============================================================
@@ -836,11 +924,8 @@ function renderEstadisticas(){
 document.querySelectorAll(".modal-fondo").forEach(m=>{
   m.addEventListener("click", ev=>{ if(ev.target===m) m.classList.remove("abierto"); });
 });
-poblarFiltros();
-renderTabla();
-aplicarRol();
+// driven by Firebase onValue
 /* fin */
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
