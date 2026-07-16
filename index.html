@@ -239,46 +239,6 @@ tfoot td.right{text-align:right;}
   </div>
 </div>
 
-<style>
-#pw-overlay{position:fixed;inset:0;background:#0F1929;display:flex;align-items:center;justify-content:center;z-index:9999;}
-#pw-box{background:#1A2A4A;border-radius:16px;padding:40px 48px;text-align:center;width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
-#pw-logo{font-family:'Poppins',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#60A5FA;margin-bottom:4px;}
-#pw-sub{font-family:'Poppins',sans-serif;font-size:12px;color:#5A6EA0;margin-bottom:32px;}
-#pw-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:#E2EAF4;margin-bottom:24px;}
-#pw-input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(96,165,250,0.3);background:rgba(255,255,255,0.06);color:#E2EAF4;font-size:15px;font-family:'Poppins',sans-serif;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px;}
-#pw-input:focus{border-color:#60A5FA;}
-#pw-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#1D4ED8;color:#fff;font-size:14px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:background .15s;margin-bottom:8px;}
-#pw-btn:hover{background:#2563EB;}
-#pw-err{font-family:'Poppins',sans-serif;font-size:12px;color:#F87171;min-height:18px;}
-</style>
-<div id="pw-overlay">
-  <div id="pw-box">
-    <div id="pw-logo">ADUANA</div>
-    <div id="pw-sub">Free Customs &middot; Dashboard Gerencial</div>
-    <div id="pw-title">Acceso restringido</div>
-    <input id="pw-input" type="password" placeholder="Contrase&ntilde;a" onkeydown="if(event.key==='Enter')checkPw()">
-    <button id="pw-btn" onclick="checkPw()">Ingresar</button>
-    <div id="pw-err"></div>
-  </div>
-</div>
-<script>
-async function checkPw(){
-  const val=document.getElementById('pw-input').value;
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(val));
-  const hash=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  if(hash==='00b9c262c76070df43e434a7c7f2d3414600dffaab8a4fa185d704e6b2843a1f'){
-    document.getElementById('pw-overlay').style.display='none';
-    localStorage.setItem('auth',hash);
-  }else{
-    document.getElementById('pw-err').textContent='Contraseña incorrecta';
-    document.getElementById('pw-input').value='';
-  }
-}
-(async()=>{
-  const stored=localStorage.getItem('auth');
-  if(stored==='00b9c262c76070df43e434a7c7f2d3414600dffaab8a4fa185d704e6b2843a1f')document.getElementById('pw-overlay').style.display='none';
-})();
-</script>
 <div class="layout">
 <aside class="sidebar">
   <div class="sidebar-brand" style="padding:14px 14px 14px;">
