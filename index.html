@@ -746,21 +746,22 @@ const CLASI={
 const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 — Operaciones",facturacion:"Top 10 — Facturación USD",rentabilidad:"Análisis de Rentabilidad",objetivos:"Objetivos Gerenciales 2026",clasi:"Clasificación Arancelaria — Resumen",resant:"Clasificación Arancelaria — Res. Anticipadas"};
 
 /* ── AUTH ── */
-const PW_FULL    = "freedirección";
+const PW_FULL    = "freedireccion";
 const PW_LIMITED = "freetodos";
 const ALLOWED_LIMITED = ["kpis","operaciones","clasi","resant"];
 let userRole = null;
 
 function doLogin(){
   const pw = document.getElementById("login-pw").value;
-  if(pw === PW_FULL){ userRole="full"; applyRole(); }
-  else if(pw === PW_LIMITED){ userRole="limited"; applyRole(); }
+  if(pw === PW_FULL){ userRole="full"; }
+  else if(pw === PW_LIMITED){ userRole="limited"; }
   else {
     document.getElementById("login-error").textContent = "Contraseña incorrecta.";
     document.getElementById("login-pw").value = "";
     return;
   }
   document.getElementById("login-overlay").style.display = "none";
+  applyRole();
 }
 
 function applyRole(){
