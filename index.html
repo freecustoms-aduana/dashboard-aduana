@@ -1352,7 +1352,7 @@ function renderRentabilidad(){
   });
   // === GRÁFICOS DE EQUIPOS ===
   // Peso estratégico — líneas, % de revenue por equipo sobre total, filtrado por meses
-  const eqIdxMap2={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4,"2026-06":5};
+  const eqIdxMap2={"2026-01":0,"2026-02":1,"2026-03":2,"2026-04":3,"2026-05":4,"2026-06":5,"2026-07":6};
   const eqSelIdx=keys.map(k=>eqIdxMap2[k]).filter(i=>i!==undefined);
   const eqSelLbls=eqSelIdx.map(i=>EQUIPOS.labels[i]);
   const revTotals=EQUIPOS.labels.map((_,mi)=>EQUIPOS.teams.reduce((s,t)=>s+t.rev[mi],0));
