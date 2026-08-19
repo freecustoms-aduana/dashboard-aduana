@@ -418,42 +418,41 @@ const OPS_CLI={
   "Grupo GSB":        {p25:24.2,"2026-01":34,"2026-02":40,"2026-03":58,"2026-04":73,"2026-05":74,"2026-06":45,"2026-07":53},
   "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21,"2026-06":28,"2026-07":15},
   "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13,"2026-06":23,"2026-07":22},
-  "Grupo Calzetta":   {p25: 9.1,"2026-01":15,"2026-02":18,"2026-03":10,"2026-04":14,"2026-05":19,"2026-06":14,"2026-07":26},
+  "Grupo Calzetta":   {p25:16.2,"2026-01":16,"2026-02":27,"2026-03":14,"2026-04":23,"2026-05":22,"2026-06":19,"2026-07":34},
   "Op. Ferroviaria":  {p25: 8.0,"2026-01": 1,"2026-02": 3,"2026-03": 0,"2026-04": 3,"2026-05": 1,"2026-06": 1,"2026-07":2},
   "Ferreiros y Vilela":{p25:7.6,"2026-01":10,"2026-02": 5,"2026-03": 9,"2026-04":10,"2026-05": 3,"2026-06": 7,"2026-07":7},
-  "Global Tyres":     {p25: 7.1,"2026-01": 1,"2026-02": 9,"2026-03": 4,"2026-04": 9,"2026-05": 3,"2026-06": 5,"2026-07":8},
 };
 const OPS_CLI_KEYS=Object.keys(OPS_CLI);
 // OPS_2025_AVG: promedio mensual 2025 por cliente (para gráficos comparativos)
 const OPS_2025_AVG={
   "Grupo Larocca":39.4,"Grupo Corral":38.4,"Hogar y Tec.":29.0,"Grupo GSB":24.8,
-  "Cia. Arg. Aceites":19.3,"Bedson S.A.":14.8,"Grupo Calzetta":9.1,"Op. Ferroviaria":8.0,
-  "Ferreiros y Vilela":7.6,"Global Tyres":7.1,"Seis Erre Alim.":6.8,"Start.ar":5.8,
+  "Cia. Arg. Aceites":19.3,"Bedson S.A.":14.8,"Grupo Calzetta":16.2,"Op. Ferroviaria":8.0,
+  "Ferreiros y Vilela":7.6,"Seis Erre Alim.":6.8,"Start.ar":5.8,
   "Servicios AMG":5.7,"Ultralight SRL":5.2,"Barack Argentina":3.9,"Maxtervision":3.6,
   "Cresata S.A.":3.0,"DSK Group":2.4,
 };
 const OPS={
   "2026-01":[{n:"Grupo Larocca",v:67},{n:"Grupo GSB",v:34},{n:"Grupo Corral",v:26},{n:"Grupo Calzetta",v:15},{n:"Cia. Arg. Aceites",v:13},{n:"Hogar y Tec.",v:11},{n:"Bedson S.A.",v:10},{n:"Ferreiros y Vilela",v:10},{n:"Servicios AMG",v:6},{n:"Maxtervision",v:5},{n:"Ultralight SRL",v:5},{n:"Barack Argentina",v:2},{n:"DSK Group",v:2},{n:"Op. Ferroviaria",v:1},{n:"Cresata S.A.",v:1},{n:"Seis Erre Alim.",v:1}],
-  "2026-02":[{n:"Grupo GSB",v:40},{n:"Grupo Larocca",v:38},{n:"Grupo Corral",v:26},{n:"Grupo Calzetta",v:18},{n:"Hogar y Tec.",v:16},{n:"Bedson S.A.",v:16},{n:"Cia. Arg. Aceites",v:15},{n:"Barack Argentina",v:10},{n:"Global Tyres",v:9},{n:"Servicios AMG",v:6},{n:"Ferreiros y Vilela",v:5},{n:"Ultralight SRL",v:5},{n:"Op. Ferroviaria",v:3},{n:"DSK Group",v:3},{n:"Cresata S.A.",v:3},{n:"Maxtervision",v:3}],
-  "2026-03":[{n:"Grupo GSB",v:58},{n:"Grupo Larocca",v:54},{n:"Grupo Corral",v:31},{n:"Cia. Arg. Aceites",v:22},{n:"Bedson S.A.",v:20},{n:"Hogar y Tec.",v:14},{n:"Grupo Calzetta",v:10},{n:"Ferreiros y Vilela",v:9},{n:"Barack Argentina",v:7},{n:"Ultralight SRL",v:7},{n:"Servicios AMG",v:6},{n:"DSK Group",v:4},{n:"Seis Erre Alim.",v:4},{n:"Global Tyres",v:4},{n:"Maxtervision",v:4}],
-  "2026-04":[{n:"Grupo GSB",v:73},{n:"Grupo Larocca",v:44},{n:"Grupo Corral",v:33},{n:"Cia. Arg. Aceites",v:32},{n:"Hogar y Tec.",v:24},{n:"Bedson S.A.",v:20},{n:"Grupo Calzetta",v:14},{n:"Ferreiros y Vilela",v:10},{n:"Global Tyres",v:9},{n:"Ultralight SRL",v:7},{n:"Maxtervision",v:6},{n:"Barack Argentina",v:5},{n:"DSK Group",v:4},{n:"Servicios AMG",v:4},{n:"Op. Ferroviaria",v:3},{n:"Seis Erre Alim.",v:3}],
-  "2026-05":[{n:"Grupo GSB",v:74},{n:"Grupo Corral",v:45},{n:"Grupo Larocca",v:21},{n:"Cia. Arg. Aceites",v:21},{n:"Grupo Calzetta",v:19},{n:"Bedson S.A.",v:13},{n:"Hogar y Tec.",v:11},{n:"Seis Erre Alim.",v:10},{n:"Ultralight SRL",v:8},{n:"Servicios AMG",v:7},{n:"Cresata S.A.",v:5},{n:"Barack Argentina",v:3},{n:"Ferreiros y Vilela",v:3},{n:"Global Tyres",v:3}],
-  "2026-06":[{n:"Grupo Larocca",v:52},{n:"Grupo GSB",v:45},{n:"Cia. Arg. Aceites",v:28},{n:"Bedson S.A.",v:23},{n:"Grupo Corral",v:21},{n:"Grupo Calzetta",v:14},{n:"Hogar y Tec.",v:8},{n:"Ultralight SRL",v:8},{n:"Barack Argentina",v:7},{n:"Servicios AMG",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Seis Erre Alim.",v:6},{n:"Cresata S.A.",v:6},{n:"Global Tyres",v:5},{n:"DSK Group",v:3},{n:"Defiba S.A.",v:3}],
-  "2026-07":[{n:"Grupo Larocca",v:54},{n:"Grupo GSB",v:53},{n:"Grupo Calzetta",v:26},{n:"Bedson S.A.",v:22},{n:"Grupo Corral",v:20},{n:"Seis Erre Alim.",v:17},{n:"Cia. Arg. Aceites",v:15},{n:"Global Tyres",v:8},{n:"Cresata S.A.",v:7},{n:"Hogar y Tec.",v:7},{n:"Ultralight SRL",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Barack Argentina",v:5},{n:"Candy Electrod.",v:4},{n:"Op. Ferroviaria",v:2}],
+  "2026-02":[{n:"Grupo GSB",v:40},{n:"Grupo Larocca",v:38},{n:"Grupo Calzetta",v:27},{n:"Grupo Corral",v:26},{n:"Hogar y Tec.",v:16},{n:"Bedson S.A.",v:16},{n:"Cia. Arg. Aceites",v:15},{n:"Barack Argentina",v:10},{n:"Servicios AMG",v:6},{n:"Ferreiros y Vilela",v:5},{n:"Ultralight SRL",v:5},{n:"Op. Ferroviaria",v:3},{n:"DSK Group",v:3},{n:"Cresata S.A.",v:3},{n:"Maxtervision",v:3}],
+  "2026-03":[{n:"Grupo GSB",v:58},{n:"Grupo Larocca",v:54},{n:"Grupo Corral",v:31},{n:"Cia. Arg. Aceites",v:22},{n:"Bedson S.A.",v:20},{n:"Hogar y Tec.",v:14},{n:"Grupo Calzetta",v:14},{n:"Ferreiros y Vilela",v:9},{n:"Barack Argentina",v:7},{n:"Ultralight SRL",v:7},{n:"Servicios AMG",v:6},{n:"DSK Group",v:4},{n:"Seis Erre Alim.",v:4},{n:"Maxtervision",v:4}],
+  "2026-04":[{n:"Grupo GSB",v:73},{n:"Grupo Larocca",v:44},{n:"Grupo Corral",v:33},{n:"Cia. Arg. Aceites",v:32},{n:"Hogar y Tec.",v:24},{n:"Grupo Calzetta",v:23},{n:"Bedson S.A.",v:20},{n:"Ferreiros y Vilela",v:10},{n:"Ultralight SRL",v:7},{n:"Maxtervision",v:6},{n:"Barack Argentina",v:5},{n:"DSK Group",v:4},{n:"Servicios AMG",v:4},{n:"Op. Ferroviaria",v:3},{n:"Seis Erre Alim.",v:3}],
+  "2026-05":[{n:"Grupo GSB",v:74},{n:"Grupo Corral",v:45},{n:"Grupo Calzetta",v:22},{n:"Grupo Larocca",v:21},{n:"Cia. Arg. Aceites",v:21},{n:"Bedson S.A.",v:13},{n:"Hogar y Tec.",v:11},{n:"Seis Erre Alim.",v:10},{n:"Ultralight SRL",v:8},{n:"Servicios AMG",v:7},{n:"Cresata S.A.",v:5},{n:"Barack Argentina",v:3},{n:"Ferreiros y Vilela",v:3}],
+  "2026-06":[{n:"Grupo Larocca",v:52},{n:"Grupo GSB",v:45},{n:"Cia. Arg. Aceites",v:28},{n:"Bedson S.A.",v:23},{n:"Grupo Corral",v:21},{n:"Grupo Calzetta",v:19},{n:"Hogar y Tec.",v:8},{n:"Ultralight SRL",v:8},{n:"Barack Argentina",v:7},{n:"Servicios AMG",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Seis Erre Alim.",v:6},{n:"Cresata S.A.",v:6},{n:"DSK Group",v:3},{n:"Defiba S.A.",v:3}],
+  "2026-07":[{n:"Grupo Larocca",v:54},{n:"Grupo GSB",v:53},{n:"Grupo Calzetta",v:34},{n:"Bedson S.A.",v:22},{n:"Grupo Corral",v:20},{n:"Seis Erre Alim.",v:17},{n:"Cia. Arg. Aceites",v:15},{n:"Cresata S.A.",v:7},{n:"Hogar y Tec.",v:7},{n:"Ultralight SRL",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Barack Argentina",v:5},{n:"Candy Electrod.",v:4},{n:"Op. Ferroviaria",v:2}],
 };
 const FACT={
   "2026-01":[{n:"Grupo Larocca",u:28267},{n:"Grupo Corral",u:18159},{n:"Ultralight SRL",u:17921},{n:"Grupo GSB",u:12264},{n:"Hogar y Tec.",u:11715},{n:"Grupo Calzetta",u:11066},{n:"Bedson S.A.",u:7145},{n:"Maxtervision",u:5227},{n:"Ferreiros y Vilela",u:4913},{n:"Servicios AMG",u:3102},{n:"Cia. Arg. Aceites",u:2484},{n:"Beta Glass S.A.",u:2454}],
-  "2026-02":[{n:"Grupo Corral",u:25070},{n:"Grupo Larocca",u:21128},{n:"Grupo Calzetta",u:19855},{n:"Grupo GSB",u:16083},{n:"Hogar y Tec.",u:14359},{n:"Bedson S.A.",u:11523},{n:"Ultralight SRL",u:9378},{n:"Barack Argentina",u:6455},{n:"Global Tyres",u:6432},{n:"Cia. Arg. Aceites",u:3697},{n:"Servicios AMG",u:2839},{n:"Intermaco SRL",u:2402}],
-  "2026-03":[{n:"Grupo GSB",u:25231},{n:"Grupo Larocca",u:22546},{n:"Grupo Corral",u:22230},{n:"Bedson S.A.",u:14621},{n:"Hogar y Tec.",u:11713},{n:"Cia. Arg. Aceites",u:8759},{n:"Ultralight SRL",u:8520},{n:"Grupo Calzetta",u:7689},{n:"Barack Argentina",u:7513},{n:"Global Tyres",u:6929},{n:"Liguén Iluminación",u:5393},{n:"Servicios AMG",u:3863}],
-  "2026-04":[{n:"Grupo GSB",u:24261},{n:"Grupo Larocca",u:23427},{n:"Grupo Corral",u:22489},{n:"Hogar y Tec.",u:21124},{n:"Bedson S.A.",u:14913},{n:"Grupo Calzetta",u:13268},{n:"Ultralight SRL",u:11258},{n:"Global Tyres",u:9900},{n:"Cia. Arg. Aceites",u:7160},{n:"Defiba Serv. Port.",u:6773},{n:"Ferreiros y Vilela",u:6657},{n:"Barack Argentina",u:4980}],
-  "2026-05":[{n:"Grupo Corral",u:36053},{n:"Grupo GSB",u:25971},{n:"Grupo Larocca",u:18058},{n:"Bedson S.A.",u:13057},{n:"Hogar y Tec.",u:12168},{n:"Grupo Calzetta",u:11370},{n:"Ultralight SRL",u:9949},{n:"Global Tyres",u:5468},{n:"Seis Erre Alim.",u:4877},{n:"Cia. Arg. Aceites",u:4752},{n:"New Material SAS",u:3381},{n:"Servicios AMG",u:3155}],
-  "2026-06":[{n:"Grupo Larocca",u:23126},{n:"Grupo Corral",u:21125},{n:"Grupo GSB",u:19025},{n:"Grupo Calzetta",u:15546},{n:"Ultralight SRL",u:14215},{n:"Bedson S.A.",u:13536},{n:"Hogar y Tec.",u:10166},{n:"Cia. Arg. Aceites",u:8892},{n:"Barack Argentina",u:7676},{n:"Cresata S.A.",u:7216},{n:"Global Tyres",u:5736},{n:"Servicios AMG",u:4665}],
-  "2026-07":[{n:"Grupo Larocca",u:27729},{n:"Grupo Calzetta",u:22832},{n:"Barack Argentina",u:15923},{n:"Grupo GSB",u:14904},{n:"Bedson S.A.",u:14856},{n:"Seis Erre Alim.",u:11060},{n:"Hogar y Tec.",u:9580},{n:"Grupo Corral",u:8990},{n:"Global Tyres",u:6118},{n:"Ultralight SRL",u:5796},{n:"Cia. Arg. Aceites",u:3650},{n:"Ferreiros y Vilela",u:3629}],
+  "2026-02":[{n:"Grupo Calzetta",u:26287},{n:"Grupo Corral",u:25070},{n:"Grupo Larocca",u:21128},{n:"Grupo GSB",u:16083},{n:"Hogar y Tec.",u:14359},{n:"Bedson S.A.",u:11523},{n:"Ultralight SRL",u:9378},{n:"Barack Argentina",u:6455},{n:"Cia. Arg. Aceites",u:3697},{n:"Servicios AMG",u:2839},{n:"Intermaco SRL",u:2402}],
+  "2026-03":[{n:"Grupo GSB",u:25231},{n:"Grupo Larocca",u:22546},{n:"Grupo Corral",u:22230},{n:"Bedson S.A.",u:14621},{n:"Grupo Calzetta",u:14618},{n:"Hogar y Tec.",u:11713},{n:"Cia. Arg. Aceites",u:8759},{n:"Ultralight SRL",u:8520},{n:"Barack Argentina",u:7513},{n:"Liguén Iluminación",u:5393},{n:"Servicios AMG",u:3863}],
+  "2026-04":[{n:"Grupo GSB",u:24261},{n:"Grupo Larocca",u:23427},{n:"Grupo Calzetta",u:23168},{n:"Grupo Corral",u:22489},{n:"Hogar y Tec.",u:21124},{n:"Bedson S.A.",u:14913},{n:"Ultralight SRL",u:11258},{n:"Cia. Arg. Aceites",u:7160},{n:"Defiba Serv. Port.",u:6773},{n:"Ferreiros y Vilela",u:6657},{n:"Barack Argentina",u:4980}],
+  "2026-05":[{n:"Grupo Corral",u:36053},{n:"Grupo GSB",u:25971},{n:"Grupo Larocca",u:18058},{n:"Grupo Calzetta",u:16838},{n:"Bedson S.A.",u:13057},{n:"Hogar y Tec.",u:12168},{n:"Ultralight SRL",u:9949},{n:"Seis Erre Alim.",u:4877},{n:"Cia. Arg. Aceites",u:4752},{n:"New Material SAS",u:3381},{n:"Servicios AMG",u:3155}],
+  "2026-06":[{n:"Grupo Larocca",u:23126},{n:"Grupo Calzetta",u:21282},{n:"Grupo Corral",u:21125},{n:"Grupo GSB",u:19025},{n:"Ultralight SRL",u:14215},{n:"Bedson S.A.",u:13536},{n:"Hogar y Tec.",u:10166},{n:"Cia. Arg. Aceites",u:8892},{n:"Barack Argentina",u:7676},{n:"Cresata S.A.",u:7216},{n:"Servicios AMG",u:4665}],
+  "2026-07":[{n:"Grupo Calzetta",u:28950},{n:"Grupo Larocca",u:27729},{n:"Barack Argentina",u:15923},{n:"Grupo GSB",u:14904},{n:"Bedson S.A.",u:14856},{n:"Seis Erre Alim.",u:11060},{n:"Hogar y Tec.",u:9580},{n:"Grupo Corral",u:8990},{n:"Ultralight SRL",u:5796},{n:"Cia. Arg. Aceites",u:3650},{n:"Ferreiros y Vilela",u:3629}],
 };
 
 const FACT_2025_AVG={
   "Grupo Corral":34683,"Hogar y Tec.":26445,"Grupo Larocca":21157,"Bedson S.A.":11651,
-  "Grupo Calzetta":9129,"Grupo GSB":8920,"Ultralight SRL":7841,"Global Tyres":7321,
+  "Grupo Calzetta":16450,"Grupo GSB":8920,"Ultralight SRL":7841,
   "Seis Erre Alim.":4757,"Cia. Arg. Aceites":4558,"Loinex S.A.":3940,"Start.ar":3856,
 };
 
@@ -462,10 +461,9 @@ const FACT_CLI={
   "Hogar y Tec.":   {p25:26445, "2026-01":11715,"2026-02":14359,"2026-03":11713,"2026-04":21124,"2026-05":12168,"2026-06":10166,"2026-07":9580},
   "Grupo Larocca":  {p25:21157, "2026-01":28267,"2026-02":21128,"2026-03":22546,"2026-04":23427,"2026-05":18058,"2026-06":23126,"2026-07":27729},
   "Bedson S.A.":    {p25:11651, "2026-01":7145, "2026-02":11523,"2026-03":14621,"2026-04":14913,"2026-05":13057,"2026-06":13536,"2026-07":14856},
-  "Grupo Calzetta": {p25:9129,  "2026-01":11066,"2026-02":19855,"2026-03":7689, "2026-04":13268,"2026-05":11370,"2026-06":15546,"2026-07":22832},
+  "Grupo Calzetta": {p25:16450, "2026-01":11657,"2026-02":26287,"2026-03":14618,"2026-04":23168,"2026-05":16838,"2026-06":21282,"2026-07":28950},
   "Grupo GSB":      {p25:8920,  "2026-01":12264,"2026-02":16083,"2026-03":25231,"2026-04":24261,"2026-05":25971,"2026-06":19025,"2026-07":14904},
   "Ultralight SRL": {p25:7841,  "2026-01":17921,"2026-02":9378, "2026-03":8520, "2026-04":11258,"2026-05":9949, "2026-06":14215,"2026-07":5796},
-  "Global Tyres":   {p25:7321,  "2026-01":591,  "2026-02":6432, "2026-03":6929, "2026-04":9900, "2026-05":5468, "2026-06":5736,"2026-07":6118},
   "Seis Erre Alim.":{p25:4757,  "2026-01":1407, "2026-02":637,  "2026-03":635,  "2026-04":3829, "2026-05":4877, "2026-06":4409,"2026-07":11060},
   "Cia. Arg. Aceites":{p25:4558,"2026-01":2484, "2026-02":3697, "2026-03":8759, "2026-04":7160, "2026-05":4752, "2026-06":8892,"2026-07":3650},
 };
