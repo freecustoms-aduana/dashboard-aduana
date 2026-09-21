@@ -78,6 +78,25 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .kpi-pos{color:var(--verde);}.kpi-neg{color:var(--rojo);}.kpi-neu{color:var(--muted);}
 
 /* Versus cards */
+.aduanas-card{background:#FFFFFF;border-radius:16px;padding:24px 28px;margin-bottom:22px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(30,45,107,0.07);}
+.adu-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:4px;flex-wrap:wrap;}
+.adu-title{font-size:15px;font-weight:800;color:var(--text);}
+.adu-sub{font-size:11.5px;color:var(--muted);}
+.adu-bars{margin:16px 0 4px;}
+.adu-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.adu-name{width:150px;flex-shrink:0;font-size:12.5px;color:var(--text);}
+.adu-track{flex:1;height:22px;background:#F1EFF7;border-radius:5px;overflow:hidden;}
+.adu-fill{height:100%;border-radius:5px;}
+.adu-val{width:104px;text-align:right;font-size:12.5px;font-weight:700;color:var(--text);white-space:nowrap;}
+.adu-val span{font-weight:500;color:var(--muted);font-size:11px;}
+.adu-tbl{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:18px;}
+.adu-tbl th{text-align:center;padding:6px 4px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);font-size:10.5px;}
+.adu-tbl th:first-child{text-align:left;}
+.adu-tbl td{text-align:center;padding:5px 4px;border-bottom:1px solid #F4F3F8;color:#2E3F80;}
+.adu-tbl td:first-child{text-align:left;font-weight:600;}
+.adu-tbl td.sel{background:var(--lavanda);font-weight:700;color:var(--acc);}
+.adu-tbl td.zero{color:#C9CBD6;}
+.adu-tbl tr.tot td{border-top:2px solid var(--border);border-bottom:none;font-weight:800;color:var(--text);padding-top:7px;}
 .versus-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px;}
 .versus-card{background:#FFFFFF;border-radius:16px;padding:24px 26px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);}
 .vs-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px;}
@@ -303,6 +322,7 @@ tfoot td.right{text-align:right;}
         </div>
       </div>
       <div id="kpi-grid" class="kpi-grid"></div>
+      <div id="aduanas-card" class="aduanas-card"></div>
       <div id="versus-grid" class="versus-grid"></div>
       <div id="multi-compare" style="display:none;"></div>
     </div>
@@ -401,11 +421,28 @@ const MESES={
   "2026-06":{label:"Jun 2026",lc:"Jun",ing:270776104,cos:46493146,mod:105393322,ops:271,dot:26,tc:1437.0,resUSD:82735,pe:127,enCurso:false},
   "2026-07":{label:"Jul 2026",lc:"Jul",ing:256702193,cos:44453686,mod:70894469,ops:279,dot:26,tc:1475,resUSD:95833,pe:93,enCurso:false},
   "2026-08":{label:"Ago 2026",lc:"Ago",ing:361142449,cos:53288500,mod:70894469,ops:363,dot:26,tc:1531.5,resUSD:154724,pe:84,enCurso:false},
+  "2026-09":{label:"Sep 2026",lc:"Sep",ing:0,cos:0,mod:0,ops:164,dot:26,tc:0,resUSD:0,pe:0,enCurso:true,soloOps:true},
 };
 const MK=Object.keys(MESES);
 const MK_CLOSED=MK.filter(k=>!MESES[k].enCurso);
 const MK_ENCURSO=MK.filter(k=>MESES[k].enCurso);
 const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:271,May:300,Jun:289,Jul:259,Ago:282,Sep:311,Oct:271,Nov:271,Dic:279};
+/* ADUANAS: operaciones oficializadas por aduana (UN ADUANA). Fuente: Qlik, Detalle de Operaciones.
+   El orden de los valores sigue exactamente el de ADUANAS.keys. */
+const ADUANAS={
+  keys:["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"],
+  rows:[
+    {n:"Bs. As. (Capital)",   v:[156,183,195,225,181,193,197,291,130]},
+    {n:"La Plata",            v:[ 40, 23, 45, 58, 41, 51, 45, 30, 23]},
+    {n:"Ezeiza",              v:[ 21, 24, 24, 26, 26, 26, 23, 29,  5]},
+    {n:"Campana",             v:[ 10,  7, 18, 14, 12,  0, 14,  9,  6]},
+    {n:"Z.F. V. Constitución",v:[  1,  0,  0,  0,  1,  1,  0,  1,  0]},
+    {n:"Paso de los Libres",  v:[  0,  0,  0,  0,  0,  0,  0,  3,  0]},
+    {n:"Mendoza",             v:[  0,  0,  1,  0,  1,  0,  0,  0,  0]},
+    {n:"Salta",               v:[  0,  1,  0,  0,  0,  0,  0,  0,  0]},
+  ]
+};
+const ADUANA_COLORS=["#1E2D6B","#2D47A8","#4B7BE5","#7BA3F0","#B8CEFA","#D97706","#F0B27A","#A5B4FC"];
 const RENT_2025_OP_AVG=354;
 const TOP10={
   "2026-03":[{n:"Grupo GSB",p:24,m:58},{n:"Grupo Larocca",p:28,m:54},{n:"Cia. Arg. Aceites",p:19,m:22},{n:"Grupo Corral",p:33,m:31},{n:"Bedson S.A.",p:15,m:20},{n:"Barack Argentina",p:6,m:7},{n:"Ultralight SRL",p:5,m:7},{n:"Hogar y Tec.",p:29,m:14},{n:"Grupo Calzetta",p:16,m:14},{n:"Seis Erre Alim.",p:7,m:4}],
@@ -414,15 +451,15 @@ const TOP10={
 };
 // OPS_CLI: Top 10 clientes 2025 (por ops) — usado en tab Comparativa 25/26
 const OPS_CLI={
-  "Grupo Larocca":    {p25:39.4,"2026-01":67,"2026-02":38,"2026-03":54,"2026-04":44,"2026-05":21,"2026-06":52,"2026-07":54,"2026-08":71},
-  "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45,"2026-06":21,"2026-07":20,"2026-08":46},
-  "Hogar y Tec.":     {p25:29.0,"2026-01":11,"2026-02":16,"2026-03":14,"2026-04":24,"2026-05":11,"2026-06":8,"2026-07":7,"2026-08":14},
-  "Grupo GSB":        {p25:24.2,"2026-01":34,"2026-02":40,"2026-03":58,"2026-04":73,"2026-05":74,"2026-06":45,"2026-07":53,"2026-08":55},
-  "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21,"2026-06":28,"2026-07":15,"2026-08":27},
-  "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13,"2026-06":23,"2026-07":22,"2026-08":17},
-  "Grupo Calzetta":   {p25:16.2,"2026-01":16,"2026-02":27,"2026-03":14,"2026-04":23,"2026-05":22,"2026-06":19,"2026-07":34,"2026-08":45},
-  "Op. Ferroviaria":  {p25: 8.0,"2026-01": 1,"2026-02": 3,"2026-03": 0,"2026-04": 3,"2026-05": 1,"2026-06": 1,"2026-07":2,"2026-08":0},
-  "Ferreiros y Vilela":{p25:7.6,"2026-01":10,"2026-02": 5,"2026-03": 9,"2026-04":10,"2026-05": 3,"2026-06": 7,"2026-07":7,"2026-08":11},
+  "Grupo Larocca":    {p25:39.4,"2026-01":67,"2026-02":38,"2026-03":54,"2026-04":44,"2026-05":21,"2026-06":52,"2026-07":54,"2026-08":71,"2026-09":34},
+  "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45,"2026-06":21,"2026-07":20,"2026-08":46,"2026-09":21},
+  "Hogar y Tec.":     {p25:29.0,"2026-01":11,"2026-02":16,"2026-03":14,"2026-04":24,"2026-05":11,"2026-06":8,"2026-07":7,"2026-08":14,"2026-09":6},
+  "Grupo GSB":        {p25:24.2,"2026-01":34,"2026-02":40,"2026-03":58,"2026-04":73,"2026-05":74,"2026-06":45,"2026-07":53,"2026-08":55,"2026-09":33},
+  "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21,"2026-06":28,"2026-07":15,"2026-08":27,"2026-09":21},
+  "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13,"2026-06":23,"2026-07":22,"2026-08":17,"2026-09":15},
+  "Grupo Calzetta":   {p25:16.2,"2026-01":16,"2026-02":27,"2026-03":14,"2026-04":23,"2026-05":22,"2026-06":19,"2026-07":34,"2026-08":45,"2026-09":4},
+  "Op. Ferroviaria":  {p25: 8.0,"2026-01": 1,"2026-02": 3,"2026-03": 0,"2026-04": 3,"2026-05": 1,"2026-06": 1,"2026-07":2,"2026-08":0,"2026-09":0},
+  "Ferreiros y Vilela":{p25:7.6,"2026-01":10,"2026-02": 5,"2026-03": 9,"2026-04":10,"2026-05": 3,"2026-06": 7,"2026-07":7,"2026-08":11,"2026-09":2},
 };
 const OPS_CLI_KEYS=Object.keys(OPS_CLI);
 // OPS_2025_AVG: promedio mensual 2025 por cliente (para gráficos comparativos)
@@ -442,6 +479,7 @@ const OPS={
   "2026-06":[{n:"Grupo Larocca",v:52},{n:"Grupo GSB",v:45},{n:"Cia. Arg. Aceites",v:28},{n:"Bedson S.A.",v:23},{n:"Grupo Corral",v:21},{n:"Grupo Calzetta",v:19},{n:"Hogar y Tec.",v:8},{n:"Ultralight SRL",v:8},{n:"Barack Argentina",v:7},{n:"Servicios AMG",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Seis Erre Alim.",v:6},{n:"Cresata S.A.",v:6},{n:"DSK Group",v:3},{n:"Defiba S.A.",v:3}],
   "2026-07":[{n:"Grupo Larocca",v:54},{n:"Grupo GSB",v:53},{n:"Grupo Calzetta",v:34},{n:"Bedson S.A.",v:22},{n:"Grupo Corral",v:20},{n:"Seis Erre Alim.",v:17},{n:"Cia. Arg. Aceites",v:15},{n:"Cresata S.A.",v:7},{n:"Hogar y Tec.",v:7},{n:"Ultralight SRL",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Barack Argentina",v:5},{n:"Candy Electrod.",v:4},{n:"Op. Ferroviaria",v:2}],
   "2026-08":[{n:"Grupo Larocca",v:71},{n:"Grupo GSB",v:55},{n:"Grupo Corral",v:46},{n:"Grupo Calzetta",v:45},{n:"Cia. Arg. Aceites",v:27},{n:"Seis Erre Alim.",v:19},{n:"Bedson S.A.",v:17},{n:"Candy Electrod.",v:15},{n:"Hogar y Tec.",v:14},{n:"Ferreiros y Vilela",v:11},{n:"Ultralight SRL",v:7},{n:"Barack Argentina",v:6},{n:"Servicios AMG",v:4},{n:"Beta Glass S.A.",v:3},{n:"Cresata S.A.",v:2},{n:"Maxtervision",v:2}],
+  "2026-09":[{n:"Grupo Larocca",v:34},{n:"Grupo GSB",v:33},{n:"Cia. Arg. Aceites",v:21},{n:"Grupo Corral",v:21},{n:"Bedson S.A.",v:15},{n:"Industrias Erpla",v:7},{n:"Hogar y Tec.",v:6},{n:"Grupo Calzetta",v:4},{n:"Servicios AMG",v:4},{n:"Ultralight SRL",v:3},{n:"Barack Argentina",v:2},{n:"Daemar S.A.",v:2},{n:"Ferreiros y Vilela",v:2}],
 };
 const FACT={
   "2026-01":[{n:"Grupo Larocca",u:28267},{n:"Grupo Corral",u:18159},{n:"Ultralight SRL",u:17921},{n:"Grupo GSB",u:12264},{n:"Hogar y Tec.",u:11715},{n:"Grupo Calzetta",u:11066},{n:"Bedson S.A.",u:7145},{n:"Maxtervision",u:5227},{n:"Ferreiros y Vilela",u:4913},{n:"Servicios AMG",u:3102},{n:"Cia. Arg. Aceites",u:2484},{n:"Beta Glass S.A.",u:2454}],
@@ -631,14 +669,19 @@ function getSelKeys(){return MK.filter(k=>selMonths.has(k));}
 
 function getAgg(keys){
   const ms=keys.map(k=>MESES[k]),n=ms.length;
+  // Meses con cierre economico. Los marcados soloOps (ej. mes en curso sin MOD ni
+  // facturacion cargada) aportan operaciones pero NO entran en ningun agregado financiero.
+  const msF=ms.filter(m=>!m.soloOps),nF=msF.length;
+  const div=nF||1;
   const ops=ms.reduce((s,m)=>s+m.ops,0);
-  const res=ms.reduce((s,m)=>s+m.resUSD,0);
-  const dot=Math.round(ms.reduce((s,m)=>s+m.dot,0)/n);
+  const opsFin=msF.reduce((s,m)=>s+m.ops,0);
+  const res=msF.reduce((s,m)=>s+m.resUSD,0);
+  const dot=Math.round(msF.reduce((s,m)=>s+m.dot,0)/div);
   return{label:ytdMode?"Año en Curso 2026":keys.map(k=>MESES[k].lc).join(" + "),
-    ops,resUSD:res,ing:ms.reduce((s,m)=>s+m.ing,0),
-    cos:ms.reduce((s,m)=>s+m.cos,0),mod:ms.reduce((s,m)=>s+m.mod,0),
-    dot,tc:+(()=>{const ts=ms.filter(m=>m.tc>0);return ts.length?ts.reduce((s,m)=>s+m.tc,0)/ts.length:0;})().toFixed(1),
-    pe:ms.reduce((s,m)=>s+m.pe,0),_n:n};
+    ops,opsFin,resUSD:res,ing:msF.reduce((s,m)=>s+m.ing,0),
+    cos:msF.reduce((s,m)=>s+m.cos,0),mod:msF.reduce((s,m)=>s+m.mod,0),
+    dot,tc:+(()=>{const ts=msF.filter(m=>m.tc>0);return ts.length?ts.reduce((s,m)=>s+m.tc,0)/ts.length:0;})().toFixed(1),
+    pe:msF.reduce((s,m)=>s+m.pe,0),_n:n,_nF:nF,parcial:nF<n};
 }
 
 /* === FILTER BAR === */
@@ -662,7 +705,12 @@ function updateFilterBar(){
   document.getElementById("badge-mes").textContent=badgeTxt;
   const hasCurso=!ytdMode&&keys.some(k=>MESES[k].enCurso);
   document.getElementById("prov-banner").classList.toggle("visible",hasCurso);
-  if(hasCurso&&MK_ENCURSO.length){const em=MESES[MK_ENCURSO[0]];document.getElementById("prov-banner-txt").textContent=em.label+" — Datos provisorios. El mes está en curso y los valores se actualizarán al cierre.";}
+  if(hasCurso&&MK_ENCURSO.length){
+    const em=MESES[MK_ENCURSO[0]];
+    document.getElementById("prov-banner-txt").textContent=em.soloOps
+      ? em.label+" — Mes en curso. Solo están cargadas las operaciones; la liquidación de MOD y la facturación aún no se imputaron, por eso no se computan resultados económicos para este mes."
+      : em.label+" — Datos provisorios. El mes está en curso y los valores se actualizarán al cierre.";
+  }
 }
 function toggleMonth(k){
   selQ=null;
@@ -868,15 +916,61 @@ Chart.register({id:"lbl",afterDatasetsDraw(chart){
 }});
 
 /* === RESUMEN === */
+/* === KPI: OPERACIONES POR ADUANA ===
+   Respeta la seleccion de meses de la barra superior: muestra el ranking del periodo
+   elegido (mes suelto, varios meses sumados o el año en curso) y debajo la evolucion
+   mensual completa con las columnas seleccionadas resaltadas. */
+function renderAduanas(){
+  const keys=getSelKeys().filter(k=>ADUANAS.keys.includes(k));
+  const sel=new Set(keys);
+  const idxs=keys.map(k=>ADUANAS.keys.indexOf(k));
+  const rows=ADUANAS.rows.map((r,i)=>({
+    n:r.n,
+    color:ADUANA_COLORS[i%ADUANA_COLORS.length],
+    selTot:idxs.reduce((s,j)=>s+r.v[j],0),
+    anual:r.v.reduce((s,x)=>s+x,0),
+    v:r.v
+  })).sort((a,b)=>b.selTot-a.selTot||b.anual-a.anual);
+  const totSel=rows.reduce((s,r)=>s+r.selTot,0);
+  const totAnual=rows.reduce((s,r)=>s+r.anual,0);
+  const activas=rows.filter(r=>r.selTot>0).length;
+  const max=rows.length?rows[0].selTot:0;
+  const periodo=ytdMode?"Año en Curso 2026":keys.length===1?MESES[keys[0]].label:keys.map(k=>MESES[k].lc).join(" + ");
+
+  const bars=rows.filter(r=>r.selTot>0).map(r=>
+    '<div class="adu-row">'+
+      '<div class="adu-name">'+r.n+'</div>'+
+      '<div class="adu-track"><div class="adu-fill" style="width:'+(max>0?(r.selTot/max*100):0).toFixed(1)+'%;background:'+r.color+'"></div></div>'+
+      '<div class="adu-val">'+r.selTot.toLocaleString("es-AR")+' <span>('+(totSel>0?(r.selTot/totSel*100).toFixed(1):"0,0").replace(".",",")+'%)</span></div>'+
+    '</div>').join("");
+
+  const th=ADUANAS.keys.map(k=>'<th'+(sel.has(k)?' style="color:var(--acc)"':'')+'>'+MESES[k].lc+'</th>').join("");
+  const body=rows.map(r=>'<tr><td>'+r.n+'</td>'+
+      ADUANAS.keys.map((k,j)=>'<td class="'+(sel.has(k)?"sel":r.v[j]===0?"zero":"")+'">'+(r.v[j]||"-")+'</td>').join("")+
+      '<td style="font-weight:700">'+r.anual+'</td></tr>').join("");
+  const totRow='<tr class="tot"><td>Total</td>'+
+      ADUANAS.keys.map((k,j)=>'<td class="'+(sel.has(k)?"sel":"")+'">'+ADUANAS.rows.reduce((s,r)=>s+r.v[j],0)+'</td>').join("")+
+      '<td>'+totAnual+'</td></tr>';
+
+  document.getElementById("aduanas-card").innerHTML=
+    '<div class="adu-head">'+
+      '<div class="adu-title">&#9679; Operaciones por Aduana</div>'+
+      '<div class="adu-sub">'+periodo+' &middot; <strong>'+totSel.toLocaleString("es-AR")+'</strong> operaciones en '+activas+' aduana'+(activas===1?"":"s")+' &middot; total 2026 (incl. mes en curso): '+totAnual.toLocaleString("es-AR")+'</div>'+
+    '</div>'+
+    '<div class="adu-bars">'+(bars||'<div class="adu-sub">Sin operaciones en el periodo seleccionado.</div>')+'</div>'+
+    '<table class="adu-tbl"><thead><tr><th>Aduana</th>'+th+'<th>2026</th></tr></thead><tbody>'+body+totRow+'</tbody></table>';
+}
+
 function renderResumen(){
   const keys=getSelKeys();
+  renderAduanas();
   const single=keys.length===1&&!ytdMode;
   const qMode=selQ!==null;
   document.getElementById("analisis-wrap").style.display=(single||qMode)?"block":"none";
   if(qMode){
     const agg=getAgg(keys);
-    const rentOp=agg.ops>0?Math.round(agg.resUSD/agg.ops):0;
-    const rentMes=Math.round(agg.resUSD/keys.length);
+    const rentOp=agg.opsFin>0?Math.round(agg.resUSD/agg.opsFin):0;
+    const rentMes=Math.round(agg.resUSD/(agg._nF||1));
     const opsMes=Math.round(agg.ops/keys.length);
     document.getElementById("analisis-mes-label").textContent=selQ+" 2026";
     document.getElementById("analisis-txt").innerHTML=ANALISIS_DATA[selQ+"-2026"]||"";
@@ -919,10 +1013,10 @@ function renderResumen(){
       document.getElementById("versus-grid").innerHTML='<div class="versus-card" style="grid-column:1/-1"><div class="vs-title">Sin mes anterior comparable</div></div>';
     }
   }else{
-    const agg=getAgg(keys),n=keys.length;
-    const totResOp=Math.round(agg.resUSD/agg.ops);
-    const totResEmp=Math.round(agg.resUSD/(agg.dot*n));
-    const avgOps=Math.round(agg.ops/n),avgRes=Math.round(agg.resUSD/n);
+    const agg=getAgg(keys),n=keys.length,nF=agg._nF||1;
+    const totResOp=agg.opsFin>0?Math.round(agg.resUSD/agg.opsFin):0;
+    const totResEmp=Math.round(agg.resUSD/(agg.dot*nF));
+    const avgOps=Math.round(agg.ops/n),avgRes=Math.round(agg.resUSD/nF);
     const dispOps=ytdMode?avgOps:agg.ops;
     const dispRes=ytdMode?avgRes:agg.resUSD;
     const dispOpsLbl=ytdMode?"Ops. Prom./Mes (prom.)":"Operaciones Seleccion";
@@ -932,11 +1026,11 @@ function renderResumen(){
     document.getElementById("kpi-grid").innerHTML=[
       {l:dispOpsLbl,v:dispOps,s:dispOpsSub},
       {l:dispResLbl,v:fU(dispRes),s:dispResSub},
-      {l:"Rent./Op (prom. ponderado)",v:"USD "+totResOp,s:"Sobre "+agg.ops+" ops totales"},
+      {l:"Rent./Op (prom. ponderado)",v:"USD "+totResOp,s:"Sobre "+agg.opsFin+" ops con cierre"},
       {l:"Rent./Emp Prom./Mes",v:"USD "+totResEmp,s:"Dotacion prom: "+agg.dot+" personas"},
     ].map(k=>'<div class="kpi-card" style="border-top-color:var(--acc)"><div class="kpi-label">'+k.l+'</div><div class="kpi-value">'+k.v+'</div><div class="kpi-sub kpi-neu">'+k.s+'</div></div>').join("");
     document.getElementById("versus-grid").style.display="none";
-    const avgPE=Math.round(agg.pe/n),avgOpsN=avgOps;
+    const avgPE=Math.round(agg.pe/nF),avgOpsN=avgOps;
     const mets=ytdMode?[
       {l:"Ops. Prom./Mes (prom.)",   fn:m=>m.ops,    agg:avgOps},
       {l:"EBITDA Prom./Mes (prom.)", fn:m=>fU(m.resUSD), agg:fU(avgRes)},
@@ -953,7 +1047,7 @@ function renderResumen(){
       {l:"Rent./Emp (USD)",  fn:m=>"USD "+resEmp(m),agg:"USD "+totResEmp},
       {l:"Dotacion",         fn:m=>m.dot+" pers.",  agg:agg.dot+" pers. (prom)"},
       {l:"P. Equilibrio",    fn:m=>m.pe+" ops",     agg:agg.pe+" ops (suma)"},
-      {l:"Cobertura PE",     fn:m=>(m.ops/m.pe).toFixed(1)+"x", agg:(agg.ops/agg.pe).toFixed(1)+"x"},
+      {l:"Cobertura PE",     fn:m=>m.pe>0?(m.ops/m.pe).toFixed(1)+"x":"S/D", agg:agg.pe>0?(agg.opsFin/agg.pe).toFixed(1)+"x":"S/D"},
       {l:"TC (ARS)",         fn:m=>m.tc.toFixed(0), agg:agg.tc.toFixed(0)+" (prom)"},
     ];
     const aggLbl=ytdMode?"Promedio mensual":"Acumulado";
@@ -1292,11 +1386,11 @@ function renderFacturacion(){
 /* === RENTABILIDAD === */
 function renderRentabilidad(){
   const keys=getSelKeys(),sel=new Set(keys);
-  const T=MK.map(k=>MESES[k]),selMs=keys.map(k=>MESES[k]);
+  const T=MK.map(k=>MESES[k]),selMs=keys.map(k=>MESES[k]).filter(m=>!m.soloOps);
   const T_C=MK_CLOSED.map(k=>MESES[k]);
-  const agg=getAgg(keys),n=keys.length;
-  const totResOp=Math.round(agg.resUSD/agg.ops);
-  const totResEmp=Math.round(agg.resUSD/(agg.dot*n));
+  const agg=getAgg(keys),n=keys.length,nF=agg._nF||1;
+  const totResOp=agg.opsFin>0?Math.round(agg.resUSD/agg.opsFin):0;
+  const totResEmp=Math.round(agg.resUSD/(agg.dot*nF));
   const single=keys.length===1&&!ytdMode;
   let sub2="",sub3="",sub4="";
   if(single){
@@ -1304,14 +1398,14 @@ function renderRentabilidad(){
     sub2=ant?vStr(m.resUSD,ant.resUSD)+" vs "+ant.lc:"Inicio";
     sub3=ant?"USD "+resOp(ant)+" en "+ant.lc:"";
     sub4=ant?"USD "+resEmp(ant)+" en "+ant.lc:"";
-  }else{sub2=ytdMode?"Promedio mensual 2026":n+" meses acumulados";sub3="Sobre "+agg.ops+" ops totales";sub4="Dotacion prom: "+agg.dot+" pers.";}
-  const ytdEBITDA=ytdMode?Math.round(agg.resUSD/n):agg.resUSD;
-  const ytdCovLabel=ytdMode?(Math.round(agg.ops/n)+"/"+Math.round(agg.pe/n)+" ops (prom.)"):(agg.ops+" ops / "+Math.round(agg.pe/n)+" min/mes");
+  }else{sub2=ytdMode?"Promedio mensual 2026":nF+" meses acumulados";sub3="Sobre "+agg.opsFin+" ops con cierre";sub4="Dotacion prom: "+agg.dot+" pers.";}
+  const ytdEBITDA=ytdMode?Math.round(agg.resUSD/nF):agg.resUSD;
+  const ytdCovLabel=ytdMode?(Math.round(agg.opsFin/nF)+"/"+Math.round(agg.pe/nF)+" ops (prom.)"):(agg.opsFin+" ops / "+Math.round(agg.pe/nF)+" min/mes");
   document.getElementById("rent-kpi-grid").innerHTML=[
     {l:ytdMode?"EBITDA Prom./Mes (prom.)":"EBITDA Periodo",v:fU(ytdEBITDA),s:sub2,c:"neu"},
     {l:"Rent. / Operacion (prom.)",v:"USD "+totResOp,s:sub3,c:"neu"},
     {l:"Rent. / Empleado Prom./Mes",v:"USD "+totResEmp,s:sub4,c:"neu"},
-    {l:"Cobertura PE",v:agg.pe>0?(agg.ops/agg.pe).toFixed(1)+"x":"S/D",s:ytdCovLabel,c:"pos"},
+    {l:"Cobertura PE",v:agg.pe>0?(agg.opsFin/agg.pe).toFixed(1)+"x":"S/D",s:ytdCovLabel,c:"pos"},
   ].map(k=>'<div class="kpi-card"><div class="kpi-label">'+k.l+'</div><div class="kpi-value">'+k.v+'</div><div class="kpi-sub kpi-'+k.c+'">'+k.s+'</div></div>').join("");
   const pLbl=ytdMode?"Año en Curso":keys.map(k=>MESES[k].lc).join(" + ");
   dc("rent-mes");
@@ -1328,10 +1422,10 @@ function renderRentabilidad(){
     '<strong>'+pLbl+':</strong> Rent./Op <strong>USD '+totResOp+'</strong>'+
     ' | Prom. 2025: <strong>USD '+RENT_2025_OP_AVG+'/op</strong> '+
     '<span style="color:var(--'+vsAnualC+')">'+vsAnual+'</span> interanual'+
-    ' | Cobertura PE: <strong>'+(agg.pe>0?(agg.ops/agg.pe*n).toFixed(1)+'x':'S/D')+'</strong>'+
+    ' | Cobertura PE: <strong>'+(agg.pe>0?(agg.opsFin/agg.pe*nF).toFixed(1)+'x':'S/D')+'</strong>'+
     (ytdMode?' | EBITDA Prom./Mes: <strong>'+fU(ytdEBITDA)+'</strong> <em style="font-size:10px;color:var(--muted)">(promedio)</em>':keys.length>1?' | EBITDA Acum.: <strong>'+fU(agg.resUSD)+'</strong>':"");
-  const avgPEdisp=Math.round(agg.pe/n);
-  const peAvgCard=n>1?'<div class="pe-card selected" style="grid-column:span 1;border-width:2px;">'+
+  const avgPEdisp=Math.round(agg.pe/nF);
+  const peAvgCard=nF>1?'<div class="pe-card selected" style="grid-column:span 1;border-width:2px;">'+
     '<div class="pe-mes">PROMEDIO</div><div class="pe-val">'+avgPEdisp+'</div><div class="pe-label">ops min. prom.</div></div>':""; 
   document.getElementById("pe-grid").innerHTML=peAvgCard+T_C.map((m,i)=>{
     const k=MK_CLOSED[i],s=sel.has(k);
