@@ -421,7 +421,7 @@ const MESES={
   "2026-06":{label:"Jun 2026",lc:"Jun",ing:270776104,cos:46493146,mod:105393322,ops:271,dot:26,tc:1437.0,resUSD:82735,pe:127,enCurso:false},
   "2026-07":{label:"Jul 2026",lc:"Jul",ing:256702193,cos:44453686,mod:70894469,ops:279,dot:26,tc:1475,resUSD:95833,pe:93,enCurso:false},
   "2026-08":{label:"Ago 2026",lc:"Ago",ing:361142449,cos:53288500,mod:70894469,ops:363,dot:26,tc:1531.5,resUSD:154724,pe:84,enCurso:false},
-  "2026-09":{label:"Sep 2026",lc:"Sep",ing:0,cos:0,mod:0,ops:164,dot:26,tc:0,resUSD:0,pe:0,enCurso:true,soloOps:true},
+  "2026-09":{label:"Sep 2026",lc:"Sep",ing:0,cos:0,mod:0,ops:311,dot:26,tc:0,resUSD:0,pe:0,enCurso:true,soloOps:true},
 };
 const MK=Object.keys(MESES);
 const MK_CLOSED=MK.filter(k=>!MESES[k].enCurso);
@@ -432,10 +432,10 @@ const OPS_2025={Ene:232,Feb:221,Mar:238,Abr:271,May:300,Jun:289,Jul:259,Ago:282,
 const ADUANAS={
   keys:["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"],
   rows:[
-    {n:"Bs. As. (Capital)",   v:[156,183,195,225,181,193,197,291,130]},
-    {n:"La Plata",            v:[ 40, 23, 45, 58, 41, 51, 45, 30, 23]},
-    {n:"Ezeiza",              v:[ 21, 24, 24, 26, 26, 26, 23, 29,  5]},
-    {n:"Campana",             v:[ 10,  7, 18, 14, 12,  0, 14,  9,  6]},
+    {n:"Bs. As. (Capital)",   v:[156,183,195,225,181,193,197,291,258]},
+    {n:"La Plata",            v:[ 40, 23, 45, 58, 41, 51, 45, 30, 34]},
+    {n:"Ezeiza",              v:[ 21, 24, 24, 26, 26, 26, 23, 29, 12]},
+    {n:"Campana",             v:[ 10,  7, 18, 14, 12,  0, 14,  9,  7]},
     {n:"Z.F. V. Constitución",v:[  1,  0,  0,  0,  1,  1,  0,  1,  0]},
     {n:"Paso de los Libres",  v:[  0,  0,  0,  0,  0,  0,  0,  3,  0]},
     {n:"Mendoza",             v:[  0,  0,  1,  0,  1,  0,  0,  0,  0]},
@@ -451,13 +451,13 @@ const TOP10={
 };
 // OPS_CLI: Top 10 clientes 2025 (por ops) — usado en tab Comparativa 25/26
 const OPS_CLI={
-  "Grupo Larocca":    {p25:39.4,"2026-01":67,"2026-02":38,"2026-03":54,"2026-04":44,"2026-05":21,"2026-06":52,"2026-07":54,"2026-08":71,"2026-09":34},
-  "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45,"2026-06":21,"2026-07":20,"2026-08":46,"2026-09":21},
-  "Hogar y Tec.":     {p25:29.0,"2026-01":11,"2026-02":16,"2026-03":14,"2026-04":24,"2026-05":11,"2026-06":8,"2026-07":7,"2026-08":14,"2026-09":6},
-  "Grupo GSB":        {p25:24.2,"2026-01":34,"2026-02":40,"2026-03":58,"2026-04":73,"2026-05":74,"2026-06":45,"2026-07":53,"2026-08":55,"2026-09":33},
-  "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21,"2026-06":28,"2026-07":15,"2026-08":27,"2026-09":21},
-  "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13,"2026-06":23,"2026-07":22,"2026-08":17,"2026-09":15},
-  "Grupo Calzetta":   {p25:16.2,"2026-01":16,"2026-02":27,"2026-03":14,"2026-04":23,"2026-05":22,"2026-06":19,"2026-07":34,"2026-08":45,"2026-09":4},
+  "Grupo Larocca":    {p25:39.4,"2026-01":67,"2026-02":38,"2026-03":54,"2026-04":44,"2026-05":21,"2026-06":52,"2026-07":54,"2026-08":71,"2026-09":48},
+  "Grupo Corral":     {p25:38.4,"2026-01":26,"2026-02":26,"2026-03":31,"2026-04":33,"2026-05":45,"2026-06":21,"2026-07":20,"2026-08":46,"2026-09":96},
+  "Hogar y Tec.":     {p25:29.0,"2026-01":11,"2026-02":16,"2026-03":14,"2026-04":24,"2026-05":11,"2026-06":8,"2026-07":7,"2026-08":14,"2026-09":8},
+  "Grupo GSB":        {p25:24.2,"2026-01":34,"2026-02":40,"2026-03":58,"2026-04":73,"2026-05":74,"2026-06":45,"2026-07":53,"2026-08":55,"2026-09":45},
+  "Cia. Arg. Aceites":{p25:19.3,"2026-01":13,"2026-02":15,"2026-03":22,"2026-04":32,"2026-05":21,"2026-06":28,"2026-07":15,"2026-08":27,"2026-09":24},
+  "Bedson S.A.":      {p25:14.8,"2026-01":10,"2026-02":16,"2026-03":20,"2026-04":20,"2026-05":13,"2026-06":23,"2026-07":22,"2026-08":17,"2026-09":23},
+  "Grupo Calzetta":   {p25:16.2,"2026-01":16,"2026-02":27,"2026-03":14,"2026-04":23,"2026-05":22,"2026-06":19,"2026-07":34,"2026-08":45,"2026-09":22},
   "Op. Ferroviaria":  {p25: 8.0,"2026-01": 1,"2026-02": 3,"2026-03": 0,"2026-04": 3,"2026-05": 1,"2026-06": 1,"2026-07":2,"2026-08":0,"2026-09":0},
   "Ferreiros y Vilela":{p25:7.6,"2026-01":10,"2026-02": 5,"2026-03": 9,"2026-04":10,"2026-05": 3,"2026-06": 7,"2026-07":7,"2026-08":11,"2026-09":2},
 };
@@ -479,7 +479,7 @@ const OPS={
   "2026-06":[{n:"Grupo Larocca",v:52},{n:"Grupo GSB",v:45},{n:"Cia. Arg. Aceites",v:28},{n:"Bedson S.A.",v:23},{n:"Grupo Corral",v:21},{n:"Grupo Calzetta",v:19},{n:"Hogar y Tec.",v:8},{n:"Ultralight SRL",v:8},{n:"Barack Argentina",v:7},{n:"Servicios AMG",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Seis Erre Alim.",v:6},{n:"Cresata S.A.",v:6},{n:"DSK Group",v:3},{n:"Defiba S.A.",v:3}],
   "2026-07":[{n:"Grupo Larocca",v:54},{n:"Grupo GSB",v:53},{n:"Grupo Calzetta",v:34},{n:"Bedson S.A.",v:22},{n:"Grupo Corral",v:20},{n:"Seis Erre Alim.",v:17},{n:"Cia. Arg. Aceites",v:15},{n:"Cresata S.A.",v:7},{n:"Hogar y Tec.",v:7},{n:"Ultralight SRL",v:7},{n:"Ferreiros y Vilela",v:7},{n:"Barack Argentina",v:5},{n:"Candy Electrod.",v:4},{n:"Op. Ferroviaria",v:2}],
   "2026-08":[{n:"Grupo Larocca",v:71},{n:"Grupo GSB",v:55},{n:"Grupo Corral",v:46},{n:"Grupo Calzetta",v:45},{n:"Cia. Arg. Aceites",v:27},{n:"Seis Erre Alim.",v:19},{n:"Bedson S.A.",v:17},{n:"Candy Electrod.",v:15},{n:"Hogar y Tec.",v:14},{n:"Ferreiros y Vilela",v:11},{n:"Ultralight SRL",v:7},{n:"Barack Argentina",v:6},{n:"Servicios AMG",v:4},{n:"Beta Glass S.A.",v:3},{n:"Cresata S.A.",v:2},{n:"Maxtervision",v:2}],
-  "2026-09":[{n:"Grupo Larocca",v:34},{n:"Grupo GSB",v:33},{n:"Cia. Arg. Aceites",v:21},{n:"Grupo Corral",v:21},{n:"Bedson S.A.",v:15},{n:"Industrias Erpla",v:7},{n:"Hogar y Tec.",v:6},{n:"Grupo Calzetta",v:4},{n:"Servicios AMG",v:4},{n:"Ultralight SRL",v:3},{n:"Barack Argentina",v:2},{n:"Daemar S.A.",v:2},{n:"Ferreiros y Vilela",v:2}],
+  "2026-09":[{n:"Grupo Corral",v:96},{n:"Grupo Larocca",v:48},{n:"Grupo GSB",v:45},{n:"Cia. Arg. Aceites",v:24},{n:"Bedson S.A.",v:23},{n:"Grupo Calzetta",v:22},{n:"Industrias Erpla",v:9},{n:"Hogar y Tec.",v:8},{n:"Ultralight SRL",v:6},{n:"Barack Argentina",v:4},{n:"Daemar S.A.",v:4},{n:"Servicios AMG",v:4}],
 };
 const FACT={
   "2026-01":[{n:"Grupo Larocca",u:28267},{n:"Grupo Corral",u:18159},{n:"Ultralight SRL",u:17921},{n:"Grupo GSB",u:12264},{n:"Hogar y Tec.",u:11715},{n:"Grupo Calzetta",u:11066},{n:"Bedson S.A.",u:7145},{n:"Maxtervision",u:5227},{n:"Ferreiros y Vilela",u:4913},{n:"Servicios AMG",u:3102},{n:"Cia. Arg. Aceites",u:2484},{n:"Beta Glass S.A.",u:2454}],
