@@ -521,11 +521,11 @@ const EQUIPOS={
   labels:["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep"],
   colors:["#1E2D6B","#2D47A8","#4B7BE5","#7BA3F0","#B8CEFA"],
   teams:[
-    {name:"Neum\xe1ticos",abbr:"NE",exec:"Mauro Pescio",margen:[42.2,58.7,43.7,46.3,56.1,48.5,61.2,76.6,75.0],rev:[58084,72485,59394,69085,70949,66967,65670,112941,114954],res:[24491,42513,25954,32005,39775,32498,40168,86499,86181]},
-    {name:"L\xednea Blanca",abbr:"LB",exec:"Nicol\xe1s G\xf3mez",margen:[61.5,49.8,45.0,46.4,41.1,52.5,59.2,65.7,40.0],rev:[35039,33274,30680,38215,23875,42079,36205,44673,27799],res:[21546,16559,13801,17716,9822,22107,21433,29356,11131]},
-    {name:"Maquinaria",abbr:"MA",exec:"Andrea Pacheco",margen:[15.6,15.6,26.6,26.5,27.7,24.3,24.1,36.8,35.3],rev:[16437,19199,29642,33412,30000,26476,19529,24332,25876],res:[2558,3003,7892,8861,8314,6436,4702,8958,9147]},
-    {name:"Alimentos y Qu\xedmicos",abbr:"AQ",exec:"Daira Juarez",margen:[-0.9,9.6,22.6,23.9,27.6,23.4,48.9,53.7,37.7],rev:[16185,18643,28016,33210,25256,30414,33709,38585,31210],res:[-144,1799,6334,7949,6965,7123,16481,20722,11772]},
-    {name:"Varios",abbr:"VA",exec:"Jennifer Almendra",margen:[55.3,51.0,59.0,52.8,58.2,44.7,60.3,60.2,66.1],rev:[18592,14001,24922,24059,15943,14330,14763,15277,19532],res:[10288,7138,14696,12713,9274,6406,8898,9196,12915]},
+    {name:"Neum\xe1ticos",abbr:"NE",exec:"Mauro Pescio",margen:[56.9,65.0,48.8,49.7,62.1,53.8,65.1,79.0,77.5],rev:[58084,72485,59394,69085,70949,66967,65670,112941,114954],res:[33030,47140,28960,34331,44058,36030,42780,89207,89128]},
+    {name:"L\xednea Blanca",abbr:"LB",exec:"Nicol\xe1s G\xf3mez",margen:[54.3,51.3,36.6,41.9,28.0,53.0,59.6,66.0,40.6],rev:[35039,33274,30680,38215,23875,42079,36205,44673,27799],res:[19024,17073,11226,16000,6686,22303,21573,29502,11290]},
+    {name:"Maquinaria",abbr:"MA",exec:"Andrea Pacheco",margen:[-9.1,5.5,26.5,25.5,35.8,16.3,16.1,30.2,28.5],rev:[16437,19199,29642,33412,30000,26476,19529,24332,25876],res:[-1504,1050,7848,8525,10744,4322,3138,7336,7382]},
+    {name:"Alimentos y Qu\xedmicos",abbr:"AQ",exec:"Daira Juarez",margen:[-26.6,-11.1,11.2,14.4,13.0,16.8,44.5,49.7,32.3],rev:[16185,18643,28016,33210,25256,30414,33709,38585,31210],res:[-4298,-2078,3134,4797,3271,5121,14995,19181,10096]},
+    {name:"Varios",abbr:"VA",exec:"Jennifer Almendra",margen:[67.2,55.9,70.3,64.8,58.9,47.4,62.2,62.2,67.8],rev:[18592,14001,24922,24059,15943,14330,14763,15277,19532],res:[12489,7827,17508,15593,9393,6794,9187,9496,13241]},
   ]
 };
 const NOVEDADES={
@@ -647,7 +647,15 @@ const NOVEDADES={
   },
   "2026-07":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}},
   "2026-08":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}},
-  "2026-09":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}},
+  "2026-09":{
+    acciones:[],oportunidades:[],hitos:[],desvios:[],
+    personal:{
+      ing:["Valentín Auditro — Puerto · sueldo ARS 793.536"],
+      desv:["Carmen Reyes — liquidación final ARS 3.956.602 imputada en el MOD de septiembre"],
+      ren:[],
+      otros:["Dotación sin variación neta: 1 ingreso y 1 egreso."]
+    }
+  },
   "2026-10":{acciones:[],oportunidades:[],hitos:[],desvios:[],personal:{ing:[],desv:[],ren:[],otros:[]}}
 };
 const FACT_MESES=["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"];
@@ -849,11 +857,15 @@ function entrItem(cls,title,desc,doc){
 }
 function renderObjetivos(){
   const mks=Object.values(MESES);
-  const ytdOps=mks.reduce((s,m)=>s+m.ops,0);
-  const ytdRes=mks.reduce((s,m)=>s+m.resUSD,0);
-  const nM=mks.length;
-  const proyAnual=Math.round(ytdOps/nM*12);
-  const rentOp=Math.round(ytdRes/ytdOps);
+  // Los meses soloOps (en curso, sin nomina imputada) aportan operaciones pero no resultado:
+  // si entraran al calculo, diluirian la rentabilidad por operacion y la proyeccion anual.
+  const mksF=mks.filter(m=>!m.soloOps), nM=mksF.length||1;
+  const ytdOpsFin=mksF.reduce((s,m)=>s+m.ops,0);
+  const ytdRes=mksF.reduce((s,m)=>s+m.resUSD,0);
+  const ytdOps=mks.reduce((s,m)=>s+m.ops,0);           // total real, incluye el mes en curso
+  const proyAnual=Math.round(ytdOpsFin/nM*12);          // sobre meses completos
+  const rentOp=ytdOpsFin?Math.round(ytdRes/ytdOpsFin):0;
+  const parcial=mks.length>mksF.length;
   const lib2026=LIB.b0[2];
   const libMeta=Math.round(40*1.15*10)/10;
   const cpct=(v,t)=>Math.min(100,Math.round(v/t*100));
@@ -864,13 +876,13 @@ function renderObjetivos(){
     <div class="obj-section-lbl">Objetivos Estrat&eacute;gicos</div>
     <div class="obj-grid">
       ${objCard({name:"Tiempo de Liberaci&oacute;n 0&ndash;6 d&iacute;as",badge:badgeLib,badgeTxt:lib2026>=libMeta?"Superado":"En proceso",val:lib2026+"%",valSm:"en 0-6 d&iacute;as (acum. 2026)",target:"Meta: llevar al "+libMeta+"% (+15% sobre base 40%)",pct:cpct(lib2026,libMeta),barCls:badgeLib,auto:"Calculado autom&aacute;ticamente desde datos Liberaci&oacute;n"})}
-      ${objCard({name:"Rentabilidad m&iacute;nima u$s 400 / op.",badge:badgeRent,badgeTxt:rentOp>=400?"Alcanzado":rentOp>=300?"En proceso":"Por debajo",val:"u$s "+rentOp,valSm:"/ op. promedio YTD",target:"Meta: &ge; u$s 400 por operaci&oacute;n",pct:cpct(rentOp,400),barCls:badgeRent,auto:"Calculado desde EBITDA mensual &divide; operaciones"})}
-      ${objCard({name:"Manual de Procedimientos",badge:"a",badgeTxt:"En proceso",val:"Q1 ✓",valSm:"Q3 pendiente",target:"Actualizaci&oacute;n Q1 y Q3 &middot; &ge;90% aprobaci&oacute;n",pct:50,barCls:"a",auto:"Q1 entregado &mdash; Q3 pendiente"})}
+      ${objCard({name:"Rentabilidad m&iacute;nima u$s 400 / op.",badge:badgeRent,badgeTxt:rentOp>=400?"Alcanzado":rentOp>=300?"En proceso":"Por debajo",val:"u$s "+rentOp,valSm:"/ op. promedio YTD",target:"Meta: &ge; u$s 400 por operaci&oacute;n",pct:cpct(rentOp,400),barCls:badgeRent,auto:"EBITDA &divide; operaciones sobre "+nM+" meses cerrados"+(parcial?" (excluye el mes en curso)":"")})}
+      ${objCard({name:"Manual de Procedimientos",badge:"v",badgeTxt:"Cumplido",val:"Q1 ✓ &middot; Q3 ✓",valSm:"ambas revisiones entregadas",target:"Actualizaci&oacute;n Q1 y Q3 &middot; &ge;90% aprobaci&oacute;n",pct:100,barCls:"v",auto:"Q1 y Q3 entregados en t&eacute;rmino"})}
       ${objCard({name:"Tabla de Polivalencias",badge:"r",badgeTxt:"Pendiente",val:"&mdash;",target:"3 competencias cr&iacute;ticas por perfil",pct:null,auto:"Pendiente de ejecuci&oacute;n"})}
     </div>
     <div class="obj-section-lbl">Metas Operativas</div>
     <div class="obj-grid">
-      ${objCard({name:"Operaciones Anuales",badge:badgeOps,badgeTxt:"En proceso",val:ytdOps.toLocaleString("es-AR"),valSm:"ops acum. &bull; proy. "+proyAnual.toLocaleString("es-AR"),target:"Meta: 4.200 operaciones en el a&ntilde;o",pct:cpct(proyAnual,4200),barCls:badgeOps,auto:"Proyecci&oacute;n = promedio mensual &times; 12"})}
+      ${objCard({name:"Operaciones Anuales",badge:badgeOps,badgeTxt:"En proceso",val:ytdOps.toLocaleString("es-AR"),valSm:"ops acum. &bull; proy. "+proyAnual.toLocaleString("es-AR"),target:"Meta: 4.200 operaciones en el a&ntilde;o",pct:cpct(proyAnual,4200),barCls:badgeOps,auto:"Proyecci&oacute;n = promedio de "+nM+" meses cerrados &times; 12"+(parcial?" &middot; el acumulado s&iacute; incluye el mes en curso":"")})}
       ${objCard({name:"Capacitaciones",badge:"a",badgeTxt:"En curso",val:"&mdash;",target:"&ge;80% ejecuci&oacute;n &middot; score &ge;4/5",pct:null,auto:"Sin datos num&eacute;ricos a&uacute;n"})}
       ${objCard({name:"Mejoras Operativas",badge:"v",badgeTxt:"5 implementadas",val:"5",valSm:"mejoras en 2026",target:"Objetivo: 2 mejoras de optimizaci&oacute;n de tiempos y recursos",pct:100,barCls:"v",auto:"Relevado desde informes gerenciales Gamma 2026",tipLines:["Sistema DUX — procesamiento autom&aacute;tico de DIT","Cambio de comisionista en Campana","Optimizaci&oacute;n de la estructura de Aduana","Unificaci&oacute;n de los criterios operativos","Optimizaci&oacute;n de Clasificaci&oacute;n Arancelaria"]})}
       ${objCard({name:"Satisfacci&oacute;n Cliente",badge:"n",badgeTxt:"Sin dato",val:"&mdash;",target:"&ge;4/5 &mdash; interno y externo",pct:null,auto:"Requiere carga manual"})}
