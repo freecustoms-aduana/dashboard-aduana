@@ -279,6 +279,8 @@ tfoot td.right{text-align:right;}
     <div class="nav-section"><span>Clasificación Arancelaria</span></div>
     <div class="nav-item" onclick="showView('clasi')" id="nav-clasi"><span class="icon">🗂️</span> Resumen General</div>
     <div class="nav-item" onclick="showView('resant')" id="nav-resant"><span class="icon">📋</span> Res. Anticipadas</div>
+    <div class="nav-section"><span>Legales</span></div>
+    <div class="nav-item" onclick="showView('denuncias')" id="nav-denuncias"><span class="icon">⚖️</span> Seguimiento de Denuncias</div>
     <div class="nav-section"><span>Gerencia</span></div>
     <div class="nav-item" onclick="showView('objetivos')" id="nav-objetivos"><span class="icon">🚀</span> Objetivos 2026</div>
   </nav>
@@ -391,6 +393,12 @@ tfoot td.right{text-align:right;}
       <iframe src="seguimiento_resoluciones_anticipadas.html"
               style="width:100%;height:calc(100vh - 53px);border:none;display:block;"
               id="resant-iframe">
+      </iframe>
+    </div>
+    <div class="view" id="view-denuncias" style="padding:0;overflow:hidden;">
+      <iframe src="seguimiento_denuncias.html"
+              style="width:100%;height:calc(100vh - 53px);border:none;display:block;"
+              id="denuncias-iframe">
       </iframe>
     </div>
   </div>
@@ -778,7 +786,7 @@ const CLASI={
   bench:{tickets2025:898,items2025:16204,persons2025:4},
   itemsByUser2026:{Mateo:5133,Juan:737,Nilda:350,Damian:1558,Rocio:25,melinah:0}
 };
-const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 — Operaciones",facturacion:"Top 10 — Facturación USD",rentabilidad:"Análisis de Rentabilidad",objetivos:"Objetivos Gerenciales 2026",clasi:"Clasificación Arancelaria — Resumen",resant:"Clasificación Arancelaria — Res. Anticipadas"};
+const VTITLES={novedades:"Novedades del Periodo",resumen:"Resumen General",evolucion:"Evolucion Mensual",interanual:"Comparativa 2025 / 2026",kpis:"KPIs Operativos",operaciones:"Top 10 — Operaciones",facturacion:"Top 10 — Facturación USD",rentabilidad:"Análisis de Rentabilidad",objetivos:"Objetivos Gerenciales 2026",clasi:"Clasificación Arancelaria — Resumen",resant:"Clasificación Arancelaria — Res. Anticipadas",denuncias:"Legales — Seguimiento de Denuncias"};
 
 /* ── AUTH ── */
 const PW_FULL    = "freedireccion";
@@ -826,13 +834,13 @@ function showView(n){
   document.getElementById("view-"+n).classList.add("active");
   document.getElementById("nav-"+n).classList.add("active");
   document.getElementById("page-title").textContent=VTITLES[n];
-  document.querySelector(".filter-bar").style.display=(n==="objetivos"||n==="resant")?"none":"";
+  document.querySelector(".filter-bar").style.display=(n==="objetivos"||n==="resant"||n==="denuncias")?"none":"";
   currentView=n;renderView(n);
 }
 function renderCurrentView(){renderView(currentView);}
 function renderView(n){
   ({novedades:renderNovedades,resumen:renderResumen,evolucion:renderEvolucion,interanual:renderInteranual,kpis:renderKpis,
-    operaciones:renderOperaciones,facturacion:renderFacturacion,rentabilidad:renderRentabilidad,objetivos:renderObjetivos,clasi:renderClasi,resant:function(){}}[n]||function(){})();
+    operaciones:renderOperaciones,facturacion:renderFacturacion,rentabilidad:renderRentabilidad,objetivos:renderObjetivos,clasi:renderClasi,resant:function(){},denuncias:function(){}}[n]||function(){})();
 }
 
 function objCard({name,badge,badgeTxt,val,valSm,target,pct,barCls,auto,tipLines}){

@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguimiento de Denuncias — Legales</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+  :root{
+    --bg:#F5F6FF; --card:#FFFFFF; --card2:#ECEEFF;
+    --lavanda:#E0E3FF; --lavanda2:#C8CCFA;
+    --border:rgba(30,45,107,0.10); --border-acc:rgba(30,45,107,0.20);
+    --texto:#1E2D6B; --muted:#5B6CA8; --muted2:#9AA5D4;
+    --acc:#1E2D6B; --navy1:#07102a; --navy2:#0e1840; --navy3:#131D4F;
+    --verde:#059669; --rojo:#DC2626; --ambar:#D97706;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+  body{background:var(--bg);color:var(--texto);min-height:100vh}
+
+  /* ── ENCABEZADO ── */
+  header{background:linear-gradient(170deg,var(--navy1) 0%,var(--navy2) 40%,var(--navy3) 100%);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 2px 16px rgba(0,0,0,0.35);position:sticky;top:0;z-index:40}
+  .brand{display:flex;align-items:center;gap:16px}
+  .brand .logo{border:2px solid rgba(255,255,255,0.48);border-radius:10px;padding:9px 12px;color:#E0E7FF;font-weight:800;font-size:15px;letter-spacing:1px;background:rgba(165,180,252,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12)}
+  .brand .kicker{font-size:10px;font-weight:700;color:rgba(165,180,252,0.65);letter-spacing:1.5px;text-transform:uppercase}
+  .brand h1{font-size:16px;font-weight:700;color:#E0E7FF;line-height:1.3}
+  .brand .sub{font-size:11px;color:rgba(165,180,252,0.70)}
+  .badge-rol{background:rgba(165,180,252,0.12);border:1px solid rgba(165,180,252,0.35);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;color:#C7D2FE}
+
+  /* ── TABS ── */
+  .tabs{display:flex;gap:10px;padding:20px 32px 0;max-width:1420px;margin:0 auto;width:100%;flex-wrap:wrap}
+  .tab{padding:9px 24px;border-radius:24px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);background:#fff;border:1px solid var(--border);transition:all .18s ease;box-shadow:0 1px 3px rgba(30,45,107,0.05)}
+  .tab:hover{color:var(--acc);border-color:var(--border-acc);transform:translateY(-1px);box-shadow:0 4px 12px rgba(30,45,107,0.12)}
+  .tab.activa{background:linear-gradient(135deg,#1E2D6B,#2E3F80);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(30,45,107,0.35),inset 0 1px 0 rgba(255,255,255,0.15)}
+
+  main{padding:20px 32px 40px;max-width:1420px;margin:0 auto}
+
+  /* ── BARRA DE HERRAMIENTAS ── */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+  .toolbar input[type=text],.toolbar select{padding:9px 14px;border:1px solid var(--border);border-radius:12px;font-size:12.5px;background:#fff;color:var(--texto);outline:none;transition:border .15s;box-shadow:0 1px 3px rgba(30,45,107,0.05)}
+  .toolbar input[type=text]:focus,.toolbar select:focus{border-color:var(--border-acc)}
+  .toolbar input[type=text]{flex:1;min-width:230px}
+  .btn{padding:9px 18px;border:1px solid var(--border);border-radius:12px;font-size:12.5px;font-weight:600;cursor:pointer;background:#fff;color:var(--texto);white-space:nowrap;transition:all .15s ease;box-shadow:0 1px 3px rgba(30,45,107,0.06)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,45,107,0.15);border-color:var(--border-acc)}
+  .btn:active{transform:translateY(0);box-shadow:0 1px 3px rgba(30,45,107,0.08)}
+  .btn-primario{background:linear-gradient(135deg,#1E2D6B,#2E3F80);color:#fff;border:none;box-shadow:0 4px 14px rgba(30,45,107,0.30),inset 0 1px 0 rgba(255,255,255,0.15)}
+  .btn-primario:hover{box-shadow:0 7px 20px rgba(30,45,107,0.40),inset 0 1px 0 rgba(255,255,255,0.15)}
+  .btn-chico{padding:5px 12px;font-size:11px}
+
+  /* ── TABLA ── */
+  .tarjeta{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:0 2px 12px rgba(30,45,107,0.07);overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;padding:11px 14px;background:var(--lavanda);color:var(--acc);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.6px;border-bottom:2px solid var(--lavanda2);cursor:pointer;user-select:none;white-space:nowrap}
+  th:hover{background:var(--lavanda2)}
+  th.nosort{cursor:default}
+  th.nosort:hover{background:var(--lavanda)}
+  td{padding:11px 14px;border-bottom:1px solid var(--card2);vertical-align:middle}
+  tbody tr{cursor:pointer;transition:background .12s}
+  tbody tr:not(.grupo):not(.fila-detalle):hover{background:rgba(165,180,252,0.10)}
+  .estado{display:inline-block;padding:3px 12px;border-radius:20px;font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;letter-spacing:.3px;box-shadow:0 2px 6px rgba(30,45,107,0.18)}
+  .pill{display:inline-block;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.3px;border:1px solid var(--border-acc);background:var(--card2);color:var(--acc);white-space:nowrap}
+  .canal{display:inline-block;width:20px;height:20px;line-height:20px;border-radius:50%;text-align:center;font-size:10px;font-weight:800;color:#fff}
+  .perjuicio-si{color:var(--rojo);font-weight:800}
+  .sin-datos{padding:40px;text-align:center;color:var(--muted)}
+  .mono{font-family:Consolas,monospace;font-size:12px}
+  .num{text-align:right;font-family:Consolas,monospace;font-size:12px;white-space:nowrap}
+  .recorte{max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-size:11.5px}
+  .contador{font-size:11.5px;color:var(--muted);margin:0 2px 10px;font-weight:500}
+
+  /* ── GRUPOS ── */
+  tr.grupo td{background:linear-gradient(135deg,var(--lavanda) 0%,#EDEFFE 100%);font-weight:700;font-size:11.5px;color:var(--acc);cursor:pointer;padding:12px 14px;user-select:none;border-bottom:1px solid var(--lavanda2);letter-spacing:.4px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+  tr.grupo:hover td{background:linear-gradient(135deg,var(--lavanda2) 0%,var(--lavanda) 100%)}
+  tr.grupo .flecha{display:inline-block;transition:transform .18s ease;margin-right:9px;font-size:9px;color:var(--muted)}
+  tr.grupo.abierto .flecha{transform:rotate(90deg)}
+  tr.grupo .cant{font-weight:500;color:var(--muted);margin-left:8px;font-size:11px}
+
+  /* ── DETALLE DESPLEGABLE ── */
+  tr.fila-detalle{cursor:default}
+  tr.fila-detalle td{background:var(--card2);padding:18px 22px;border-bottom:2px solid var(--lavanda2);box-shadow:inset 0 3px 8px rgba(30,45,107,0.06)}
+  .det-inline{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .det-inline .dato{min-width:0;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 15px;box-shadow:0 1px 4px rgba(30,45,107,0.06)}
+  .dato .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+  .dato .v{font-size:12.5px;margin-top:3px;white-space:pre-line;overflow-wrap:anywhere;word-break:break-word}
+
+  /* ── KPIs ── */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+  .kpi{background:#fff;border-radius:var(--radius);padding:20px 22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);transition:all .18s ease}
+  .kpi:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(30,45,107,0.15)}
+  .kpi .valor{font-size:30px;font-weight:800;color:var(--texto);line-height:1.1}
+  .kpi .etiqueta{font-size:10px;color:var(--muted);margin-top:8px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+  .kpi .nota{font-size:10px;color:var(--muted2);margin-top:4px;font-weight:500}
+  .kpi.alerta .valor{color:var(--rojo)}
+  .kpi.ok .valor{color:var(--verde)}
+
+  /* ── GRÁFICOS ── */
+  .graficos{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:16px}
+  .grafico{background:#fff;border-radius:var(--radius);padding:20px 22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);transition:all .18s ease}
+  .grafico:hover{box-shadow:0 8px 20px rgba(30,45,107,0.12)}
+  .grafico h3{font-size:10.5px;margin-bottom:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+  .grafico .contenedor{position:relative;height:280px}
+
+  .aviso{background:#FEF3C7;border:1px solid #FDE68A;color:#92400E;padding:9px 16px;border-radius:12px;font-size:12px;margin-bottom:14px;font-weight:500}
+  .nota-pie{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6}
+
+  /* ── LEYENDA DE ESTADOS ── */
+  .leyenda{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:0 2px 8px rgba(30,45,107,0.06);padding:20px 24px;margin-top:18px}
+  .leyenda h3{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:14px}
+  .leyenda .item{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--card2)}
+  .leyenda .item:first-of-type{border-top:none;padding-top:0}
+  .leyenda .item .chip{flex:0 0 auto;margin-top:1px}
+  .leyenda .item p{font-size:12px;line-height:1.6;color:var(--muted);margin:0}
+  @media(max-width:640px){.leyenda .item{flex-direction:column;gap:7px}}
+  @media(max-width:640px){main{padding:14px}.tabs{padding:14px 14px 0}header{padding:14px 16px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">FC</div>
+    <div>
+      <div class="kicker">Free Customs · Equipo de Aduana</div>
+      <h1>Seguimiento de Denuncias — Legales</h1>
+      <div class="sub">Despachos denunciados, sumarios y expedientes en trámite</div>
+    </div>
+  </div>
+  <div class="badge-rol" id="badgeCorte">—</div>
+</header>
+
+<div class="tabs">
+  <div class="tab activa" data-tab="denuncias" onclick="cambiarTab('denuncias')">Denuncias</div>
+  <div class="tab" data-tab="castilla" onclick="cambiarTab('castilla')">Seguimiento con Castilla</div>
+  <div class="tab" data-tab="estadisticas" onclick="cambiarTab('estadisticas')">Estadísticas</div>
+</div>
+
+<main>
+  <section id="tab-denuncias">
+    <div class="toolbar">
+      <input type="text" id="buscador" placeholder="Buscar por cliente, N° de despacho, N° de expediente, observaciones o motivo…" oninput="renderTabla()">
+      <select id="filtroCliente" onchange="renderTabla()"><option value="">Todos los clientes</option></select>
+      <select id="filtroStatus" onchange="renderTabla()"><option value="">Todos los status</option></select>
+      <select id="filtroEstado" onchange="renderTabla()"><option value="">Todos los estados</option></select>
+      <select id="filtroDest" onchange="renderTabla()"><option value="">Todas las destinaciones</option></select>
+      <select id="filtroLetrado" onchange="renderTabla()"><option value="">Todos los letrados</option></select>
+      <button class="btn" onclick="limpiarFiltros()">Limpiar</button>
+      <button class="btn" onclick="exportarCSV()">Exportar CSV</button>
+    </div>
+    <div class="contador" id="contador"></div>
+    <div class="tarjeta">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="ordenarPor('despacho')">N° Despacho</th>
+            <th onclick="ordenarPor('destinacion')">Destinación</th>
+            <th onclick="ordenarPor('cliente')">Cliente</th>
+            <th onclick="ordenarPor('fOficISO')">F. Ofic.</th>
+            <th onclick="ordenarPor('canal')" title="Canal de selectividad del despacho">Canal</th>
+            <th onclick="ordenarPor('estado')" title="Estado del despacho: DENU denunciado, CANC cancelado, VENC vencido">Estado</th>
+            <th onclick="ordenarPor('fob')">FOB</th>
+            <th onclick="ordenarPor('fDenISO')">F. Denuncia</th>
+            <th onclick="ordenarPor('expediente')">N° Expediente</th>
+            <th onclick="ordenarPor('perjuicio')" title="¿Ocasiona perjuicio fiscal?">Perj. fiscal</th>
+            <th onclick="ordenarPor('letrado')">Letrado</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoTabla"></tbody>
+      </table>
+      <div class="sin-datos" id="sinDatos" style="display:none">No hay denuncias que coincidan con la búsqueda.</div>
+    </div>
+    <div class="nota-pie" id="notaPie"></div>
+
+    <div class="leyenda">
+      <h3>Qué significa cada estado</h3>
+      <div class="item">
+        <span class="estado chip" style="background:#D97706">PENDIENTE</span>
+        <p>Aún no se realizaron las gestiones pertinentes para afrontar el litigio y mitigar cualquier riesgo de sanciones o multas, según corresponda.</p>
+      </div>
+      <div class="item">
+        <span class="estado chip" style="background:#4F46E5">RESUELTO</span>
+        <p>Ya se llevaron a cabo las acciones para resolver el caso y aún no contamos con el respaldo documental correspondiente. Ya sea la resolución, el "conforme y pago" o cualquier documento emitido por Aduana validando que la denuncia haya sido enviada a archivar.</p>
+      </div>
+      <div class="item">
+        <span class="estado chip" style="background:#059669">CERRADO</span>
+        <p>El caso está resuelto y ya contamos con la documentación respaldatoria. No requiere ninguna acción adicional.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-castilla" style="display:none">
+    <div class="aviso">Agenda de seguimiento acordada con el estudio Castilla. Es la hoja <strong>PENDIENTES REVISADOS CON CASTILLA</strong> del Excel: define qué hay que reclamar en cada expediente.</div>
+    <div class="toolbar">
+      <input type="text" id="buscadorCas" placeholder="Buscar por cliente, expediente, pendiente o ubicación…" oninput="renderCastilla()">
+      <button class="btn" onclick="exportarCastillaCSV()">Exportar CSV</button>
+    </div>
+    <div class="contador" id="contadorCas"></div>
+    <div class="tarjeta">
+      <table>
+        <thead>
+          <tr>
+            <th class="nosort">Cliente</th>
+            <th class="nosort">N° Expediente</th>
+            <th class="nosort">Qué está pendiente</th>
+            <th class="nosort">Observaciones</th>
+            <th class="nosort">Ubicación del expediente</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoCastilla"></tbody>
+      </table>
+      <div class="sin-datos" id="sinDatosCas" style="display:none">Sin coincidencias.</div>
+    </div>
+  </section>
+
+  <section id="tab-estadisticas" style="display:none">
+    <div class="kpis" id="kpis"></div>
+    <div class="graficos">
+      <div class="grafico"><h3>Denuncias por status</h3><div class="contenedor"><canvas id="chartStatus"></canvas></div></div>
+      <div class="grafico"><h3>Exposición por cliente (top 12)</h3><div class="contenedor"><canvas id="chartClientes"></canvas></div></div>
+      <div class="grafico"><h3>Pendientes por cliente (top 12)</h3><div class="contenedor"><canvas id="chartPendientes"></canvas></div></div>
+      <div class="grafico"><h3>Por tipo de destinación</h3><div class="contenedor"><canvas id="chartDest"></canvas></div></div>
+      <div class="grafico"><h3>Por canal de selectividad del despacho</h3><div class="contenedor"><canvas id="chartCanal"></canvas></div></div>
+      <div class="grafico"><h3>Por año de oficialización del despacho</h3><div class="contenedor"><canvas id="chartAnio"></canvas></div></div>
+      <div class="grafico"><h3>Por letrado a cargo</h3><div class="contenedor"><canvas id="chartLetrado"></canvas></div></div>
+      <div class="grafico"><h3>FOB comprometido por moneda</h3><div class="contenedor"><canvas id="chartFob"></canvas></div></div>
+    </div>
+    <div class="nota-pie">El FOB se muestra separado por moneda, sin convertir: el Excel mezcla dólares, euros y yuanes y no registra el tipo de cambio de cada operación.</div>
+  </section>
+</main>
+
+<script>
+/* ============================================================
+   DATOS — importados de "DENUNCIAS - General.xlsx" (hoja GENERAL)
+   Para actualizar: pedirle a Claude que vuelva a leer el Excel
+   del Drive y regenere este bloque. No editar a mano.
+   ============================================================ */
+const FECHA_CORTE = "2026-11-02";
+
+/* Orden de columnas de cada fila de DENUNCIAS_RAW */
+const COLS = ["cliente","despacho","fOfic","canal","estado","fob","moneda","fDen",
+              "status","expediente","copia","ubicacion","perjuicio","letrado","obs","motivo"];
+
+/* Abreviaturas de ubicaciones, para no repetir el texto largo 110 veces */
+const U = {
+  S1:"DIV. SECRETARIA NRO.1 (DE PRLA)",
+  S2:"DIV. SECRETARIA NRO.2 (DE PRLA)",
+  S3:"DIV. SECRETARIA NRO.3 (DE PRLA)",
+  S6:"DIV. SECRETARIA NRO.6 (DE PRLA)",
+  IMP:"DIV. IMPUGNACIONES (DE PRLA)",
+  SUMREP:"DIV. SUMARIAL Y REPETICIONES (DE PRLA)",
+  CFSM:"SEC. IDENTIFICACIÓN DE MERCADERÍAS (DV CFSM)",
+  CEXA:"SEC. OPERATIVA Y REGISTRAL (DV CEXA)",
+  DAAD:"SECTOR CENTRO DOCUMENTAL ADUANERO (DV DAAD)",
+  ABSA:"DIV. CONTROL Y FISCALIZACIÓN SIMULTÁNEA (DI ABSA)",
+  LAPL:"SEC. SUMARIOS (AD LAPL)",
+  CAMP:"SEC. SUMARIOS (AD CAMP)",
+  CFSZ:"SEC. RAMO D (DV CFSZ)",
+  CONS:"CONSULTAR",
+  NA:"Sin informar"
+};
+
+/* Textos repetidos */
+const M954 = "E954 — Denuncia prevista art. 954 C.A.";
+const M995 = "E995 — Denuncia prevista art. 995 C.A.";
+const A995 = "A995 — Denuncia prevista art. 995 C.A.";
+const OBS_CORRAL = "DERIVADO A CASTILLA / YA TENEMOS COPIA";
+const OBS_LMAN = "LMAN PAGO, ESPERA RESOLUCIÓN.";
+const OBS_RESO = "RESOLUCIÓN EMITIDA";
+const OBS_CRESATA = "LOS DESPACHOS NO ESTÁN DENUNCIADOS";
+const OBS_INTERMACO_VINC = "rectificación empresas vinculadas, hoja valor";
+
+/* --- Grupo ALFREDO IGNACIO CORRAL: 31 despachos bajo el expediente 20821-27-2024 --- */
+const CORRAL = [
+  ["22001IC04176140K","17/8/2022",29688.00],["22001IC04227931P","25/10/2022",129407.20],
+  ["22001IC04227942R","25/10/2022",32384.52],["22001IC04227951R","25/10/2022",32384.52],
+  ["22001IC04235429Z","4/11/2022",129407.20],["22001IC04241600E","15/11/2022",97055.40],
+  ["22001IC04245139P","18/11/2022",97055.40],["22001IC04246498B","22/11/2022",97055.40],
+  ["22001IC04266128Z","22/12/2022",64769.04],["22001IC04266584W","23/12/2022",97055.40],
+  ["22001IC04266598E","23/12/2022",97153.56],["22001IC04266852U","23/12/2022",97055.40],
+  ["22001IC04266877E","23/12/2022",32384.52],["22001IC04266880V","23/12/2022",97055.40],
+  ["22001IC04266888G","23/12/2022",64769.04],["22001IC04266897G","23/12/2022",129407.20],
+  ["22001IC04266901P","23/12/2022",97055.40],["22001IC04266925V","23/12/2022",97055.40],
+  ["22001IC04266951U","23/12/2022",129407.20],["23001IC04010138F","16/1/2023",64769.04],
+  ["23001IC04010150W","16/1/2023",64703.60],["23001IC04010173E","16/1/2023",129407.20],
+  ["23001IC04053809R","4/4/2023",60110.64],["23001IC04077000G","10/5/2023",166036.00],
+  ["23001IC04081473P","16/5/2023",87633.66],["23001IC04081486T","16/5/2023",100844.52],
+  ["23001IC04081499A","16/5/2023",84970.21],["23001IC04081507N","16/5/2023",87633.66],
+  ["23001IC04096989K","8/6/2023",32417.91],["23001IC04100113V","13/6/2023",30104.44],
+  ["23001IC04100704E","13/6/2023",86978.67]
+].map(r=>["ALFREDO IGNACIO CORRAL S.A.",r[0],r[1],"R","DENU",r[2],"USD","7/5/2024",
+          "PENDIENTE","20821-27-2024","NO",U.S3,"NO","Castilla",OBS_CORRAL,M954]);
+
+/* --- Grupo CRESATA: 14 despachos bajo el expediente 21180-1-2026 --- */
+const CRESATA = [
+  ["24001IC04076340N","20/5/2024",216007.00],["24001IC04079569G","27/5/2024",292980.00],
+  ["24001IC04079283W","24/5/2024",103456.51],["24001IC04078997K","24/5/2024",90000.00],
+  ["24001IC04068824V","8/5/2024",237491.27],["24001IC04079633V","",26772.07],
+  ["24001IC04077013L","21/5/2024",190651.70],["24001IC06007421J","26/7/2024",51875.93],
+  ["24001IC06007423L","26/7/2024",43442.60],["24001IC06007424M","26/7/2024",27850.75],
+  ["24001IC06007422K","26/7/2024",15004.62],["24001IC04138289B","4/9/2024",19065.20],
+  ["24001IC04145209Y","12/9/2024",28243.00],["24001IC04079316T","24/5/2024",386873.00]
+].map(r=>["CRESATA S.A.",r[0],r[1],"R","CANC",r[2],"USD","",
+          "PENDIENTE","21180-1-2026","SI",U.IMP,"SI","Castilla",OBS_CRESATA,"—"]);
+
+/* --- Grupo INTERMACO: rectificación de empresas vinculadas / hoja valor --- */
+const INTERMACO = [
+  ["22073IC04143760V","16/12/2022","R","CANC",1055750.00,"20804-190-2023"],
+  ["22073IC04143393A","15/12/2022","R","CANC",25488.00,"20804-190-2023"],
+  ["22073IC04142594C","14/12/2022","R","CANC",353255.00,"20804-190-2023"],
+  ["22073IC04142860V","14/12/2022","R","CANC",33778.00,"20804-190-2023"],
+  ["22073IC04141161Y","7/12/2022","R","CANC",128364.00,"20804-190-2023"],
+  ["22073IC04137160S","25/11/2022","R","CANC",618250.00,"20804-190-2023"],
+  ["22073IC04132372S","14/11/2022","R","CANC",34788.00,"20804-190-2023"],
+  ["22073IC04131972A","11/11/2022","R","CANC",93660.00,"20804-190-2023"],
+  ["22073IC04129519E","3/11/2022","R","CANC",130032.00,"20804-190-2023"],
+  ["22073IC04129331T","3/11/2022","R","CANC",161595.00,"20804-190-2023"],
+  ["22073IC04129404U","3/11/2022","R","CANC",278895.00,"20804-190-2023"],
+  ["22073IC04129347D","3/11/2022","R","CANC",516000.00,"20804-190-2023"],
+  ["22073IC04049154A","27/4/2022","N","CANC",122229.48,"20804-190-2023"]
+].map(r=>["INTERMACO S.R.L.",r[0],r[1],r[2],r[3],r[4],"USD","",
+          "PENDIENTE",r[5],"NO",U.CONS,"NO","Cliente","",OBS_INTERMACO_VINC]);
+
+const DENUNCIAS_RAW = [].concat(CORRAL, CRESATA, INTERMACO, [
+
+/* ── ALFREDO IGNACIO CORRAL — caso cerrado aparte ── */
+["ALFREDO IGNACIO CORRAL S.A.","24001IC04071685U","13/5/2024","R","DENU",105963.00,"USD","20/8/2024","FINALIZADO","18036-6159-2024","SI",U.S6,"NO","Castilla",OBS_RESO,A995],
+
+/* ── ARTEC INGENIERIA ── */
+["ARTEC INGENIERIA S.A.","24001IC04078576D","23/5/2024","V","DENU",33549.74,"USD","16/7/2024","FINALIZADO","18036-6083-2024","SI",U.S6,"NO","Castilla",OBS_RESO,"OTRO — cambio de número de factura"],
+["ARTEC INGENIERIA S.A.","24001IC04078592B","23/5/2024","V","DENU",9585.64,"USD","16/7/2024","RESUELTO","18036-6086-2024","NO",U.S6,"NO","Castilla",OBS_LMAN,"OTRO — rectificación de número de factura"],
+["ARTEC INGENIERIA S.A.","24001IC04078611Z","23/5/2024","V","DENU",6434.52,"USD","16/7/2024","FINALIZADO","18036-6085-2024","SI",U.S6,"NO","Castilla",OBS_RESO,"OTRO — cambio de número de factura"],
+["ARTEC INGENIERIA S.A.","24001IC04078623T","23/5/2024","V","DENU",6773.90,"USD","16/7/2024","FINALIZADO","18036-6084-2024","SI",U.S6,"NO","Castilla",OBS_RESO,"OTRO — cambio de número de factura"],
+
+/* ── CELESTINO SPAHN ── */
+["CELESTINO SPAHN S.A.","21001IC04246666U","13/12/2021","V","DENU",85624.00,"USD","","PENDIENTE","19386-303-2021","SI",U.S3,"SI","Castilla","PA CON DUMPING","Art. 954 C.A."],
+
+/* ── COMPAÑIA ARGENTINA DE ACEITES ── */
+["COMPAÑIA ARGENTINA DE ACEITES","19001DJVE009626X","10/12/2019","-","DENU",41478.30,"USD","4/10/2023","FINALIZADO","18037-1076-2023","SI",U.DAAD,"NO","Castilla","ARCHIVADA POR MULTA DEBAJO DEL MÍNIMO","OTRO — art. 969, no cumplir el 90%"],
+["COMPAÑIA ARGENTINA DE ACEITES","22001DJVE002870T","4/5/2022","-","DENU",59220.00,"USD","9/9/2024","PENDIENTE","18037-824-2024","SI",U.S1,"NO","Castilla","Free asumió el costo. Multa paga sin resolución emitida.","OTRO — art. 9 de la Ley 21.453"],
+["COMPAÑIA ARGENTINA DE ACEITES","22001DJVE006831U","21/10/2022","-","DENU",43204.00,"USD","5/9/2024","PENDIENTE","18037-824-2024","SI",U.S1,"NO","Castilla","Free asumió el costo. Multa paga sin resolución emitida.","OTRO — art. 9 de la Ley 21.453"],
+["COMPAÑIA ARGENTINA DE ACEITES","23001DJVE005181S","8/9/2023","-","DENU",29232.00,"USD","28/4/2025","FINALIZADO","18037-393-2025","SI",U.S1,"NO","Castilla","El cliente asumió el costo. Multa paga con resolución emitida.","OTRO — art. 969, exportar menos del 90%"],
+["COMPAÑIA ARGENTINA DE ACEITES","26001IC04044493T","5/3/2026","V","DENU",113950.00,"USD","8/5/2026","RESUELTO","22920-3050-2026","NO",U.CEXA,"NO","Castilla",OBS_LMAN,M995],
+
+/* ── DISTRIBUIDORA DMC ── */
+["DISTRIBUIDORA DMC S.A.","17001IC04176435V","5/9/2017","R","DENU",42221.08,"EUR","","FINALIZADO","18045-352-2022","NO",U.CFSM,"SI","Castilla","ARCHIVADO",""],
+
+/* ── EXANET ── */
+["EXANET S.A.","23001IC06018208N","14/9/2023","N","DENU",715287.00,"CNY","15/2/2024","PENDIENTE","21173-509-2023","NO",U.CFSM,"NO","Cliente","Sin consultar / Derivado a Castilla, es su cliente directo","OTRO — art. 992 C.A."],
+["EXANET S.A.","23001IC04143534M","25/8/2023","R","CANC",596178.00,"CNY","21/9/2023","PENDIENTE","21180-154-2025","NO",U.CEXA,"SI","Cliente","954 inc. A","Art. 954 inc. A C.A."],
+
+/* ── FREE CUSTOMS ── */
+["FREE CUSTOMS S.A.","25001IC04007803M","9/1/2025","R","DENU",112392.80,"USD","11/8/2025","RESUELTO","18036-1324-2025","NO",U.S6,"NO","Castilla",OBS_LMAN,M995],
+
+/* ── GIRGOLAMI ── */
+["GIRGOLAMI S.A.","22001IC01000083W","18/2/2022","R","CANC",1200.00,"USD","7/3/2022","PENDIENTE","18049-47-2022","SI",U.S3,"SI","Castilla","RESULTÓ SER MERCADERÍA USADA","Art. 954 inc. A C.A."],
+["GIRGOLAMI S.A.","22001IC04037671P","14/2/2022","R","CANC",24416.25,"USD","7/3/2022","RESUELTO","18049-46-2022","SI",U.S3,"SI","Castilla","RESULTÓ SER MERCADERÍA USADA","Art. 954 inc. A y B C.A."],
+
+/* ── GRUAS SAN BLAS ── */
+["GRUAS SAN BLAS S.A.","25001IC04052050G","10/3/2025","V","DENU",542841.30,"EUR","13/8/2025","RESUELTO","18036-2397-2025","NO",U.S6,"NO","Castilla",OBS_LMAN,M995],
+["GRUAS SAN BLAS S.A.","25001IC04045938A","27/2/2025","V","DENU",105268.66,"EUR","4/12/2025","RESUELTO","18036-2394-2025","NO",U.S6,"NO","Castilla",OBS_LMAN,M995],
+["GRUAS SAN BLAS S.A.","25001IC04015331H","17/1/2025","N","DENU",173001.34,"EUR","5/9/2025","RESUELTO","18036-2479-2025","NO",U.S6,"NO","Castilla",OBS_LMAN,M995],
+
+/* ── INTER BROKERS ── */
+["INTER BROKERS S.R.L.","17001IC04050415K","15/3/2017","R","DENU",5350.00,"USD","20/3/2017","PENDIENTE","18037-1076-2023","NO",U.SUMREP,"NO","Sin definir","RESULTÓ NO APLICABLE CERT. DE SEGURIDAD ELÉCTRICA. Art. 954 inc. B) C.A.","PNOE — Prohibiciones no económicas"],
+
+/* ── INTERMACO — casos fuera del grupo de hoja valor ── */
+["INTERMACO S.R.L.","21001IC04119802L","23/6/2021","N","CANC",65782.20,"USD","1/10/2021","RESUELTO","18045-3289-2021","SI",U.ABSA,"NO","Cliente","Condonado — confirmar cuando llegue notificación","OTRO — art. 992 C.A."],
+["INTERMACO S.R.L.","21001IC04119802L","23/6/2021","N","CANC",65782.20,"USD","30/8/2021","RESUELTO","18045-3190-2021-1","SI",U.ABSA,"NO","Cliente","Condonado — confirmar cuando llegue notificación","OTRO — art. 992 C.A."],
+["INTERMACO S.R.L.","22073IC04045561V","19/4/2022","N","DENU",119990.40,"USD","","PENDIENTE","20804-190-2023","NO",U.CONS,"NO","Cliente","Sin novedades","Diferencia clasificatoria: corresponde P.A. 9504.50.00.200R para los ítems 3 y 4, y JUGR163TXT = SI. Se adjunta certificado IF-2022-28339466-APN-DNRT#MDP (Res. 163/05). Infracción art. 995 C.A."],
+["INTERMACO S.R.L.","22073IC04129373C","3/11/2022","R","DENU",32112.00,"USD","","PENDIENTE","20804-190-2023","NO",U.CONS,"NO","Cliente","Sin novedades",OBS_INTERMACO_VINC],
+["INTERMACO S.R.L.","23033ZFE1004226D","20/3/2023","N","DENU",334189.00,"USD","","PENDIENTE","17236-204-2023","NO",U.CONS,"SI","Cliente","Sin novedades","Tipificación 954 inc. A — nota N° 276/23 (sec. sumarios)"],
+["INTERMACO S.R.L.","21001IC04114374K","15/6/2021","N","CANC",862638.60,"USD","","PENDIENTE","18036-9198-2021","NO",U.CONS,"NO","Cliente","","rectificación de número de factura"],
+
+/* ── INVERSIONES BERNAL ── */
+["INVERSIONES BERNAL S.A.","21001IC04013419X","20/1/2021","N","DENU",51442.90,"USD","14/3/2025","FINALIZADO","21173-33-2025","SI",U.S2,"NO","Castilla","LMAN PAGO — RESOLUCIÓN EMITIDA","OTRO — art. 991 C.A."],
+["INVERSIONES BERNAL S.A.","21001IC04050803G","15/3/2021","R","DENU",72400.00,"USD","25/3/2021","RESUELTO","18049-79-201","NO","En tránsito desde Ramo D a Secretaría 3","SI","Castilla","Espera liberación de póliza","DPOS — P.A. incorrecta. Ítem 1 resultó PSIM 8504.40.10.000T. Se adjuntan constancias de Seg. Eléctrica CE-2020-77522104-APN-DNRT#MDP y CE-2020-84767788-APN-DNRT#MDP. Infracción art. 954 inc. a) C.A. — ADO N° 163/21"],
+
+/* ── JUANLENOI ── */
+["JUANLENOI S.R.L.","24008IC04007799J","15/10/2024","V","DENU",41000.00,"EUR","9/12/2024","RESUELTO","17221-1548-2024","NO",U.CAMP,"NO","Castilla","Tiene un movimiento para archivar pero el despacho sigue denunciado.","A994 — Denuncia prevista art. 994 C.A."],
+
+/* ── LAROCCA NEUMATICOS ── */
+["LAROCCA NEUMATICOS S.A.","21001IC04007600D","14/1/2021","V","CANC",23584.00,"USD","2/5/2024","RESUELTO","18036-1665-2024","NO",U.S3,"SI","Castilla","CONDONADA",M954],
+["LAROCCA NEUMATICOS S.A.","26001IC04014998D","21/1/2026","V","DENU",23012.10,"USD","9/3/2026","RESUELTO","22920-1730-2026","NO",U.S6,"NO","Castilla",OBS_LMAN,A995],
+
+/* ── MAXTERVISION ── */
+["MAXTERVISION TEAM S.R.L.","25001IC04267613T","15/12/2025","V","DENU",75170.00,"USD","2/1/2026","PENDIENTE","20908-2-2026","SI",U.S3,"SI","Castilla","Resultan ítems 2, 3 y 4 PASIM 8521.90.00.900N. Infracción al art. 954 inc. A del C.A.",M954],
+
+/* ── METALPACK ── */
+["METALPACK S.A.","18001IC04084658E","12/4/2018","R","DENU",30150.30,"USD","3/8/2020","RESUELTO","18045-13006-2018","NO",U.CFSM,"NO","Castilla","El expediente está archivado. Pedir resolución.","OTRO — art. 992 C.A."],
+
+/* ── OMNILIFE ── */
+["OMNILIFE DE ARGENTINA S.A.","22001IDA4003575G","6/5/2022","-","DENU",136261.86,"USD","15/12/2023","PENDIENTE","18042-4628-2023","NO",U.S3,"NO","Castilla","Mercadería con vencimiento operado. Art. 611 y 954 inc. b) C.A. 2 pallets en Defiba, contenedores de cosméticos, con problemas de destrucción y el ramo. De momento queda en stand by.","PNOE — Prohibiciones no económicas"],
+["OMNILIFE DE ARGENTINA S.A.","23073IC04087710B","23/8/2023","N","DENU",8724.16,"USD","4/12/2023","PENDIENTE","21173-382-2023","NO",U.S2,"NO","Castilla","Sin sumariante. Sanción por estampillas; contamos con los SITA que comprueban la solicitud y el retiro.","OTRO — art. 991 C.A."],
+
+/* ── PINSOURCE ── */
+["PINSOURCE","23001IC06001209G","13/1/2023","V","DENU",7293.21,"USD","23/4/2026","PENDIENTE","19386-22-2023","SI",U.S3,"NO","Castilla","Mercadería prohibida — multa paga. Castilla gestiona el expediente para destrucción.","Art. 954 inc. B C.A."],
+
+/* ── RR CONSTRUCCIONES ── */
+["RR CONSTRUCCIONES S.A.","24001IC04087737C","10/6/2024","R","DENU",40390.00,"USD","31/7/2024","PENDIENTE","20803-82-2024","NO",U.S3,"SI","Castilla","Sumariante Nelson",M954],
+
+/* ── SAILING GEAR ── */
+["SAILING GEAR S.A.","24073IC04038316A","17/4/2024","N","DENU",42202.53,"USD","23/5/2024","RESUELTO","21173-222-2024","NO",U.S6,"NO","Castilla",OBS_LMAN,"OTRO — art. 995 C.A."],
+["SAILING GEAR S.A.","24073IC04128772G","14/11/2024","V","DENU",57333.97,"USD","10/4/2025","FINALIZADO","20804-1017-2025","SI",U.S6,"NO","Sin definir",OBS_RESO,M995],
+
+/* ── SEIS ERRE ── */
+["SEIS ERRE ALIMENTOS S.A.","24001IC04191489C","20/11/2024","N","DENU",36258.70,"USD","17/2/2025","FINALIZADO","18036-10657-2024","SI",U.S6,"NO","Sin definir",OBS_RESO,M995],
+
+/* ── ULTRALIGHT ── */
+["ULTRALIGHT S.R.L.","21073IC04044664A","28/4/2021","N","CANC",211902.23,"USD","3/11/2021","PENDIENTE","17124-8378-2021","NO",U.CFSZ,"NO","Castilla","Ver Raúl",A995],
+["ULTRALIGHT S.R.L.","23033ZFE1019586S","27/10/2023","R","CANC",5119620.16,"CNY","21/11/2023","PENDIENTE","20908-170-2023","SI",U.LAPL,"SI","Sin definir","GARANTÍA SUCO constituida","Art. 954 inc. A C.A."],
+["ULTRALIGHT S.R.L.","23033ZFE1020027A","3/11/2023","R","CANC",337638.72,"USD","17/11/2023","FINALIZADO","17236-592-2023","SI",U.LAPL,"SI","Sin definir","ACCIÓN PENAL EXTINGUIDA","Art. 954 inc. A C.A."],
+["ULTRALIGHT S.R.L.","23033ZFE1003751F","13/3/2023","V","CANC",90223.42,"USD","31/3/2024","FINALIZADO","20908-51-2023","SI",U.LAPL,"SI","Sin definir","ACCIÓN PENAL EXTINGUIDA","Art. 954 inc. A C.A."],
+["ULTRALIGHT S.R.L.","26073IC04074927K","15/7/2026","R","DENU",420403.43,"USD","26/8/2026","RESUELTO","18104-195-2026","SI","A confirmar","SI","Castilla","—","Art. 954 inc. A C.A."],
+
+/* ── UNITS SUDAMERICANA ── */
+["UNITS SUDAMERICANA S.A.","24001IC04187117S","13/11/2024","V","DENU",14520.00,"USD","2/2/2026","PENDIENTE","18036-1095-2025","NO",U.S3,"SI","Castilla","El cliente informó que la carga era BIEN DE USO, y lo correcto era para comercializar. Pagaron de menos los tributos y el cliente solicitó la autodenuncia para pagar la diferencia.",M954],
+
+/* ── CALZETTA ── */
+["CALZETTA NEUMATICOS S.A.","25001IC04183343Z","4/9/2025","R","DENU",107439.92,"USD","5/12/2025","RESUELTO","22920-2684-2025","NO",U.S6,"NO","Castilla",OBS_LMAN,M995],
+
+/* ── FERREIROS Y VILELA — DIT vencidas ── */
+["FERREIROS Y VILELA S.A. SISTEMAS DE DIRECCION","24001IT14002002P","19/6/2024","V","VENC",54954.80,"USD","","PENDIENTE","",'NO',U.NA,"SI","Sin definir","Se dejó vencer la DIT a pedido del cliente. Ferreiros tiene contacto directo con Castilla.","Art. 970 C.A."],
+["FERREIROS Y VILELA S.A. SISTEMAS DE DIRECCION","24001IT14002431V","24/7/2024","V","VENC",33545.50,"USD","","PENDIENTE","","NO",U.NA,"SI","Sin definir","Se dejó vencer la DIT a pedido del cliente. Ferreiros tiene contacto directo con Castilla.","Art. 970 C.A."],
+
+/* ── DAEMAR ── */
+["DAEMAR S.A.","26008IC04006742V","20/8/2026","V","DENU",99603.08,"USD","9/10/2026","FINALIZADO","17114-1892-2026","NO",U.NA,"NO","Free Customs","DISPOSICIÓN EMITIDA.","Art. 995 — se rectificó el vendedor por un error en la declaración"],
+
+/* ── SERVICIOS A.M.G. VIAL ── */
+["SERVICIOS A.M.G. VIAL S.A.","26042IC05028693G","26/10/2026","R","DENU",66657.66,"USD","29/10/2026","PENDIENTE","23010-168-2026","NO",U.NA,"SI","Free Customs","PAGAR LMAN","Art. 954 — ítems 17 y 18 origen Italia"]
+
+]);
+
+/* Agenda de seguimiento acordada con Castilla (hoja PENDIENTES REVISADOS CON CASTILLA) */
+const CASTILLA = [
+["ULTRALIGHT S.R.L.","17124-8378-2021","Consultar status por expediente","Estado CANC. Seguir con Castilla.",U.CFSZ],
+["MAXTERVISION TEAM S.R.L.","20908-2-2026","Actualizar status — designado a Castilla","—",U.S3],
+["ALFREDO IGNACIO CORRAL S.A.","20821-27-2024","Actualizar status — asignado a Castilla","Son 31 despachos bajo el mismo expediente.",U.S3],
+["RR CONSTRUCCIONES S.A.","20803-82-2024","Espera resolución anticipada clasificatoria — entregar defensa a Castilla","El cliente consultó novedades por el mantenimiento de la póliza.",U.S3],
+["METALPACK S.A.","18045-13006-2018","Está archivado — conseguir resolución","Consultar despacho 18001IC04084658E.",U.CFSM],
+["JUANLENOI S.R.L.","17221-1548-2024","¿Cómo prosigue?","Tiene un movimiento para archivar pero el despacho sigue denunciado.",U.CAMP],
+["DISTRIBUIDORA DMC S.A.","18045-352-2022","Está archivado — conseguir resolución","Archivado.",U.CFSM],
+["CRESATA S.A.","—","Consultar status","La denuncia recae sobre el expediente del escalonado.",U.CONS],
+["OMNILIFE DE ARGENTINA S.A.","18042-4628-2023","Consultar status","—",U.S3],
+["OMNILIFE DE ARGENTINA S.A.","21173-382-2023","Consultar status","—",U.S2],
+["INTER BROKERS S.R.L.","18049-154-2017","Consultar status","¿Se efectuó el pago voluntario? Tomar vista.",U.SUMREP],
+["UNITS SUDAMERICANA S.A.","18036-1095-2025","Consultar status","Sin información.",U.S3],
+["ARTEC INGENIERIA S.A.","18036-6086-2024","Consultar status","LMAN pago, espera resolución.",U.S6],
+["CELESTINO SPAHN S.A.","19386-303-2021","Consultar status","PA con dumping — art. 954.",U.S3],
+["LAROCCA NEUMATICOS S.A.","22920-1730-2026","Hacer seguimiento","LMAN pago — firma demorada.",U.S6],
+["CALZETTA NEUMATICOS S.A.","22920-2684-2025","Hacer seguimiento","LMAN pago — firma demorada.",U.S6],
+["GRUAS SAN BLAS S.A.","18036-2397-2025","Hacer seguimiento","LMAN pago — firma demorada.",U.S6],
+["GRUAS SAN BLAS S.A.","18036-2394-2025","Hacer seguimiento","LMAN pago — firma demorada.",U.S6],
+["GRUAS SAN BLAS S.A.","18036-2479-2025","Hacer seguimiento","LMAN pago — firma demorada.",U.S6],
+["FREE CUSTOMS S.A.","18036-1324-2025","Hacer seguimiento","LMAN pago — firma demorada.",U.S6],
+["COMPAÑIA ARGENTINA DE ACEITES","22920-3050-2026","Hacer seguimiento","LMAN pago — firma demorada.",U.CEXA],
+["EXANET S.A.","21173-509-2023","Consultar status","Sin consultar / derivado a Castilla, es su cliente directo.",U.CFSM],
+["EXANET S.A.","21180-154-2025","Consultar status","954 inc. A.",U.CONS],
+["GIRGOLAMI S.A.","18049-47-2022","Consultar status","954 inc. A.",U.S3],
+["GIRGOLAMI S.A.","18049-46-2022","Consultar status","954 inc. A.",U.S3],
+["INVERSIONES BERNAL S.A.","18049-79-201","Consultar status","954 inc. A.","En tránsito desde Ramo D a Secretaría 3"],
+["LAROCCA NEUMATICOS S.A.","18036-1665-2024","Conseguir resolución (condonada)","954 inc. A.",U.S3],
+["PINSOURCE","19386-22-2023","Consultar status","Mercadería prohibida — multa paga. Castilla gestiona el expediente para destrucción.",U.S3],
+["SAILING GEAR S.A.","21173-222-2024","Consultar status","995 — LMAN pago, espera resolución.",U.S6],
+["FERREIROS Y VILELA S.A. SISTEMAS DE DIRECCION","—","Consultar designación con Castilla","Se dejó vencer a pedido del cliente. Ferreiros tiene contacto con Castilla.","—"],
+["FERREIROS Y VILELA S.A. SISTEMAS DE DIRECCION","—","Consultar designación con Castilla","Se dejó vencer a pedido del cliente. Ferreiros tiene contacto con Castilla.","—"],
+["ULTRALIGHT S.R.L.","18104-195-2026","Definir honorarios con Castilla","—","—"]
+];
+
+/* ============================================================
+   CONFIGURACIÓN
+   ============================================================ */
+/* La planilla sólo admite 3 estados. "FINALIZADO" es como figura en el Excel;
+   en el reporte se muestra con su nombre definitivo, CERRADO. */
+const STATUS_CFG = {
+  "PENDIENTE":  {rotulo:"PENDIENTE", color:"#D97706", orden:0},
+  "RESUELTO":   {rotulo:"RESUELTO",  color:"#4F46E5", orden:1},
+  "FINALIZADO": {rotulo:"CERRADO",   color:"#059669", orden:2}
+};
+const ORDEN_STATUS = ["PENDIENTE","RESUELTO","FINALIZADO"];
+const rotuloStatus = s => (STATUS_CFG[s]||{}).rotulo || s;
+
+/* Canal de selectividad del despacho */
+const CANAL_CFG = {
+  "R":{nombre:"Rojo",    color:"#DC2626"},
+  "N":{nombre:"Naranja", color:"#D97706"},
+  "V":{nombre:"Verde",   color:"#059669"},
+  "-":{nombre:"Sin dato",color:"#9AA5D4"}
+};
+
+/* Estado del despacho */
+const ESTADO_CFG = {
+  "DENU":{nombre:"Denunciado"},
+  "CANC":{nombre:"Cancelado"},
+  "VENC":{nombre:"Vencido"}
+};
+
+/* Tipos de destinación: se leen de los caracteres 6 a 9 del N° de despacho.
+   Ej.: 22001|IC04|176140K  ->  IC04 */
+const DEST_NOMBRE = {
+  "IC01":"IC01 — Importación a consumo",
+  "IC04":"IC04 — Importación a consumo",
+  "IC05":"IC05 — Importación a consumo",
+  "IC06":"IC06 — Importación a consumo",
+  "IDA4":"IDA4 — Importación desde área aduanera especial",
+  "ZFE1":"ZFE1 — Zona franca, egreso",
+  "DJVE":"DJVE — Declaración jurada de venta al exterior",
+  "IT14":"IT14 — Importación temporaria"
+};
+
+const MONEDA_SIMBOLO = {"USD":"USD","EUR":"EUR","CNY":"CNY"};
+
+/* ============================================================
+   NORMALIZACIÓN
+   ============================================================ */
+function destinacionDe(despacho){
+  const d = (despacho||"").trim().toUpperCase();
+  return d.length >= 9 ? d.substring(5,9) : "—";
+}
+function codAduanaDe(despacho){
+  const d = (despacho||"").trim();
+  return d.length >= 5 ? d.substring(2,5) : "—";
+}
+function anioDespachoDe(despacho){
+  const d = (despacho||"").trim();
+  if(d.length < 2) return null;
+  const n = parseInt(d.substring(0,2),10);
+  return isNaN(n) ? null : 2000 + n;
+}
+/* "7/5/2024" o "25/10/2022" -> "2024-05-07". Devuelve "" si no se puede. */
+function aISO(f){
+  if(!f) return "";
+  const p = String(f).trim().split("/");
+  if(p.length !== 3) return "";
+  let [d,m,a] = p.map(x=>x.trim());
+  if(a.length === 2) a = "20" + a;
+  if(!/^\d{1,2}$/.test(d) || !/^\d{1,2}$/.test(m) || !/^\d{4}$/.test(a)) return "";
+  return a + "-" + m.padStart(2,"0") + "-" + d.padStart(2,"0");
+}
+function fmtFecha(f){
+  const iso = aISO(f);
+  if(!iso) return f ? String(f) : "—";
+  const [a,m,d] = iso.split("-");
+  return d + "/" + m + "/" + a;
+}
+
+const DENUNCIAS = DENUNCIAS_RAW.map((fila,i)=>{
+  const o = {id:i+1};
+  COLS.forEach((c,j)=> o[c] = fila[j]);
+  o.destinacion  = destinacionDe(o.despacho);
+  o.codAduana    = codAduanaDe(o.despacho);
+  o.anioDespacho = anioDespachoDe(o.despacho);
+  o.fOficISO     = aISO(o.fOfic);
+  o.fDenISO      = aISO(o.fDen);
+  o.expediente   = o.expediente || "";
+  return o;
+});
+
+/* ============================================================
+   ESTADO DE LA VISTA
+   ============================================================ */
+let ordenCampo = "status", ordenAsc = true;
+let gruposCerrados = {};
+let filasAbiertas = {};
+let charts = {};
+
+function esc(t){
+  return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+function fmtNum(n){
+  if(n==null || isNaN(n)) return "—";
+  return Number(n).toLocaleString("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function cambiarTab(nombre){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("activa", t.dataset.tab===nombre));
+  ["denuncias","castilla","estadisticas"].forEach(n=>{
+    document.getElementById("tab-"+n).style.display = (n===nombre) ? "" : "none";
+  });
+  if(nombre==="estadisticas") renderEstadisticas();
+}
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+function poblarFiltros(){
+  const unicos = (campo)=> [...new Set(DENUNCIAS.map(d=>d[campo]).filter(Boolean))].sort();
+
+  const addOpts = (idSel, valores, etiqueta)=>{
+    const sel = document.getElementById(idSel);
+    valores.forEach(v=>{
+      const op = document.createElement("option");
+      op.value = v;
+      op.textContent = etiqueta ? etiqueta(v) : v;
+      sel.appendChild(op);
+    });
+  };
+
+  addOpts("filtroCliente", unicos("cliente"));
+  addOpts("filtroStatus",  ORDEN_STATUS.filter(s=>DENUNCIAS.some(d=>d.status===s)), rotuloStatus);
+  addOpts("filtroEstado",  unicos("estado"), v=> v + (ESTADO_CFG[v] ? " — " + ESTADO_CFG[v].nombre : ""));
+  addOpts("filtroDest",    unicos("destinacion"));
+  addOpts("filtroLetrado", unicos("letrado"));
+}
+
+function limpiarFiltros(){
+  document.getElementById("buscador").value = "";
+  ["filtroCliente","filtroStatus","filtroEstado","filtroDest","filtroLetrado"]
+    .forEach(id=> document.getElementById(id).value = "");
+  renderTabla();
+}
+
+function denunciasFiltradas(){
+  const q   = document.getElementById("buscador").value.trim().toLowerCase();
+  const fCl = document.getElementById("filtroCliente").value;
+  const fSt = document.getElementById("filtroStatus").value;
+  const fEs = document.getElementById("filtroEstado").value;
+  const fDe = document.getElementById("filtroDest").value;
+  const fLe = document.getElementById("filtroLetrado").value;
+
+  return DENUNCIAS.filter(d=>{
+    if(fCl && d.cliente     !== fCl) return false;
+    if(fSt && d.status      !== fSt) return false;
+    if(fEs && d.estado      !== fEs) return false;
+    if(fDe && d.destinacion !== fDe) return false;
+    if(fLe && d.letrado     !== fLe) return false;
+    if(!q) return true;
+    const blob = [d.cliente,d.despacho,d.destinacion,d.expediente,d.obs,d.motivo,
+                  d.ubicacion,d.letrado,d.estado,d.status,rotuloStatus(d.status)].join(" ").toLowerCase();
+    return blob.includes(q);
+  });
+}
+
+/* ============================================================
+   ORDEN
+   ============================================================ */
+function ordenarPor(campo){
+  if(ordenCampo === campo) ordenAsc = !ordenAsc;
+  else { ordenCampo = campo; ordenAsc = true; }
+  renderTabla();
+}
+function comparador(a,b){
+  let va = a[ordenCampo], vb = b[ordenCampo];
+  if(ordenCampo === "status"){ va = STATUS_CFG[va].orden; vb = STATUS_CFG[vb].orden; }
+  if(va == null) va = "";
+  if(vb == null) vb = "";
+  let r;
+  if(typeof va === "number" && typeof vb === "number") r = va - vb;
+  else r = String(va).localeCompare(String(vb), "es", {numeric:true});
+  return ordenAsc ? r : -r;
+}
+
+/* ============================================================
+   TABLA
+   ============================================================ */
+function badgeStatus(s){
+  const c = (STATUS_CFG[s]||{}).color || "#9AA5D4";
+  return '<span class="estado" style="background:'+c+'">'+esc(rotuloStatus(s))+'</span>';
+}
+function badgeCanal(c){
+  const cfg = CANAL_CFG[c] || CANAL_CFG["-"];
+  const letra = (c==="-"||!c) ? "?" : c;
+  return '<span class="canal" style="background:'+cfg.color+'" title="'+esc(cfg.nombre)+'">'+esc(letra)+'</span>';
+}
+
+/* ¿Hay búsqueda o algún filtro activo? */
+function hayFiltro(){
+  if(document.getElementById("buscador").value.trim()) return true;
+  return ["filtroCliente","filtroStatus","filtroEstado","filtroDest","filtroLetrado"]
+    .some(id => document.getElementById(id).value !== "");
+}
+
+/* Al abrir el reporte los tres grupos arrancan plegados. Cuando hay un filtro
+   o una búsqueda se despliegan solos, para que el resultado quede a la vista.
+   En ambos casos el clic del usuario manda por encima del comportamiento. */
+function grupoCerrado(status){
+  const v = gruposCerrados[status];
+  return hayFiltro() ? (v === true) : (v !== false);
+}
+function toggleGrupo(status){
+  gruposCerrados[status] = !grupoCerrado(status);
+  renderTabla();
+}
+function toggleFila(id){
+  filasAbiertas[id] = !filasAbiertas[id];
+  renderTabla();
+}
+
+function filaHTML(d){
+  const perj = d.perjuicio === "SI"
+    ? '<span class="perjuicio-si">SÍ</span>'
+    : '<span style="color:var(--muted)">No</span>';
+  return '<tr onclick="toggleFila('+d.id+')">'
+    + '<td class="mono">'+esc(d.despacho)+'</td>'
+    + '<td><span class="pill" title="'+esc(DEST_NOMBRE[d.destinacion]||d.destinacion)+'">'+esc(d.destinacion)+'</span></td>'
+    + '<td>'+esc(d.cliente)+'</td>'
+    + '<td class="mono">'+esc(fmtFecha(d.fOfic))+'</td>'
+    + '<td>'+badgeCanal(d.canal)+'</td>'
+    + '<td><span class="pill" title="'+esc((ESTADO_CFG[d.estado]||{}).nombre||"")+'">'+esc(d.estado)+'</span></td>'
+    + '<td class="num">'+fmtNum(d.fob)+' <span style="color:var(--muted2)">'+esc(d.moneda)+'</span></td>'
+    + '<td class="mono">'+esc(fmtFecha(d.fDen))+'</td>'
+    + '<td class="mono">'+esc(d.expediente || "—")+'</td>'
+    + '<td>'+perj+'</td>'
+    + '<td>'+esc(d.letrado)+'</td>'
+    + '</tr>';
+}
+
+function detalleHTML(d){
+  const dato = (k,v)=> '<div class="dato"><div class="k">'+esc(k)+'</div><div class="v">'+esc(v||"—")+'</div></div>';
+  return '<tr class="fila-detalle"><td colspan="11"><div class="det-inline">'
+    + dato("Cliente", d.cliente)
+    + dato("N° de despacho", d.despacho)
+    + dato("Destinación", DEST_NOMBRE[d.destinacion] || d.destinacion)
+    + dato("Código de aduana", d.codAduana)
+    + dato("N° de expediente", d.expediente)
+    + dato("Ubicación del expediente", d.ubicacion)
+    + dato("¿Tenemos copia del expediente?", d.copia === "SI" ? "Sí" : "No")
+    + dato("¿Ocasiona perjuicio fiscal?", d.perjuicio === "SI" ? "Sí" : "No")
+    + dato("Letrado a cargo", d.letrado)
+    + dato("FOB", fmtNum(d.fob) + " " + d.moneda)
+    + dato("Fecha de oficialización", fmtFecha(d.fOfic))
+    + dato("Fecha de denuncia", fmtFecha(d.fDen))
+    + dato("Observaciones", d.obs)
+    + dato("Motivo / plan de acción", d.motivo)
+    + '</div></td></tr>';
+}
+
+function renderTabla(){
+  const lista = denunciasFiltradas();
+  const cuerpo = document.getElementById("cuerpoTabla");
+
+  if(!lista.length){
+    cuerpo.innerHTML = "";
+    document.getElementById("sinDatos").style.display = "";
+    document.getElementById("contador").textContent = "0 denuncias";
+    document.getElementById("notaPie").innerHTML = "";
+    return;
+  }
+  document.getElementById("sinDatos").style.display = "none";
+
+  let html = "";
+  ORDEN_STATUS.forEach(st=>{
+    const delGrupo = lista.filter(d=>d.status === st).sort(comparador);
+    if(!delGrupo.length) return;
+    const cerrado = grupoCerrado(st);
+    const clientes = new Set(delGrupo.map(d=>d.cliente)).size;
+    html += '<tr class="grupo'+(cerrado?"":" abierto")+'" onclick="toggleGrupo(\''+st+'\')">'
+          + '<td colspan="11"><span class="flecha">&#9654;</span>'
+          + badgeStatus(st)
+          + '<span class="cant">'+delGrupo.length+' despacho'+(delGrupo.length===1?"":"s")
+          + ' · '+clientes+' cliente'+(clientes===1?"":"s")+'</span></td></tr>';
+    if(!cerrado){
+      delGrupo.forEach(d=>{
+        html += filaHTML(d);
+        if(filasAbiertas[d.id]) html += detalleHTML(d);
+      });
+    }
+  });
+  cuerpo.innerHTML = html;
+
+  const nCli = new Set(lista.map(d=>d.cliente)).size;
+  document.getElementById("contador").textContent =
+    lista.length + " de " + DENUNCIAS.length + " despachos · " + nCli + " clientes";
+
+  /* Totales de FOB por moneda, sobre lo filtrado */
+  const porMoneda = {};
+  lista.forEach(d=>{ porMoneda[d.moneda] = (porMoneda[d.moneda]||0) + (d.fob||0); });
+  const partes = Object.keys(porMoneda).sort().map(m=> "<strong>"+fmtNum(porMoneda[m])+" "+m+"</strong>");
+  document.getElementById("notaPie").innerHTML =
+    "FOB de la selección: " + partes.join(" · ")
+    + ". Se muestra tal como figura en el Excel, en la moneda de cada operación."
+    + " Hacé clic en el encabezado de un estado para desplegarlo, y en una fila para ver el expediente completo.";
+}
+
+/* ============================================================
+   AGENDA CASTILLA
+   ============================================================ */
+function renderCastilla(){
+  const q = document.getElementById("buscadorCas").value.trim().toLowerCase();
+  const lista = CASTILLA.filter(r=> !q || r.join(" ").toLowerCase().includes(q));
+  const cuerpo = document.getElementById("cuerpoCastilla");
+  if(!lista.length){
+    cuerpo.innerHTML = "";
+    document.getElementById("sinDatosCas").style.display = "";
+    document.getElementById("contadorCas").textContent = "0 expedientes";
+    return;
+  }
+  document.getElementById("sinDatosCas").style.display = "none";
+  cuerpo.innerHTML = lista.map(r=>
+      '<tr style="cursor:default">'
+    + '<td>'+esc(r[0])+'</td>'
+    + '<td class="mono">'+esc(r[1])+'</td>'
+    + '<td><strong>'+esc(r[2])+'</strong></td>'
+    + '<td style="color:var(--muted);font-size:11.5px">'+esc(r[3])+'</td>'
+    + '<td style="font-size:11.5px">'+esc(r[4])+'</td>'
+    + '</tr>').join("");
+  document.getElementById("contadorCas").textContent =
+    lista.length + " de " + CASTILLA.length + " expedientes en seguimiento";
+}
+
+/* ============================================================
+   ESTADÍSTICAS
+   ============================================================ */
+function contarPor(fn, lista){
+  const m = {};
+  (lista||DENUNCIAS).forEach(d=>{ const k = fn(d); if(k==null) return; m[k] = (m[k]||0)+1; });
+  return m;
+}
+function topN(mapa, n){
+  return Object.entries(mapa).sort((a,b)=>b[1]-a[1]).slice(0,n);
+}
+function pintar(id, cfg){
+  if(charts[id]) charts[id].destroy();
+  charts[id] = new Chart(document.getElementById(id), cfg);
+}
+const SIN_LEYENDA = {plugins:{legend:{display:false}}, maintainAspectRatio:false, responsive:true};
+const PALETA = ["#1E2D6B","#4F46E5","#818CF8","#A5B4FC","#C8CCFA","#059669","#D97706","#DC2626",
+                "#2E3F80","#6366F1","#9AA5D4","#E0E3FF"];
+
+function renderEstadisticas(){
+  const pend = DENUNCIAS.filter(d=>d.status==="PENDIENTE");
+  const conPerjuicio = DENUNCIAS.filter(d=>d.perjuicio==="SI").length;
+  const sinCopia = pend.filter(d=>d.copia!=="SI").length;
+  const clientes = new Set(DENUNCIAS.map(d=>d.cliente)).size;
+  const expedientes = new Set(DENUNCIAS.map(d=>d.expediente).filter(Boolean)).size;
+
+  const porMoneda = {};
+  DENUNCIAS.forEach(d=>{ porMoneda[d.moneda] = (porMoneda[d.moneda]||0) + (d.fob||0); });
+
+  const kpi = (valor,etiqueta,nota,clase)=>
+    '<div class="kpi '+(clase||"")+'"><div class="valor">'+valor+'</div>'
+    + '<div class="etiqueta">'+etiqueta+'</div>'
+    + (nota?'<div class="nota">'+nota+'</div>':'') + '</div>';
+
+  document.getElementById("kpis").innerHTML =
+      kpi(DENUNCIAS.length, "Despachos denunciados", clientes + " clientes · " + expedientes + " expedientes")
+    + kpi(pend.length, "Pendientes", Math.round(pend.length/DENUNCIAS.length*100) + "% del total", "alerta")
+    + kpi(DENUNCIAS.filter(d=>d.status==="RESUELTO").length, "Resueltos", "Falta el respaldo documental")
+    + kpi(DENUNCIAS.filter(d=>d.status==="FINALIZADO").length, "Cerrados", "Con respaldo documental", "ok")
+    + kpi(conPerjuicio, "Con perjuicio fiscal", Math.round(conPerjuicio/DENUNCIAS.length*100) + "% del total")
+    + kpi(sinCopia, "Pendientes sin copia del expediente", "Sobre " + pend.length + " pendientes");
+
+  /* Status */
+  const porStatus = contarPor(d=>d.status);
+  pintar("chartStatus", {
+    type:"doughnut",
+    data:{labels:ORDEN_STATUS.map(rotuloStatus), datasets:[{data:ORDEN_STATUS.map(s=>porStatus[s]||0),
+      backgroundColor:ORDEN_STATUS.map(s=>STATUS_CFG[s].color), borderWidth:0}]},
+    options:{maintainAspectRatio:false, responsive:true, plugins:{legend:{position:"bottom",
+      labels:{font:{family:"Poppins",size:11}, padding:14, usePointStyle:true}}}}
+  });
+
+  /* Clientes */
+  const topCli = topN(contarPor(d=>d.cliente), 12);
+  pintar("chartClientes", {
+    type:"bar",
+    data:{labels:topCli.map(x=>x[0]), datasets:[{data:topCli.map(x=>x[1]), backgroundColor:"#4F46E5", borderRadius:6}]},
+    options:{...SIN_LEYENDA, indexAxis:"y",
+      scales:{y:{ticks:{font:{family:"Poppins",size:10}}}, x:{beginAtZero:true, ticks:{precision:0}}}}
+  });
+
+  /* Pendientes por cliente */
+  const topPend = topN(contarPor(d=>d.cliente, pend), 12);
+  pintar("chartPendientes", {
+    type:"bar",
+    data:{labels:topPend.map(x=>x[0]), datasets:[{data:topPend.map(x=>x[1]), backgroundColor:"#D97706", borderRadius:6}]},
+    options:{...SIN_LEYENDA, indexAxis:"y",
+      scales:{y:{ticks:{font:{family:"Poppins",size:10}}}, x:{beginAtZero:true, ticks:{precision:0}}}}
+  });
+
+  /* Destinación */
+  const porDest = topN(contarPor(d=>d.destinacion), 12);
+  pintar("chartDest", {
+    type:"bar",
+    data:{labels:porDest.map(x=>x[0]), datasets:[{data:porDest.map(x=>x[1]),
+      backgroundColor:porDest.map((_,i)=>PALETA[i%PALETA.length]), borderRadius:6}]},
+    options:{...SIN_LEYENDA, scales:{x:{ticks:{font:{family:"Poppins",size:10}}}, y:{beginAtZero:true, ticks:{precision:0}}}}
+  });
+
+  /* Canal */
+  const ordenCanal = ["R","N","V","-"].filter(c=>DENUNCIAS.some(d=>d.canal===c));
+  const porCanal = contarPor(d=>d.canal);
+  pintar("chartCanal", {
+    type:"doughnut",
+    data:{labels:ordenCanal.map(c=>CANAL_CFG[c].nombre),
+      datasets:[{data:ordenCanal.map(c=>porCanal[c]||0),
+        backgroundColor:ordenCanal.map(c=>CANAL_CFG[c].color), borderWidth:0}]},
+    options:{maintainAspectRatio:false, responsive:true, plugins:{legend:{position:"bottom",
+      labels:{font:{family:"Poppins",size:11}, padding:14, usePointStyle:true}}}}
+  });
+
+  /* Año de oficialización */
+  const porAnio = contarPor(d=>d.anioDespacho);
+  const anios = Object.keys(porAnio).sort();
+  pintar("chartAnio", {
+    type:"bar",
+    data:{labels:anios, datasets:[{data:anios.map(a=>porAnio[a]), backgroundColor:"#1E2D6B", borderRadius:6}]},
+    options:{...SIN_LEYENDA, scales:{y:{beginAtZero:true, ticks:{precision:0}}}}
+  });
+
+  /* Letrado */
+  const porLetrado = topN(contarPor(d=>d.letrado), 8);
+  pintar("chartLetrado", {
+    type:"bar",
+    data:{labels:porLetrado.map(x=>x[0]), datasets:[{data:porLetrado.map(x=>x[1]),
+      backgroundColor:porLetrado.map((_,i)=>PALETA[i%PALETA.length]), borderRadius:6}]},
+    options:{...SIN_LEYENDA, indexAxis:"y",
+      scales:{y:{ticks:{font:{family:"Poppins",size:10}}}, x:{beginAtZero:true, ticks:{precision:0}}}}
+  });
+
+  /* FOB por moneda */
+  const monedas = Object.keys(porMoneda).sort();
+  pintar("chartFob", {
+    type:"bar",
+    data:{labels:monedas, datasets:[{data:monedas.map(m=>porMoneda[m]),
+      backgroundColor:["#1E2D6B","#4F46E5","#818CF8"], borderRadius:6}]},
+    options:{...SIN_LEYENDA,
+      scales:{y:{beginAtZero:true, ticks:{callback:v=>v.toLocaleString("es-AR")}}},
+      plugins:{legend:{display:false}, tooltip:{callbacks:{
+        label:ctx=> fmtNum(ctx.parsed.y) + " " + ctx.label}}}}
+  });
+}
+
+/* ============================================================
+   EXPORTACIÓN
+   ============================================================ */
+function descargar(nombre, contenido, tipo){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["﻿"+contenido], {type:tipo}));
+  a.download = nombre;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function aCSV(cabeceras, filas){
+  const celda = v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"';
+  return [cabeceras.map(celda).join(";")]
+    .concat(filas.map(f=>f.map(celda).join(";")))
+    .join("\n");
+}
+function exportarCSV(){
+  const lista = denunciasFiltradas();
+  const cab = ["Cliente","N° Despacho","Destinación","Cód. Aduana","F. Ofic.","Canal","Estado",
+               "FOB","Moneda","F. Denuncia","Status","N° Expediente","Copia","Ubicación",
+               "Perjuicio fiscal","Letrado","Observaciones","Motivo / plan de acción"];
+  const filas = lista.map(d=>[d.cliente,d.despacho,d.destinacion,d.codAduana,fmtFecha(d.fOfic),
+    d.canal,d.estado,d.fob,d.moneda,fmtFecha(d.fDen),rotuloStatus(d.status),d.expediente,d.copia,
+    d.ubicacion,d.perjuicio,d.letrado,d.obs,d.motivo]);
+  descargar("denuncias_"+FECHA_CORTE+".csv", aCSV(cab,filas), "text/csv;charset=utf-8");
+}
+function exportarCastillaCSV(){
+  descargar("seguimiento_castilla_"+FECHA_CORTE+".csv",
+    aCSV(["Cliente","N° Expediente","Pendiente","Observaciones","Ubicación"], CASTILLA),
+    "text/csv;charset=utf-8");
+}
+
+/* ============================================================
+   INICIO
+   ============================================================ */
+(function init(){
+  const [a,m,d] = FECHA_CORTE.split("-");
+  document.getElementById("badgeCorte").textContent = "Datos al " + d + "/" + m + "/" + a;
+  poblarFiltros();
+  renderTabla();
+  renderCastilla();
+})();
+</script>
+</body>
+</html>
